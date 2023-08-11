@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import { logoDark } from '../../../assets/images';
-import { useAccount } from 'wagmi'
 import { 
   BrandContainer, 
   Brand, 
