@@ -23,6 +23,9 @@ jobs:
       - name: Versioning
         env:
           REF: ${{github.ref}}
+          GSAP_TOKEN: ${{github.GSAP_TOKEN}}
+          VITE_RPC_PROVIDER_ALCHEMY: ${{ github.VITE_RPC_PROVIDER_ALCHEMY }}
+          VITE_WALLET_CONNECT_ID: ${{ github.VITE_WALLET_CONNECT_ID }}
         run: |
           echo "REF=$REF"
           echo "REF=$REF" >> $GITHUB_ENV
