@@ -22,7 +22,6 @@
     "@rainbow-me/rainbowkit": "^1.0.8",
     "@reduxjs/toolkit": "^1.9.5",
     "ethers": "^5",
-    "gsap": "npm:@gsap/shockingly",
     "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-blockies": "^1.4.1",
