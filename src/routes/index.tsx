@@ -1,9 +1,9 @@
 import {
- createBrowserRouter,
+ createHashRouter,
 } from "react-router-dom";
 import Layout from "../views/containers/Layout"; 
 
-const router = createBrowserRouter([
+const router = createHashRouter([
  {
   path: '/',
   element: <Layout />,
