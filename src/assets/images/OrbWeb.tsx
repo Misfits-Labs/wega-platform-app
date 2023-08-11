@@ -6,14 +6,13 @@ type OrbProps = {
     size?: number;
     speed?: number;
 }
-// eslint-disable-next-line react/display-name
+// eslint-disable-next-line react/display-name, @typescript-eslint/no-unused-vars
 const OrbWeb = forwardRef(({ delay, speed, size, ...props}: SVGProps<SVGSVGElement> & OrbProps, ref) => {
     
     const orb = useRef<any>()
     
     // returns api for animating orb
     useImperativeHandle(ref, () =>{
-
         return {
             moveTo(x: number, y: number) {
                 gsap.to(orb.current, { x, y, delay });

@@ -4,9 +4,10 @@ import {
   BrandContainer, 
   Brand, 
   NavigationLinksContainer,
-  NavigationConnectButton,
 } from './types';
+import RainbowConnectButton from '../../components/RainBowConnectButton';
 import 'twin.macro';
+
 
 
 const Navigation = () => {
@@ -26,7 +27,9 @@ const Navigation = () => {
           <li><Link to="/wins"><span>Mint</span></Link></li>
           {
             connected &&
-            <li><NavigationConnectButton tw='ms-1'>Connect</NavigationConnectButton></li>
+            <li>
+              <RainbowConnectButton />
+            </li>
           }
         </NavigationLinksContainer>
       </div>

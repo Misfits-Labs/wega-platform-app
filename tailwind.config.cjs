@@ -9,8 +9,10 @@ export default {
         blanc: '#FDFDFD',
         shinishi: '#787878',
         pretu: '#151515',
+        pretuLighter: '#232323',
         oranjo: '#F26D21',
         oranjoBlanc: '#FF9C27', 
+
       },     
       fontFamily:{
         'primary': ['League Spartan', 'Poppins']

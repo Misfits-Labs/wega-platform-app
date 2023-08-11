@@ -68,7 +68,7 @@ export const NavigationConnectButton = styled.button`
  }
  font-style: normal;
  font-weight: 700; 
- padding: 12px 24px;
+ padding: 10px 25px;
  border-radius: 5px;
  max-width: fit-content;
 `
