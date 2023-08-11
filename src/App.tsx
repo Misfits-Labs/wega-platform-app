@@ -1,27 +1,24 @@
-import { useState } from "react"
-import reactLogo from "./assets/react.svg"
-import "./App.css"
+import { useEffect } from 'react';
+import { HelmetProvider } from 'react-helmet-async';
+import LanguageProvider from './views/containers/LanguageProvider';
+import { useAppSelector } from './hooks/useAppDispatch';
+import { RouterProvider } from 'react-router-dom';
+import router from './routes';
+import 'twin.macro'
+
 
 function App() {
- const [count, setCount] = useState(0)
-
+ const locale = useAppSelector(state => state.intlProvider.locale);
+ useEffect(()=>{
+  const htmlElement = document.documentElement;
+  if(htmlElement && !htmlElement.classList.contains('dark')) htmlElement.classList.add('dark');
+ })
  return (
-  <>
-   <div>
-    <a href="https://react.dev" target="_blank">
-     <img src={reactLogo} className="logo react" alt="React logo" />
-    </a>
-   </div>
-   <h1>Vite + React</h1>
-   <div className="card">
-    <button onClick={() => setCount((count) => count + 1)}>count is {count}</button>
-    <p>
-     Edit <code>src/App.tsx</code> and save to test HMR
-    </p>
-   </div>
-   <p className="read-the-docs">Click on the Vite and React logos to learn more</p>
-  </>
+   <LanguageProvider locale={locale}>
+    <HelmetProvider>
+      <RouterProvider router={router} fallbackElement={<p>Loading...</p>} />
+    </HelmetProvider>
+   </LanguageProvider>
  )
 }
-
 export default App
