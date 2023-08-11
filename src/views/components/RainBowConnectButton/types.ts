@@ -26,24 +26,3 @@ export const WegaConnectButton = styled.button<WegaConnectButtonProps>(({
   `,
   connected && !!chainSupported && tw`dark:bg-pretuLighter`
 ])
-
-
-
-// ${
-//  tw`
-//  text-pretu 
-//  bg-gradient-to-r from-oranjoBlanc to-oranjo
-//  text-base
-//  `
-// }
-// 
-// 
-// 
-// 
-// max-width: fit-content;
-
-
-// const StyledInput = styled.input(({ hasBorder }) => [
-//  `color: black;`,
-//  hasBorder && tw`border-purple-500`,
-// ])

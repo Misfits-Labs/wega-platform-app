@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { logoDark } from '../../../assets/images';
+import { useAccount } from 'wagmi'
 import { 
   BrandContainer, 
   Brand, 
@@ -11,7 +12,6 @@ import 'twin.macro';
 
 
 const Navigation = () => {
-  const connected = true;
   return (
     <nav tw="box-border fixed w-full z-50 top-0">
       <div tw="container dark:text-blanc flex w-full py-5 justify-center">
@@ -25,12 +25,9 @@ const Navigation = () => {
           <li><Link to="/play"><span>Play</span></Link></li>
           <li><Link to="/swap"><span>Swap</span></Link></li>
           <li><Link to="/wins"><span>Mint</span></Link></li>
-          {
-            connected &&
-            <li>
-              <RainbowConnectButton />
-            </li>
-          }
+          <li>
+            <RainbowConnectButton />
+          </li>
         </NavigationLinksContainer>
       </div>
     </nav>
