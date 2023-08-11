@@ -43,7 +43,7 @@ jobs:
           #cache: 'yarn'
       #- run: yarn install --frozen-lockfile
       # yarn.lock is ignored?
-      - run: yarn install
+      - run: npm install
         env:
           GSAP_TOKEN: ${{secrets.GSAP_TOKEN}}
 
