@@ -8,7 +8,7 @@ on:
 
 env:
   NODEJS_VERSION: 18.16.1
-  IMAGE_NAME: ghcr.io/misfits/wega-platform
+  IMAGE_NAME: ghcr.io/misfits-labs/wega-platform
   REGISTRY: ghcr.io
 
 jobs:
@@ -42,12 +42,18 @@ jobs:
           #cache: 'yarn'
       #- run: yarn install --frozen-lockfile
       # yarn.lock is ignored?
-      - run: yarn install
+      #- run: yarn install
+      - run: npm install
 
       # Due to front-end nature of environment config, need specific image for each environment
       - name: Build image qa
+        env:
+          GSAP_TOKEN: ${{secrets.GSAP_TOKEN}}
+          NPM_TOKEN:  ${{secrets.NPM_TOKEN}}
+          VITE_RPC_PROVIDER_ALCHEMY:  ${{secrets.VITE_RPC_PROVIDER_ALCHEMY}}
+          VITE_WALLET_CONNECT_ID:  ${{secrets.VITE_WALLET_CONNECT_ID}}
         run: |
-          cp .env.qa .env
+          #cp .env.qa .env
 
           # TODO Temporary disable CI to test deployment
           CI=false yarn build
