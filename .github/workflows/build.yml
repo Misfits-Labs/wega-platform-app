@@ -42,8 +42,9 @@ jobs:
           #cache: 'yarn'
       #- run: yarn install --frozen-lockfile
       # yarn.lock is ignored?
-      #- run: yarn install
-      - run: npm install
+      - run: yarn install
+        env:
+          GSAP_TOKEN: ${{secrets.GSAP_TOKEN}}
 
       # Due to front-end nature of environment config, need specific image for each environment
       - name: Build image qa
