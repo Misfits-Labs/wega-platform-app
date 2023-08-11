@@ -37,23 +37,21 @@ grid-template-columns: 0.05fr 0.05fr 0.05fr 0.75fr;
 box-sizing: border-box;
 
 > li {
-    display: inline-flex;
-    align-items: flex-end;
-    box-sizing: border-box;
-    -webkit-box-sizing:border-box;
-    a {
-        box-sizing: border-box;
-        display: block;
-        margin: unset;
-        border-radius: unset;    
-        &:hover {
-            box-sizing: border-box;
-            border-bottom: 1px solid #FDFDFD;
-        }
-        & span {
-            padding-bottom: 0.5rem;
-        } 
-    }
+   display: flex;
+   align-items: flex-end;
+   box-sizing: border-box;
+   -webkit-box-sizing: border-box;
+   
+   a {
+       display: block;
+       box-sizing: border-box;
+       &:hover {
+           border-bottom: 1px solid #FDFDFD;
+       }
+       & span {
+           padding-bottom: 0.5rem;
+       } 
+   }
  }
  & div:last-child, li:nth-child(4) {
    justify-self: flex-end;

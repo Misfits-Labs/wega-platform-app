@@ -18,7 +18,7 @@ const Navigation = () => {
           <li tw="mr-5">
             <Link to="/"><img className="logo" src={logoDark}  alt="logo"/></Link>
           </li>
-          <Brand><Link to="/">Wega</Link><span className="ms-2">Trade</span></Brand>
+          <Brand><Link to="/">Wega</Link><span className="ms-2"><sup>Play</sup></span></Brand>
         </BrandContainer>
         <NavigationLinksContainer tw="box-border">
           <li><Link to="/play"><span>Play</span></Link></li>
