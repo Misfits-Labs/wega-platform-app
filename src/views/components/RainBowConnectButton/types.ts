@@ -75,16 +75,12 @@ export const ConnectionInformation = styled.div`
   padding-left: 16px;
   ${tw`flex justify-center`}
 `
-
-
 export const Chain = styled.div`
   > img {
     width: 24px;
     height: 24px;
   }
 `
-
-
 export const Balance = styled.span`
   line-height: 9px;
   font-family: League Spartan;
