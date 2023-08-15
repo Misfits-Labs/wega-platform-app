@@ -37,7 +37,7 @@ export default {
       },     
       fontFamily:{
         'primary': ['League Spartan', 'Poppins']
-      }
+      },
     },
     container: {
       center: true,

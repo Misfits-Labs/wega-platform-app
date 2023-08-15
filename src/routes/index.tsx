@@ -1,7 +1,8 @@
 import {
  createHashRouter,
 } from "react-router-dom";
-import Layout from "../views/containers/Layout"; 
+import Layout from "../views/containers/Layout";
+import PlayPage  from '../views/containers/PlayPage';
 
 const router = createHashRouter([
  {
@@ -10,11 +11,11 @@ const router = createHashRouter([
   children: [
    {
     index: true,
-    element: <>home</>
+    element: <PlayPage />
    },
    {
     path: 'play',
-    element: <div>This is the homepage of play</div>
+    element: <PlayPage />
    },
    {
     path: 'swap',
