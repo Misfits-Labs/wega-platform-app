@@ -1,5 +1,7 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { WegaConnectButton } from './types';
+import { ConnectionInformation, Balance, ConnectButtonWrapper, Chain, AvatarWrapper } from './types';
+import Button from '../../common/Button';
+import WalletAvatar from '../../common/WalletAvatar';
 
 const RainbowConnectButton = () => {
  return (
@@ -20,46 +22,34 @@ const RainbowConnectButton = () => {
        // &&
        // (!authenticationStatus ||
        //   authenticationStatus === 'authenticated');
-
        return (
-         <div
-           {...(!ready && {
-             'aria-hidden': true,
-             style: {
-               opacity: 0,
-               pointerEvents: 'none',
-               userSelect: 'none'
-             }
-           })}
-         >
+         <ConnectButtonWrapper ready={ready ?? false} {...(!ready && { 'area-hidden': true })}>
            {(() => {
              if (!connected) {
-               return <WegaConnectButton
-                  connected={false} 
-                  onClick={openConnectModal}
-                  >
-                  Connect
-                </WegaConnectButton>;
+               return <Button buttonType="primary" content="Connect" onClick={openConnectModal}/>
              }
-
              if (chain.unsupported) {
-               return <WegaConnectButton 
-               onClick={openChainModal}
-               chainSupported={!chain.unsupported}
-               >Wrong network</WegaConnectButton>;
+               return <Button buttonType="primary" content={"Wrong network"} onClick={openChainModal} />;
              }
+             console.log(account)
              return (
-               <WegaConnectButton 
-                onClick={openAccountModal}
-                connected={true}
-                chainSupported={true}
-               >
-                 {account.displayName }
-                 {account.displayBalance ? ` (${account.displayBalance})` : ''}
-               </WegaConnectButton>
+               <ConnectionInformation onClick={openAccountModal}>
+                {
+                  chain.hasIcon && chain.iconUrl && 
+                  <Chain >
+                    <img src={chain.iconUrl} alt={chain.name} />
+                  </Chain> 
+                }
+                <Balance>
+                  ({account.displayBalance})
+                </Balance>
+                <AvatarWrapper>
+                  <WalletAvatar address={account.address} ensImage={account.ensAvatar} size={0} /> 
+                </AvatarWrapper>
+               </ConnectionInformation>
              );
            })()}
-         </div>
+         </ConnectButtonWrapper>
        );
      }}
    </ConnectButton.Custom>

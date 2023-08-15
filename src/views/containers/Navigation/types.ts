@@ -55,6 +55,7 @@ box-sizing: border-box;
  }
  & div:last-child, li:nth-child(4) {
    justify-self: flex-end;
+   align-items: center;
  }
 `
 
@@ -62,7 +63,7 @@ export const NavigationConnectButton = styled.button`
  ${
   tw`
   text-pretu 
-  bg-gradient-to-r from-oranjoBlanc to-oranjo
+  bg-gradient-to-r from-oranjo-blanc to-oranjo
   text-base
   `
  }

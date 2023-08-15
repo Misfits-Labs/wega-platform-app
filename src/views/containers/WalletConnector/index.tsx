@@ -2,7 +2,7 @@ import { RainbowKitProvider, darkTheme, lightTheme } from '@rainbow-me/rainbowki
 import wagmiConfig, { chains } from '../../../libs/wagmi'
 import { polygonMumbai } from 'wagmi/chains';
 import { WagmiConfig } from 'wagmi';
-// import CustomAvatar from './CustomAvatar';
+import WalletAvatar from '../../common/WalletAvatar';
 
 export interface WalletConnectorProps {
   isDark: boolean;
@@ -16,7 +16,7 @@ const WalletConnector = (props: WalletConnectorProps) => {
      theme={props.isDark ? darkTheme() : lightTheme()}
      chains={chains}
      initialChain={polygonMumbai}
-     // avatar={CustomAvatar}
+     avatar={WalletAvatar}
    >
      {props.children}
    </RainbowKitProvider>
