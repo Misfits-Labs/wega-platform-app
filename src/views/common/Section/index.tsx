@@ -5,29 +5,30 @@ import {
 } from './types';
 
 export interface SectionProps {
- children: React.ReactNode | React.ReactNode[];
- title: string | React.ReactNode; 
+ children: React.ReactNode | React.ReactNode[] | React.ReactElement | React.ReactElement[];
+ hdr: string | React.ReactNode;
 }
 const Section = ({ 
  direction, 
  reverse, 
  children, 
- title
- }: Partial<SectionContainerProps> & SectionProps) => {
-  if(typeof title === 'string') {
+ hdr,
+ ...rest
+ }: Partial<SectionContainerProps & React.AllHTMLAttributes<HTMLDivElement>> & SectionProps) => {
+  if(typeof hdr === 'string') {
    return (
-     <SectionContainer direction={!direction ? 'row' : direction } reverse={reverse} >
-      <SectionHeader>
-       {title}
+     <SectionContainer direction={!direction ? 'row' : direction } reverse={reverse} { ...rest}>
+      <SectionHeader className='mb-[24px]'>
+       {hdr}
       </SectionHeader>
       { children }
      </SectionContainer>
    )
   } else {
-   const HeaderComp = () => title as React.ReactNode;
+   const HeaderComp = () => hdr as React.ReactNode;
    return (
     <SectionContainer direction={!direction ? 'row' : direction } reverse={reverse} >
-     <SectionHeader>
+     <SectionHeader className='mb-[unset]'>
       <HeaderComp />
      </SectionHeader>
      { children }

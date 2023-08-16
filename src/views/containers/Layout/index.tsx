@@ -33,7 +33,7 @@ const Layout = () => {
        Navigating...
      </div>
      <Navigation />
-     <main tw="container mt-20 flex justify-center">
+     <main tw="container mt-20 w-[978px] flex flex-col justify-center gap-y-[48px]">
       <Outlet />
      </main>
      <footer tw="container flex justify-center">This is the footer</footer>

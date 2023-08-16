@@ -7,6 +7,7 @@ import {
   RaffleGameCard
 } from '../../components/GameCard';
 import 'twin.macro';
+import JoinableGamesSection from '../JoinableGamesSection';
 
 const PlayPage = () => (<>
   <Helmet>
@@ -14,7 +15,7 @@ const PlayPage = () => (<>
   </Helmet>
   <Section 
    direction='col' 
-   title={ <WordCarousel 
+   hdr={ <WordCarousel 
     pre="Play, wager and win" 
     className='dark:text-oranjo'
     fontSize={51}
@@ -32,6 +33,7 @@ const PlayPage = () => (<>
       <RaffleGameCard />
     </div>
   </Section>
+  <JoinableGamesSection games={[]} />
  </>)
 
 

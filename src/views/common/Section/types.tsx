@@ -17,10 +17,9 @@ export const SectionContainer = styled.section<SectionContainerProps>(({ directi
  }
 })
 
-
 export const SectionHeader = styled.span`
- font-size: 51px;
- font-style: normal;
- font-weight: 600;
- line-height: 47px;
+  font-size: 28px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 32px;
 `

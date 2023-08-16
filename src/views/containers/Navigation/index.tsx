@@ -8,12 +8,10 @@ import {
 import RainbowConnectButton from '../../components/RainBowConnectButton';
 import 'twin.macro';
 
-
-
 const Navigation = () => {
   return (
     <nav tw="box-border fixed w-full z-50 top-0">
-      <div tw="container dark:text-blanc flex w-full py-5 justify-center">
+      <div tw="container dark:text-blanc flex w-full py-5 px-[20px] justify-center">
         <BrandContainer>
           <li tw="mr-5">
             <Link to="/"><LogoDarkWo /></Link>

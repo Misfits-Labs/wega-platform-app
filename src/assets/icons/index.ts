@@ -16,3 +16,8 @@ export { default as Spinner } from './Spinner';
 export { default as DiceIcon } from './GameCardDiceIcon';
 export { default as RaffleIcon } from './GameCardRaffleIcon';
 export { default as CoinFlipIcon } from './GameCardCoinFlipIcon';
+export { default as BarDiceIcon } from './BarDiceIcon';
+export { default as BarCoinIcon } from './BarCoinIcon';
+export { default as USDCIcon } from './USDCIcon';
+export { default as StarLoaderIcon } from './StarLoaderIcon';
+// export { default as USDTIcon } from './USDTIcon';
