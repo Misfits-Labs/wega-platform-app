@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { logoDark } from '../../../assets/images';
+import { LogoDarkWo } from '../../../assets/images';
 import { 
   BrandContainer, 
   Brand, 
@@ -16,7 +16,7 @@ const Navigation = () => {
       <div tw="container dark:text-blanc flex w-full py-5 justify-center">
         <BrandContainer>
           <li tw="mr-5">
-            <Link to="/"><img className="logo" src={logoDark}  alt="logo"/></Link>
+            <Link to="/"><LogoDarkWo /></Link>
           </li>
           <Brand><Link to="/">Wega</Link><span className="ms-2"><sup>Play</sup></span></Brand>
         </BrandContainer>

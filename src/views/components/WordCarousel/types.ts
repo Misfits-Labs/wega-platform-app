@@ -31,11 +31,12 @@ export const AnimationContainer = styled.div<CarouselProps>(({ fontSize }) => [
 export const Carousel = styled.div<CarouselProps>(({ fontSize }) => [
  `
   --font-size: ${fontSize}px;
-	 text-align: center;
-	 font-size: var(--font-size);
-	 line-height: calc(var(--font-size) * 1.5);
-	 height: calc(var(--font-size) * 1.5);
+  text-align: center;
+  font-size: var(--font-size);
+  line-height: calc(var(--font-size) * 1.5);
+  height: calc(var(--font-size) * 1.5);
   display: flex;
+  justify-content: center;
  `
 ])
 

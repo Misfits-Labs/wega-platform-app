@@ -14,7 +14,7 @@ const BaseButton = styled.button`
   box-sizing: border-box;
   max-height: fit-content;
   line-height: 12px;
-  box-shadow: 0px 1px 20px 0px #090300; 
+  box-shadow: 0px 1px 5px 0px #090300; 
  `
 
 interface ButtonProps {

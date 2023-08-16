@@ -1,6 +1,12 @@
 import {Helmet} from 'react-helmet-async' 
 import Section from '../../common/Section';
 import WordCarousel from '../../components/WordCarousel';
+import { 
+  DiceGameCard,
+  CoinFlipGameCard,
+  RaffleGameCard
+} from '../../components/GameCard';
+import 'twin.macro';
 
 const PlayPage = () => (<>
   <Helmet>
@@ -20,7 +26,11 @@ const PlayPage = () => (<>
     ]} 
     /> }
   >
-   <>Cards go here</>
+    <div tw="container mx-auto p-0 flex flex-row justify-center items-center gap-[32px]">
+      <DiceGameCard />
+      <CoinFlipGameCard />
+      <RaffleGameCard />
+    </div>
   </Section>
  </>)
 

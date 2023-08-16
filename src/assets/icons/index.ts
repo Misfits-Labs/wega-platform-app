@@ -13,3 +13,6 @@ export { default as ArrowsLeftRightIcon } from './ArrowsLeftRightIcon';
 export { default as CheckCircleIcon } from './CheckCircleIcon';
 export { default as DeleteCircleIcon } from './DeleteCircleIcon';
 export { default as Spinner } from './Spinner';
+export { default as DiceIcon } from './GameCardDiceIcon';
+export { default as RaffleIcon } from './GameCardRaffleIcon';
+export { default as CoinFlipIcon } from './GameCardCoinFlipIcon';
