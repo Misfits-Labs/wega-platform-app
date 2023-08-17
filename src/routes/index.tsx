@@ -3,6 +3,7 @@ import {
 } from "react-router-dom";
 import Layout from "../views/containers/Layout";
 import PlayPage  from '../views/containers/PlayPage';
+import CreateGamePage  from '../views/containers/CreateGamePage';
 
 const router = createHashRouter([
  {
@@ -15,7 +16,16 @@ const router = createHashRouter([
    },
    {
     path: 'play',
-    element: <PlayPage />
+    children: [
+     {
+      index: true,
+      element: <PlayPage />
+     },
+     {
+      path: 'create',
+      element: <CreateGamePage />
+     }
+    ]
    },
    {
     path: 'swap',

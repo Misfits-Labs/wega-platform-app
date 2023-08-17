@@ -82,7 +82,7 @@ const renderGameTypeBadge = (gameType: AllPossibleWegaTypes) => {
  return <BadgeComponent /> ?? null;
 }
 
-const renderWagerBadge = (wagerType: AllPossibleWagerTypes, currencyType?: AllPossibleCurrencyTypes) => {
+export const renderWagerBadge = (wagerType: AllPossibleWagerTypes, currencyType?: AllPossibleCurrencyTypes) => {
   const BadgeWagerTypeComponent = BADGE_WAGER_TYPE_COMPONENTS[wagerType]; 
   const BadgeCurrencyTypeComponent = currencyType && BADGE_CURRENCY_TYPE_COMPONENTS[currencyType]
   

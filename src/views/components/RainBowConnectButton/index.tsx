@@ -23,6 +23,7 @@ const RainbowConnectButton = () => {
         // can remove all 'authenticationStatus' checks
         const ready = mounted;
         const connected = ready && account && chain;
+        const isConnected = (ready && account && chain) ? true : false
 
         // &&
         // (!authenticationStatus ||
@@ -34,10 +35,10 @@ const RainbowConnectButton = () => {
                 return <Button buttonType="primary" content="Connect" onClick={openConnectModal}/>
               }
               if (chain.unsupported) {
-                dispatch(setWalletInformation({ chain: { unsupported: chain.unsupported } })); 
+                dispatch(setWalletInformation({ chain: { unsupported: chain.unsupported }, isConnected })); 
                 return <Button buttonType="primary" content={"Wrong network"} onClick={openChainModal} />;
               }
-              dispatch(setWalletInformation({ ...account, chain }));
+              dispatch(setWalletInformation({ ...account, chain, isConnected  }));
               return (
                 <ConnectionInformation onClick={openAccountModal}>
                   {

@@ -1,6 +1,7 @@
 import Section from '../../common/Section';
 import { Wega, WegaTypes, WagerTypes, WegaTypesEnum, Wager, WagerTypesEnum, CurrencyTypes, CurrencyTypesEnum } from '../../../models';
 import JoinableGameBar from '../../common/JoinableGameBar';
+import { JoinableGamesHeaderBar } from '../../common/JoinableGameBar/types';
 import {  constants } from 'ethers'
 
 // interface JoinableGamesSectionProps {
@@ -24,6 +25,12 @@ function JoinableGamesSection(){
   }) as Wega);  
 
   return (<Section hdr="Join Matches" direction="col" className="gap-2">
+    <JoinableGamesHeaderBar>
+      <span>Date created</span>
+      <span>Game</span>
+      <span>Wager</span>
+      <span>Escrow</span>
+    </JoinableGamesHeaderBar>
     {
       dummyGames.map(
       (dg, i) => (<JoinableGameBar game={dg} key={`joinable-game-bar${i}`} className="dark:bg-[#1C1C1C] py-2 px-3 rounded-[5px]" />))

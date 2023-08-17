@@ -41,6 +41,12 @@ export default {
           'League Spartan',
         ]
       },
+      opacity: {
+        '90': '0.9'
+      },
+      boxShadow: {
+        'wega-nav': '0rem -3.5rem 1.5rem 5rem var(#151515)',
+      }
     },
     container: {
       center: true,

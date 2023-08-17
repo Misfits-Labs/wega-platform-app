@@ -8,7 +8,7 @@ z-index: 50;
 ${ tw`flex flex-col items-stretch` }
 `
 export const GameCardHeader = styled.div`
- border-radius: 5px 5px 0px 0px;
+ border-radius: 15px 15px 0px 0px;
  background: #343434;
  min-height: 160px;
  width: 100%;
@@ -16,7 +16,7 @@ export const GameCardHeader = styled.div`
  z-index: inherit; 
 `
 export const GameCardBody = styled.div`
- border-radius: 0px 0px 5px 5px;
+ border-radius: 0px 0px 15px 15px;
  padding: 20px 10px; 
  background: #282828;
  min-height: 186px;

@@ -14,12 +14,21 @@ import  {
 import  { GameCardOrb } from '../../../assets/images';
 import Button from '../../common/Button';
 import { gsap } from 'gsap'; 
+import {
+  useConnectModal,
+} from '@rainbow-me/rainbowkit';
+import { useAccount } from 'wagmi';
+import { useNavigate } from "react-router-dom";
+
 
 
 export const DiceGameCard = () => {
   const iconRef = useRef<SVGSVGElement>(null);
   const orbRef = useRef<SVGSVGElement>(null);
   const [hovering, setHovering] = useState<boolean>();
+  const { openConnectModal } = useConnectModal();
+  const { isConnected } = useAccount();
+  const navigate = useNavigate()
   
   useEffect(() => {    
     const ctx = gsap.context(() => {
@@ -29,14 +38,12 @@ export const DiceGameCard = () => {
         scaleX: 1.115, 
         scaleY: 1.115, 
         y: '-=12.5px',
-        reverse: true,
         ease,
         duration, 
       });
       const diceAnimation = gsap.to(iconRef.current, {
         rotate: '360deg',
         ease,
-        reverse: true,
         duration 
       })
 
@@ -72,7 +79,10 @@ export const DiceGameCard = () => {
       <GameCardDescription>
         Roll the dice, the player with the highest number wins.
       </GameCardDescription>
-      <Button buttonType="primary" content='Play' className="w-[75%]"/>
+      <Button buttonType="primary" content='Play' className="w-[75%]" onClick={()=>{
+        if(!isConnected && openConnectModal ) return openConnectModal();
+        return navigate("/play/create");
+      }}/>
       </GameCardBody>
     </GameCardContainer>
   )
@@ -82,6 +92,8 @@ export const CoinFlipGameCard = () => {
   const iconRef = useRef<SVGSVGElement>(null);
   const orbRef = useRef<SVGSVGElement>(null);
   const [hovering, setHovering] = useState<boolean>();
+  const { openConnectModal } = useConnectModal();
+  const { isConnected } = useAccount();
   
   useEffect(() => {    
     const ctx = gsap.context(() => {
@@ -91,14 +103,12 @@ export const CoinFlipGameCard = () => {
         scaleX: 1.115, 
         scaleY: 1.115, 
         y: '-=12.5px',
-        reverse: true,
         ease,
         duration, 
       });
       const iconAnimation = gsap.to(iconRef.current, {
         y: '-=15px',
         ease,
-        reverse: true,
         duration 
       })
 
@@ -132,7 +142,10 @@ export const CoinFlipGameCard = () => {
      <GameCardDescription>
       Flip the coin, the player that receives their side wins.
      </GameCardDescription>
-     <Button buttonType="primary" content='Play' className="w-[75%]" />
+     <Button buttonType="primary" content='Play' className="w-[75%]" onClick={()=>{
+        if(!isConnected && openConnectModal ) return openConnectModal();
+        return;
+      }}/>
     </GameCardBody>
    </GameCardContainer>
   )
@@ -151,7 +164,6 @@ export const CoinFlipGameCard = () => {
         scaleX: 1.115, 
         scaleY: 1.115, 
         y: '-=12.5px',
-        reverse: true,
         ease,
         duration, 
       });
@@ -159,7 +171,6 @@ export const CoinFlipGameCard = () => {
         y: '-=15px',
         rotate: "-=25deg",
         ease,
-        reverse: true,
         duration 
       })
 

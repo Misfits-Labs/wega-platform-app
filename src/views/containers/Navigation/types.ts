@@ -73,3 +73,56 @@ export const NavigationConnectButton = styled.button`
  border-radius: 5px;
  max-width: fit-content;
 `
+
+export const NavigationBar = styled.nav`
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 1000;
+  transition: transform 500ms ease-out 100ms;
+
+  &.nav-show {
+    transform: initial;
+    &::after {
+      opacity: 0.95;
+    }
+    &::before {
+      opacity: 0.85;
+    }
+  }
+  &.nav-hide {
+    transform: translateY(-100%);
+  }
+
+  &::before, &.nav-mobile .navigation::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    ${tw`dark:bg-pretu/90`}
+    filter: blur(1.5rem);
+    opacity: 0;
+    transition: opacity 500ms ease-out 60ms;
+  }
+
+  &::after, &.nav-mobile .navigation::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: -3;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(5.5rem) opacity(0.75);
+    opacity: 0;
+    ${tw`dark:shadow-wega-nav`}
+    transition: all 500ms ease-out 60ms;
+    ${tw`dark:bg-pretu/90`}
+  }
+`
+
+// box-shadow: 0rem -3.5rem 1.5rem 5rem var(--background-color);

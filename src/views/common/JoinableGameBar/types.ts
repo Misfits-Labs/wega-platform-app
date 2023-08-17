@@ -1,4 +1,4 @@
-import {styled} from 'twin.macro';
+import tw, {styled} from 'twin.macro';
 
 export const DateColumn = styled.span`
  font-size: 16px;
@@ -45,5 +45,25 @@ export const GameTypeBadgeWrapper = styled.div`
  height: max-content;
  > span {
   display: inline;
+ }
+`
+
+export const JoinableGamesHeaderBar = styled.div`
+ display: flex;
+ align-items: flex-start;
+ justify-content: space-between;
+ gap: 10px;
+ border-radius: 10px;
+ ${tw`px-2`} 
+
+ 
+ & > span {
+  font-family: League Spartan;
+  font-size: 21px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 19px;
+  width: 100%;
+  ${tw`text-shinishi`} 
  }
 `
