@@ -15,9 +15,9 @@ function JoinableGamesSection(){
     date: new Date().getTime(),
     wager: new Object({ 
       type: WagerTypes[WagerTypesEnum.TOKEN],
-      currency: CurrencyTypes[CurrencyTypesEnum.USDC],
+      currency: CurrencyTypes[CurrencyTypesEnum.USDT],
       player1TokenAmount: 5,
-      player1TokenAddress: constants.AddressZero, 
+      player1TokenAddress: constants.AddressZero,
       player2TokenAddress: constants.AddressZero,
       player2TokenAmount: 0,
      }) as Wager, 

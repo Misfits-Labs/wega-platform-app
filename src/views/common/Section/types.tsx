@@ -22,4 +22,5 @@ export const SectionHeader = styled.span`
   font-style: normal;
   font-weight: 500;
   line-height: 32px;
+  font-family: League Spartan;
 `

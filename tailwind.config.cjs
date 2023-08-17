@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+// import defaultTheme from 'tailwindcss/defaultTheme'
 
 // tailwind.config.js
 export default {
@@ -35,8 +36,10 @@ export default {
         },
         'oranjo-blanc': '#FF9C27', 
       },     
-      fontFamily:{
-        'primary': ['League Spartan', 'Poppins']
+      fontFamily: {
+        'primary': [
+          'League Spartan',
+        ]
       },
     },
     container: {

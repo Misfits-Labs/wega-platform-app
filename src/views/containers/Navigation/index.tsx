@@ -10,7 +10,7 @@ import 'twin.macro';
 
 const Navigation = () => {
   return (
-    <nav tw="box-border fixed w-full z-50 top-0">
+    <nav tw="box-border fixed w-full z-50 top-0 font-primary">
       <div tw="container dark:text-blanc flex w-full py-5 px-[20px] justify-center">
         <BrandContainer>
           <li tw="mr-5">

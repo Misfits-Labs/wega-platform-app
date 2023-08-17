@@ -23,20 +23,27 @@ export const GameTypeBadgeWrapper = styled.div`
  justify-content: center;
  align-items: center;
  gap: 10px;
-`
-export const BadgeText = styled.span`
+ `
+ 
+ export const BadgeText = styled.span`
  font-size: 16px;
  font-style: normal;
  font-weight: 400;
  line-height: 15px;
-`
-
-export const WagerTypeBadgeWrapper = styled.div`
+ display: inline;
+ vertical-align: center;
+ `
+ 
+ export const WagerTypeBadgeWrapper = styled.div`
  display: flex;
  padding: 5px 10px;
- justify-content: center;
  align-items: center;
- gap: 10px;
+ gap: 0px 10px;
  border-radius: 10px;
  background: #4B4B4B;
+ width: fit-content;
+ height: max-content;
+ > span {
+  display: inline;
+ }
 `

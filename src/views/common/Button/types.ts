@@ -14,7 +14,7 @@ const BaseButton = styled.button`
   box-sizing: border-box;
   max-height: fit-content;
   line-height: 12px;
-  box-shadow: 0px 1px 5px 0px #090300; 
+  
  `
 
 interface ButtonProps {
@@ -25,6 +25,7 @@ export const PrimaryButton = styled(BaseButton)<ButtonProps>(
   ({disabled}) => !disabled ? [
     tw`dark:text-pretu dark:bg-gradient-to-r from-oranjo-blanc to-oranjo hover:outline hover:outline-blanc`,
     `
+    box-shadow: 0px 1px 5px 0px #090300;
     &:hover {
       outline-width: 1.5px;
     }
