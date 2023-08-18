@@ -8,6 +8,9 @@
                     "legacyAddresses": [],
                     "deploymentBlock": "0x0f"
                 },
+                "ERC20Dummy": {
+                    "address": "0x0000000000000000000000000000000000000000"
+                },
                 "WegaERC20Dummy": {
                     "address": "0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82",
                     "legacyAddresses": [],
@@ -20,18 +23,20 @@
                 "WegaERC20Escrow": {
                     "address": "0x0000000000000000000000000000000000000000"
                 },
-                "WegaERC20Dummy": {
+                "ERC20Dummy": {
                     "address": "0x0000000000000000000000000000000000000000"
                 }
             }
         },
         "344106930": {
             "contracts": {
-                "WegaERC20Escrow": {
-                    "address": "0x0000000000000000000000000000000000000000"
-                },
-                "WegaERC20Dummy": {
-                    "address": "0x0000000000000000000000000000000000000000"
+                "contracts": {
+                    "WegaERC20Escrow": {
+                        "address": "0x0000000000000000000000000000000000000000"
+                    },
+                    "ERC20Dummy": {
+                        "address": "0x0000000000000000000000000000000000000000"
+                    }
                 }
             }
         }

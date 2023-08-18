@@ -31,17 +31,17 @@ function JoinableGameBar({ game , ...rest}: { game: Wega } & React.Attributes & 
   return (
    <BarWrapper {...rest}>
     {/* date */}
-    <DateColumn>{dateFromTs(game.date)}</DateColumn>
+    <DateColumn>{dateFromTs(game.createdAt as number)}</DateColumn>
     
     <GameTypeBadgeWrapper>
-     {renderGameTypeBadge(game.type)}
-     <BadgeText>{BADGE_TEXTS[game.type]}</BadgeText>
+     {renderGameTypeBadge(game.gameType)}
+     <BadgeText>{BADGE_TEXTS[game.gameType]}</BadgeText>
     </GameTypeBadgeWrapper>
     
     <WagerTypeBadgeWrapper>
-     <BadgeText>{parseIntFromBigNumber(game.wager.player1TokenAmount)}</BadgeText>
-     <BadgeIcon>{renderWagerBadge(game.wager.type, game.wager.currency)}</BadgeIcon>
-     <BadgeText>{game.wager.currency}</BadgeText>
+     <BadgeText>{parseIntFromBigNumber(game.wager.wagerAmount as number)}</BadgeText>
+     <BadgeIcon><>{renderWagerBadge(game.wager.wagerType, game.wager.wagerCurrency)}</></BadgeIcon>
+     <BadgeText>{game.wager.wagerCurrency}</BadgeText>
     </WagerTypeBadgeWrapper>
 
     {/* escrow link button */}
@@ -83,14 +83,15 @@ const renderGameTypeBadge = (gameType: AllPossibleWegaTypes) => {
 }
 
 export const renderWagerBadge = (wagerType: AllPossibleWagerTypes, currencyType?: AllPossibleCurrencyTypes) => {
+  console.log(wagerType, currencyType)
   const BadgeWagerTypeComponent = BADGE_WAGER_TYPE_COMPONENTS[wagerType]; 
-  const BadgeCurrencyTypeComponent = currencyType && BADGE_CURRENCY_TYPE_COMPONENTS[currencyType]
+  const BadgeCurrencyTypeComponent = currencyType && BADGE_CURRENCY_TYPE_COMPONENTS[currencyType];
   
   switch(wagerType){
     case WagerTypes[WagerTypesEnum.TOKEN]:
-      return <BadgeCurrencyTypeComponent /> ?? null
+      return !BadgeCurrencyTypeComponent ? null : <BadgeCurrencyTypeComponent /> 
     default: 
-      return <BadgeWagerTypeComponent /> ?? null
+      return !BadgeWagerTypeComponent ? null : <BadgeWagerTypeComponent /> 
   }
 }
 

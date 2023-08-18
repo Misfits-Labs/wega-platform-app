@@ -2,7 +2,7 @@ import Section from '../../common/Section';
 import { Wega, WegaTypes, WagerTypes, WegaTypesEnum, Wager, WagerTypesEnum, CurrencyTypes, CurrencyTypesEnum } from '../../../models';
 import JoinableGameBar from '../../common/JoinableGameBar';
 import { JoinableGamesHeaderBar } from '../../common/JoinableGameBar/types';
-import {  constants } from 'ethers'
+// import {  constants } from 'ethers'
 
 // interface JoinableGamesSectionProps {
 //  games:  Wega[], // game object, should be structured according to data model of games 
@@ -12,15 +12,12 @@ import {  constants } from 'ethers'
 function JoinableGamesSection(){
   // some logic to retrieve games;
   const dummyGames: Wega[] = Array.from({ length: 5 }, () => ({
-    type: WegaTypes[WegaTypesEnum.DICE],
-    date: new Date().getTime(),
+    gameType: WegaTypes[WegaTypesEnum.DICE],
+    createdAt: new Date().getTime(),
     wager: new Object({ 
-      type: WagerTypes[WagerTypesEnum.TOKEN],
-      currency: CurrencyTypes[CurrencyTypesEnum.USDT],
-      player1TokenAmount: 5,
-      player1TokenAddress: constants.AddressZero,
-      player2TokenAddress: constants.AddressZero,
-      player2TokenAmount: 0,
+      wagerType: WagerTypes[WagerTypesEnum.TOKEN],
+      wagerCurrency: CurrencyTypes[CurrencyTypesEnum.USDT],
+      wagerAmount: 5,
      }) as Wager,
   }) as Wega);  
 

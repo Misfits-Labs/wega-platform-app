@@ -11,10 +11,19 @@ export const WegaTypes = {
 
 export type AllPossibleWegaTypes = typeof WegaTypes[keyof typeof WegaTypes];
 
+export type Player = {
+ id?: number;
+ uuid: string | number;
+ walletAddress?: string | `0x${string}`;
+} 
+
 export type Wega = {
- type: AllPossibleWegaTypes;
- date: number;
- wager: Wager
+ gameType: AllPossibleWegaTypes;
+ createdAt: number | string;
+ state: string; 
+ wager: Wager;
+ expiredAt: string | number;
+ players: Player[];
 }
 
 // eslint-disable-next-line no-unused-vars
@@ -38,11 +47,13 @@ export const CurrencyTypes = {
 export type AllPossibleCurrencyTypes = typeof CurrencyTypes[keyof typeof CurrencyTypes];
 
 export type Wager = {
- type: AllPossibleWagerTypes;
- currency: AllPossibleCurrencyTypes;
- player1TokenAmount: number | BigNumber;
- player1TokenAddress: string | `0x${string}`
- player2TokenAddress: string | `0x${string}`
- player2TokenAmount: number | BigNumber;
+ id: number;
+ uuid: string;
+ wagerType: AllPossibleWagerTypes;
+ wagerHash: string;
+ tokenAddress: string | `0x${string}`;
+ wagerAmount: string | number | BigNumber;
+ wagerCurrency: AllPossibleCurrencyTypes;
+ nonce?: number;
 };
   
