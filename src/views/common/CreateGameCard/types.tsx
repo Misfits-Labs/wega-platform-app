@@ -27,12 +27,23 @@ export const InputBox = styled.input`
  }
 `
 
-export const MediumText = styled.span`
+export const NormalText = styled.span`
  font-family: League Spartan;
  font-size: 16px;
  font-style: normal;
  font-weight: 400;
  line-height: 15px;
+`
+
+export const MediumText = styled.span`
+font-family: League Spartan;
+leading-trim: both;
+text-edge: cap;
+font-family: League Spartan;
+font-size: 14px;
+font-style: normal;
+font-weight: 400;
+line-height: 12px;
 `
 
 export const SmallText = styled.span`

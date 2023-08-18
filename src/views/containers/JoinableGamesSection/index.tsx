@@ -21,7 +21,7 @@ function JoinableGamesSection(){
       player1TokenAddress: constants.AddressZero,
       player2TokenAddress: constants.AddressZero,
       player2TokenAmount: 0,
-     }) as Wager, 
+     }) as Wager,
   }) as Wega);  
 
   return (<Section hdr="Join Matches" direction="col" className="gap-2">

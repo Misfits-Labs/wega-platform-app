@@ -41,7 +41,6 @@ export const Carousel = styled.div<CarouselProps>(({ fontSize }) => [
   display: flex;
   margin-bottom: 48px;
   justify-content: center;
-
  `
 ])
 
