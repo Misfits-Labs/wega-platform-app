@@ -10,17 +10,19 @@ export interface WalletConnectorProps {
 }
 
 const WalletConnector = (props: WalletConnectorProps) => {
- return (
-  <WagmiConfig config={wagmiConfig}>
-   <RainbowKitProvider
-     theme={props.isDark ? darkTheme() : lightTheme()}
-     chains={chains}
-     initialChain={polygonMumbai}
-     avatar={WalletAvatar}
-   >
-     {props.children}
-   </RainbowKitProvider>
-  </WagmiConfig>
- )
+   
+  
+  return (
+    <WagmiConfig config={wagmiConfig}>
+    <RainbowKitProvider
+      theme={props.isDark ? darkTheme() : lightTheme()}
+      chains={chains}
+      initialChain={polygonMumbai}
+      avatar={WalletAvatar}
+    >
+      {props.children}
+    </RainbowKitProvider>
+    </WagmiConfig>
+  )
 }
 export default WalletConnector;

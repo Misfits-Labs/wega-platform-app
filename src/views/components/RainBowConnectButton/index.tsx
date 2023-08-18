@@ -1,13 +1,18 @@
+import { useEffect } from 'react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { ConnectionInformation, Balance, ConnectButtonWrapper, Chain, AvatarWrapper } from './types';
 import Button from '../../common/Button';
 import WalletAvatar from '../../common/WalletAvatar';
-import { setWalletInformation } from '../../../state/features/wallet/walletSlice';
-import { useAppDispatch } from '../../../hooks/useAppDispatch';
+import { setWalletInformation, initialWalletState } from '../../../state/features/wallet/walletSlice';
+import { useAppDispatch } from '../../../hooks';
+import { useAccount } from 'wagmi';
 
 const RainbowConnectButton = () => {
   const dispatch = useAppDispatch();
-
+  const { isConnected } = useAccount();  
+  useEffect(() => {
+    if(!isConnected) dispatch(setWalletInformation(initialWalletState))
+  }, [dispatch, isConnected]);
 
   return (
     <ConnectButton.Custom>
@@ -35,7 +40,7 @@ const RainbowConnectButton = () => {
                 return <Button buttonType="primary" content="Connect" onClick={openConnectModal}/>
               }
               if (chain.unsupported) {
-                dispatch(setWalletInformation({ chain: { unsupported: chain.unsupported }, isConnected })); 
+                dispatch(setWalletInformation({ chain: { unsupported: chain.unsupported }, isConnected }));
                 return <Button buttonType="primary" content={"Wrong network"} onClick={openChainModal} />;
               }
               dispatch(setWalletInformation({ ...account, chain, isConnected  }));

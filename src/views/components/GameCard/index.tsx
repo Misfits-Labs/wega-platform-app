@@ -17,7 +17,7 @@ import { gsap } from 'gsap';
 import {
   useConnectModal,
 } from '@rainbow-me/rainbowkit';
-import { useAccount } from 'wagmi';
+import { useWegaStore } from '../../../hooks';
 import { useNavigate } from "react-router-dom";
 
 
@@ -27,7 +27,7 @@ export const DiceGameCard = () => {
   const orbRef = useRef<SVGSVGElement>(null);
   const [hovering, setHovering] = useState<boolean>();
   const { openConnectModal } = useConnectModal();
-  const { isConnected } = useAccount();
+  const { account } = useWegaStore();
   const navigate = useNavigate()
   
   useEffect(() => {    
@@ -80,7 +80,7 @@ export const DiceGameCard = () => {
         Roll the dice, the player with the highest number wins.
       </GameCardDescription>
       <Button buttonType="primary" content='Play' className="w-[75%]" onClick={()=>{
-        if(!isConnected && openConnectModal ) return openConnectModal();
+        if(!account.isConnected && openConnectModal ) return openConnectModal();
         return navigate("/play/create");
       }}/>
       </GameCardBody>
@@ -93,7 +93,7 @@ export const CoinFlipGameCard = () => {
   const orbRef = useRef<SVGSVGElement>(null);
   const [hovering, setHovering] = useState<boolean>();
   const { openConnectModal } = useConnectModal();
-  const { isConnected } = useAccount();
+  const { account } = useWegaStore();
   
   useEffect(() => {    
     const ctx = gsap.context(() => {
@@ -143,7 +143,7 @@ export const CoinFlipGameCard = () => {
       Flip the coin, the player that receives their side wins.
      </GameCardDescription>
      <Button buttonType="primary" content='Play' className="w-[75%]" onClick={()=>{
-        if(!isConnected && openConnectModal ) return openConnectModal();
+        if(!account.isConnected && openConnectModal ) return openConnectModal();
         return;
       }}/>
     </GameCardBody>

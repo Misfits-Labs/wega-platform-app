@@ -21,19 +21,22 @@ interface WalletState {
  }
 }
 
-const initialState: WalletState = {
+export const initialWalletState: WalletState = {
  address: undefined,
  chain: undefined,
  isConnected: false,
 };
 const walletSlice = createSlice({
  name: 'wallet',
- initialState,
+ initialState: initialWalletState,
  reducers: {
   setWalletInformation(state, action: PayloadAction<WalletState>){ 
+   if(action.payload == null) {
+    return state = { ...initialWalletState }
+   }
    const { ...wallet } = action.payload;
-   return state = { ...wallet } 
-  }
+   return state = { ...wallet };
+  },
  } 
 });
 export const { setWalletInformation } = walletSlice.actions;
