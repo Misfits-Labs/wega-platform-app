@@ -7,11 +7,13 @@ import {
   NavigationBar
 } from './types';
 import RainbowConnectButton from '../../components/RainBowConnectButton';
-import { useAnimateNav } from '../../../hooks';
+import { useAnimateNav, useLoginPlayer } from '../../../hooks';
 import 'twin.macro';
 
 const Navigation = () => {
-  useAnimateNav()
+  useAnimateNav();
+  useLoginPlayer();
+
   return (
     <NavigationBar className="box-border fixed w-full top-0 font-primary">
       <div tw="container dark:text-blanc flex w-full py-5 px-[20px] justify-center">

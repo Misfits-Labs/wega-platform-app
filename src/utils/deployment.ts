@@ -1,6 +1,6 @@
 import deployedAddresses from '../../deployed-addresses.json';
-import pkg from 'lodash';
-const { merge } = pkg;
+import _ from 'lodash';
+
 
 type Deployed = {
  [x: string]: `0x${string}` | Record<number, `0x${string}`> | undefined  
@@ -25,7 +25,7 @@ function parseAddresses(): Deployed {
           [network]: deployedAddresses.networks[network].contracts[name].address
         }
       }
-      merge(deployments, obj);
+      _.merge(deployments, obj);
     }) 
   })
   return deployments;

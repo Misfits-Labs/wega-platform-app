@@ -18,6 +18,7 @@ export type Player = {
 } 
 
 export type Wega = {
+ uuid: string;
  gameType: AllPossibleWegaTypes;
  createdAt: number | string;
  state: string; 
@@ -47,7 +48,6 @@ export const CurrencyTypes = {
 export type AllPossibleCurrencyTypes = typeof CurrencyTypes[keyof typeof CurrencyTypes];
 
 export type Wager = {
- id: number;
  uuid: string;
  wagerType: AllPossibleWagerTypes;
  wagerHash: string;
@@ -55,5 +55,6 @@ export type Wager = {
  wagerAmount: string | number | BigNumber;
  wagerCurrency: AllPossibleCurrencyTypes;
  nonce?: number;
+ isWagerSpendApproved?: string;
 };
   

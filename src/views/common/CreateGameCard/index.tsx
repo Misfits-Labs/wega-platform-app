@@ -6,7 +6,6 @@ import { joiResolver } from '@hookform/resolvers/joi';
 import { ErrorMessage } from '@hookform/error-message';
 import { ArrowDownIcon, StarLoaderIcon } from '../../../assets/icons';
 import 'twin.macro';
-import { useGetSet } from 'react-use';
 import { useForm } from 'react-hook-form';
 import { useWegaStore } from '../../../hooks'
 import Button from '../Button';
@@ -19,8 +18,8 @@ export interface CreateGameCardInterface {
 
 const CreateGameCard = ({ wagerType, currencyType, ...rest }: CreateGameCardInterface & React.Attributes & React.AllHTMLAttributes<HTMLDivElement> ) => {
   // get user usdt balance;
-  const [wager, setWager] = useGetSet<number>(0);
-  const { register, handleSubmit, setValue, formState: { errors }} = useForm({ 
+  // const [wager, setWager] = useGetSet<number>(0);
+  const { register, setValue, formState: { errors }} = useForm({ 
     mode: 'onChange', 
     resolver: joiResolver(createGameSchema('wager')) , 
     reValidateMode: 'onChange',
@@ -39,7 +38,7 @@ const CreateGameCard = ({ wagerType, currencyType, ...rest }: CreateGameCardInte
       <CreateGameCardContainer {...rest} tw="dark:bg-[#282828] rounded-[10px]">
         <div tw="flex w-[fit-content] justify-center items-center gap-[10px]">
           {/* icon */}
-          <BadgeIcon>{renderWagerBadge(wagerType, currencyType)}</BadgeIcon>
+          <BadgeIcon><>{renderWagerBadge(wagerType, currencyType)}</></BadgeIcon>
           <span>{currencyType}</span>
         </div>
         <form >
@@ -66,7 +65,7 @@ const CreateGameCard = ({ wagerType, currencyType, ...rest }: CreateGameCardInte
             onClick={() => handleWagerOptionClicked(1)}
           >
             {/* {wager selecetion options} */}
-            <BadgeIcon>{renderWagerBadge(wagerType, currencyType)}</BadgeIcon>
+            <BadgeIcon><>{renderWagerBadge(wagerType, currencyType)}</></BadgeIcon>
             <span>1</span>
           </button>
           <button 
@@ -74,7 +73,7 @@ const CreateGameCard = ({ wagerType, currencyType, ...rest }: CreateGameCardInte
             onClick={() => handleWagerOptionClicked(5)}
           >
             {/* {wager selecetion options} */}
-            <BadgeIcon>{renderWagerBadge(wagerType, currencyType)}</BadgeIcon>
+            <BadgeIcon><>{renderWagerBadge(wagerType, currencyType)}</></BadgeIcon>
             <span>5</span>
           </button>
           <button 
@@ -82,7 +81,7 @@ const CreateGameCard = ({ wagerType, currencyType, ...rest }: CreateGameCardInte
             onClick={() => handleWagerOptionClicked(10)}
           >
             {/* {wager selecetion options} */}
-            <BadgeIcon>{renderWagerBadge(wagerType, currencyType)}</BadgeIcon>
+            <BadgeIcon><>{renderWagerBadge(wagerType, currencyType)}</></BadgeIcon>
             <span>10</span>
           </button>
         </div>

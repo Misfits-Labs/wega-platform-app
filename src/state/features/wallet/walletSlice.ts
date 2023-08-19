@@ -1,7 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../store';
+import { apiSlice } from '../api/apiSlice';
 
 interface WalletState {
+ uuid?:string;
  address?: string;
  ensName?: string;
  ensAvatar?: string;
@@ -22,6 +24,7 @@ interface WalletState {
 }
 
 export const initialWalletState: WalletState = {
+ uuid: undefined,
  address: undefined,
  chain: undefined,
  isConnected: false,
@@ -32,12 +35,17 @@ const walletSlice = createSlice({
  reducers: {
   setWalletInformation(state, action: PayloadAction<WalletState>){ 
    if(action.payload == null) {
-    return state = { ...initialWalletState }
+    return  { ...state, ...initialWalletState }
    }
    const { ...wallet } = action.payload;
-   return state = { ...wallet };
+   return { ...state, ...wallet };
   },
- } 
+ },
+ extraReducers: (builder) => {
+  builder.addMatcher(apiSlice.endpoints.loginPlayer.matchFulfilled, (state, { payload }) => {
+   state.uuid = payload;
+  });
+ }
 });
 export const { setWalletInformation } = walletSlice.actions;
 export default walletSlice.reducer;

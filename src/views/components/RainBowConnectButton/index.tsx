@@ -9,7 +9,7 @@ import { useAccount } from 'wagmi';
 
 const RainbowConnectButton = () => {
   const dispatch = useAppDispatch();
-  const { isConnected } = useAccount();  
+  const { isConnected } = useAccount();
   useEffect(() => {
     if(!isConnected) dispatch(setWalletInformation(initialWalletState))
   }, [dispatch, isConnected]);
@@ -34,7 +34,7 @@ const RainbowConnectButton = () => {
         // (!authenticationStatus ||
         //   authenticationStatus === 'authenticated');
         return (
-          <ConnectButtonWrapper ready={ready ?? false} {...(!ready && { 'area-hidden': true })}>
+          <ConnectButtonWrapper ready={ready ?? false} {...(!ready && { 'area-hidden': 'true' })}>
             {(() => {
               if (!connected) {
                 return <Button buttonType="primary" content="Connect" onClick={openConnectModal}/>
