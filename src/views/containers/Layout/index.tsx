@@ -8,6 +8,7 @@ import {
 } from 'react-router-dom';
 import 'twin.macro';
 import Navigation from '../Navigation'
+import { Toaster } from 'react-hot-toast';
 
 const Layout = () => {
  const navigation = useNavigation();
@@ -38,6 +39,7 @@ const Layout = () => {
      </main>
      <footer tw="container flex justify-center">This is the footer</footer>
      <ScrollRestoration getKey={getKey} />
+     <Toaster />
     </>
   )
 }

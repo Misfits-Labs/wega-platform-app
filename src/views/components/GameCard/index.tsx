@@ -18,7 +18,8 @@ import {
   useConnectModal,
 } from '@rainbow-me/rainbowkit';
 import { useWegaStore } from '../../../hooks';
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+
 
 
 
@@ -28,7 +29,6 @@ export const DiceGameCard = () => {
   const [hovering, setHovering] = useState<boolean>();
   const { openConnectModal } = useConnectModal();
   const { account } = useWegaStore();
-  const navigate = useNavigate()
   
   useEffect(() => {    
     const ctx = gsap.context(() => {
@@ -79,10 +79,11 @@ export const DiceGameCard = () => {
       <GameCardDescription>
         Roll the dice, the player with the highest number wins.
       </GameCardDescription>
-      <Button buttonType="primary" content='Play' className="w-[75%]" onClick={()=>{
-        if(!account.isConnected && openConnectModal ) return openConnectModal();
-        return navigate("/play/create");
-      }}/>
+      {
+        (account && !account.isConnected && openConnectModal) ?
+        <Button buttonType="primary" content='Play' className="w-[75%]" onClick={()=> openConnectModal() } />
+        : <Link to="/play/create" className="w-[75%]"><Button buttonType="primary" content='Play' className="w-[100%]" /></Link>
+      }
       </GameCardBody>
     </GameCardContainer>
   )
@@ -142,10 +143,12 @@ export const CoinFlipGameCard = () => {
      <GameCardDescription>
       Flip the coin, the player that receives their side wins.
      </GameCardDescription>
-     <Button buttonType="primary" content='Play' className="w-[75%]" onClick={()=>{
-        if(!account.isConnected && openConnectModal ) return openConnectModal();
-        return;
-      }}/>
+
+     {
+      (account && !account.isConnected && openConnectModal) ?
+        <Button buttonType="primary" content='Play' className="w-[75%]" onClick={()=> openConnectModal() } /> :
+        <Link to="/play/create" className="w-[75%]"><Button buttonType="primary" content='Play' className="w-[100%]" /></Link>
+     }
     </GameCardBody>
    </GameCardContainer>
   )

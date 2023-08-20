@@ -7,7 +7,6 @@ import {
 } from './types';
 import { 
  AllPossibleWegaTypes, 
- Wega, 
  WegaTypesEnum, 
  WegaTypes, 
  WagerTypes, 
@@ -17,21 +16,26 @@ import {
  AllPossibleCurrencyTypes,
  AllPossibleWagerTypes 
 } from '../../../models';
-import { dateFromTs, parseIntFromBigNumber} from '../../../utils';
+import { dateFromTs } from '../../../utils';
 import{ BarDiceIcon, BarCoinIcon, USDCIcon, StarLoaderIcon, USDTIcon} from '../../../assets/icons';
 import Button from '../Button';
-
+import { selectGameById } from '../../../state/features/games/gamesSlice';
+import { useSelector } from 'react-redux' 
+import { utils } from 'ethers';
 
 export const BADGE_TEXTS: any = {
  [WegaTypes[WegaTypesEnum.DICE]]: 'Dice',
  [WegaTypes[WegaTypesEnum.COINFLIP]]: 'Coin flip'
 }
 
-function JoinableGameBar({ game , ...rest}: { game: Wega } & React.Attributes & Partial<React.AllHTMLAttributes<HTMLDivElement>>) {
-  return (
+function JoinableGameBar({ gameId , ...rest}: { gameId: number } & React.Attributes & Partial<React.AllHTMLAttributes<HTMLDivElement>>) {
+  
+  const game = useSelector(state => selectGameById(state, gameId))
+  
+  return game && (
    <BarWrapper {...rest}>
     {/* date */}
-    <DateColumn>{dateFromTs(game.createdAt as number)}</DateColumn>
+    <DateColumn>{dateFromTs(new Date(game.createdAt as string).getTime() * 1000)}</DateColumn>
     
     <GameTypeBadgeWrapper>
      {renderGameTypeBadge(game.gameType)}
@@ -39,7 +43,7 @@ function JoinableGameBar({ game , ...rest}: { game: Wega } & React.Attributes & 
     </GameTypeBadgeWrapper>
     
     <WagerTypeBadgeWrapper>
-     <BadgeText>{parseIntFromBigNumber(game.wager.wagerAmount as number)}</BadgeText>
+     <BadgeText>{utils.formatEther(game.wager.wagerAmount)}</BadgeText>
      <BadgeIcon><>{renderWagerBadge(game.wager.wagerType, game.wager.wagerCurrency)}</></BadgeIcon>
      <BadgeText>{game.wager.wagerCurrency}</BadgeText>
     </WagerTypeBadgeWrapper>
@@ -83,7 +87,6 @@ const renderGameTypeBadge = (gameType: AllPossibleWegaTypes) => {
 }
 
 export const renderWagerBadge = (wagerType: AllPossibleWagerTypes, currencyType?: AllPossibleCurrencyTypes) => {
-  console.log(wagerType, currencyType)
   const BadgeWagerTypeComponent = BADGE_WAGER_TYPE_COMPONENTS[wagerType]; 
   const BadgeCurrencyTypeComponent = currencyType && BADGE_CURRENCY_TYPE_COMPONENTS[currencyType];
   

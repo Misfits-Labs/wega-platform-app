@@ -47,25 +47,23 @@ export interface ConnectionInformationProps {
     ensAvatar?: string;
     ensName?: string;
     hasPendingTransactions: boolean;
-  } 
+  }
 
 }
 
 
 export interface ConnectButtonWrapperProps {
-  ready: boolean;
+  hidebutton: boolean;
 }
-export const ConnectButtonWrapper = styled.div<ConnectButtonWrapperProps >(({
-  ready
-}) =>  !ready ? [
+export const ConnectButtonWrapper = styled.div<ConnectButtonWrapperProps>(({
+  hidebutton
+}) =>  hidebutton && [
   `
     opacity: 0,
     pointerEvents: 'none',
     userSelect: 'none'
   `
-] : [`
-  
-`])
+])
 
 export const ConnectionInformation = styled.div`
   gap: 12px;

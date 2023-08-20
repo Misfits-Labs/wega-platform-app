@@ -3,23 +3,26 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: import.meta.env.VITE_BACKEND_API_URL,
-  credentials: 'include',
+  baseUrl: "http://34.68.249.126:3000", // todo - import from env
+  prepareHeaders: (headers, ) => {
+    headers.set('Access-Control-Allow-Origin', '*')
+    return headers
+  },
 });
 
 
 export const apiSlice = createApi({
   baseQuery,
-  reducerPath: 'api',
+  reducerPath: 'platform-api',
   tagTypes: ['Games', 'Game'],
   endpoints: (builder) => ({
     loginPlayer: builder.mutation({
       query: (walletAddress) => ({
-        url: 'users',
+        url: '/users',
         method: 'POST',
         body: { walletAddress }
       }),
-      transformResponse: (response: any) => { console.log(response); return response.data.uuid },
+      transformResponse: (response: any) => { return response.uuid },
     }), 
   })
 });

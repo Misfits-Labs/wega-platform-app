@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import Joi from 'joi';
 import { CreateGameCardContainer, InputBox, NormalText, SmallText, MediumText } from "./types";
 import { AllPossibleCurrencyTypes, AllPossibleWagerTypes } from "../../../models";
@@ -7,7 +8,8 @@ import { ErrorMessage } from '@hookform/error-message';
 import { ArrowDownIcon, StarLoaderIcon } from '../../../assets/icons';
 import 'twin.macro';
 import { useForm } from 'react-hook-form';
-import { useWegaStore } from '../../../hooks'
+import { useWegaStore, useCreateGameOnEscrowEvent, useBlockchainHelpers } from '../../../hooks';
+import { SupportedWagerTokenAddresses } from '../../../models/constants';
 import Button from '../Button';
 
 
@@ -17,9 +19,18 @@ export interface CreateGameCardInterface {
 }
 
 const CreateGameCard = ({ wagerType, currencyType, ...rest }: CreateGameCardInterface & React.Attributes & React.AllHTMLAttributes<HTMLDivElement> ) => {
+  const { account, chain } = useWegaStore();
+  const { 
+    wagerApprovalQuery, 
+    wagerApprovalMutation,
+    createWagerMutation,
+  } = useBlockchainHelpers();
+
+
+  const tokenAddress = SupportedWagerTokenAddresses(chain?.id as number)[currencyType];
   // get user usdt balance;
   // const [wager, setWager] = useGetSet<number>(0);
-  const { register, setValue, formState: { errors }} = useForm({ 
+  const { register, formState: { errors }, getValues, watch, handleSubmit, setValue } = useForm({ 
     mode: 'onChange', 
     resolver: joiResolver(createGameSchema('wager')) , 
     reValidateMode: 'onChange',
@@ -27,21 +38,41 @@ const CreateGameCard = ({ wagerType, currencyType, ...rest }: CreateGameCardInte
       wager: 1
     }
   });
-  const { account } = useWegaStore();
   
-  const handleWagerOptionClicked = (wagerAmount: number) => {
+  const handleApproveWagerClick = ({ wager }: { wager: number }) => {
+    wagerApprovalMutation.wagerApproval(tokenAddress, wager);
+  }
+
+  const handleCreateGameClick = ({ wager }: { wager: number }) => {
+    createWagerMutation.createWager({ token: tokenAddress, creator: account.address as `0x${string}`, numberOfPlayers: 2, wager })
+  }
+
+  useCreateGameOnEscrowEvent(
+    "DICE",
+    account.uuid,
+    account.address as `0x${string}`,
+    chain?.id as number,
+  );
+  const handleWagerOptionClicked = (e: any, wagerAmount: number) => {
+    e.preventDefault();
     setValue("wager", wagerAmount);
   }
 
-  return (
-    <div tw="w-full flex flex-row justify-center">
+
+  useEffect(() => {
+    if(tokenAddress && account.address && getValues('wager') > 0) wagerApprovalQuery.wagerApproval(tokenAddress, account?.address as `0x${string}`, getValues('wager'));
+    // if(wagerApprovalMutation.approved.value) wagerApprovalQuery.wagerApproval(tokenAddress, account?.address as `0x${string}`, getValues('wager'))
+  }, [watch('wager'), tokenAddress, wagerApprovalMutation.approved.value]);
+
+  return tokenAddress && account && (
+    <form tw="w-full flex flex-row justify-center" onSubmit={wagerApprovalQuery.approved.value ? handleSubmit(handleCreateGameClick) : handleSubmit(handleApproveWagerClick)}>
       <CreateGameCardContainer {...rest} tw="dark:bg-[#282828] rounded-[10px]">
         <div tw="flex w-[fit-content] justify-center items-center gap-[10px]">
           {/* icon */}
           <BadgeIcon><>{renderWagerBadge(wagerType, currencyType)}</></BadgeIcon>
           <span>{currencyType}</span>
         </div>
-        <form >
+        <div >
           {/* wager */}
           <div tw="flex flex-col items-center gap-y-[16px]">
             <InputBox type="number" step="any" { ...register('wager', {
@@ -58,11 +89,11 @@ const CreateGameCard = ({ wagerType, currencyType, ...rest }: CreateGameCardInte
           </div>
           {/* wager in usd */}
           {/* balance of users currency type */}
-        </form>
+        </div>
         <div tw="flex gap-x-[16px]">
           <button 
             tw="dark:bg-[#4B4B4B] rounded-[20px] flex w-[fit-content] justify-center items-center gap-[10px] py-[5px] px-[10px] cursor-pointer dark:hover:outline-blanc hover:outline hover:outline-2 hover:outline-offset-1"
-            onClick={() => handleWagerOptionClicked(1)}
+            onClick={(e) => handleWagerOptionClicked(e, 1)}
           >
             {/* {wager selecetion options} */}
             <BadgeIcon><>{renderWagerBadge(wagerType, currencyType)}</></BadgeIcon>
@@ -70,7 +101,7 @@ const CreateGameCard = ({ wagerType, currencyType, ...rest }: CreateGameCardInte
           </button>
           <button 
             tw="dark:bg-[#4B4B4B] rounded-[20px] flex w-[fit-content] justify-center items-center gap-[10px] py-[5px] px-[10px] cursor-pointer dark:hover:outline-blanc hover:outline hover:outline-2 hover:outline-offset-1"
-            onClick={() => handleWagerOptionClicked(5)}
+            onClick={(e) => handleWagerOptionClicked(e, 5)}
           >
             {/* {wager selecetion options} */}
             <BadgeIcon><>{renderWagerBadge(wagerType, currencyType)}</></BadgeIcon>
@@ -78,7 +109,7 @@ const CreateGameCard = ({ wagerType, currencyType, ...rest }: CreateGameCardInte
           </button>
           <button 
             tw="dark:bg-[#4B4B4B] rounded-[20px] flex w-[fit-content] justify-center items-center gap-[10px] py-[5px] px-[10px] cursor-pointer dark:hover:outline-blanc hover:outline hover:outline-2 hover:outline-offset-1"
-            onClick={() => handleWagerOptionClicked(10)}
+            onClick={(e) => handleWagerOptionClicked(e, 10)}
           >
             {/* {wager selecetion options} */}
             <BadgeIcon><>{renderWagerBadge(wagerType, currencyType)}</></BadgeIcon>
@@ -86,12 +117,23 @@ const CreateGameCard = ({ wagerType, currencyType, ...rest }: CreateGameCardInte
           </button>
         </div>
         {/* <Button buttonType="primary"><>Approve</></Button> */}
-        <Button buttonType="primary" tw="flex">
+        {
+          wagerApprovalQuery.approved.value ? 
+          <Button type="submit" buttonType="primary" tw="flex">
+            <>
+              Start Game
+              <StarLoaderIcon color="#000000" className="h-[16px] w-[16px] ms-[5px]" />
+            </>
+          </Button> :
+          <Button type="submit" buttonType="primary" tw="flex">
           <>
-            Start Game
+            {
+              wagerApprovalMutation.approved.loading ? 'Loading...' : 'Approve'
+            }
             <StarLoaderIcon color="#000000" className="h-[16px] w-[16px] ms-[5px]" />
           </>
-        </Button>
+          </Button>
+        }
         {/* button approve */}
         {/* button start game */}
         {/* game details */}
@@ -101,7 +143,7 @@ const CreateGameCard = ({ wagerType, currencyType, ...rest }: CreateGameCardInte
           <ArrowDownIcon className="cursor-pointer"/>
         </div>
       </CreateGameCardContainer>
-    </div>
+    </form>
   )
 }
 export default CreateGameCard;

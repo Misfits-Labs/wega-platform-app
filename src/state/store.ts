@@ -8,7 +8,7 @@ const store = configureStore({
  reducer: {
   [apiSlice.reducerPath]: apiSlice.reducer,
   intlProvider: intlProviderReducer,
-  wallet: walletReducer
+  wallet: walletReducer,
   // userStore - need current logged user - address, isConnected, ens, ensAvatar, blockies Avatar
   // wallet: ,
  },

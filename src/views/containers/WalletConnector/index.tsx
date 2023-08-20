@@ -6,12 +6,11 @@ import WalletAvatar from '../../common/WalletAvatar';
 
 export interface WalletConnectorProps {
   isDark: boolean;
-  children: React.ReactNode | React.ReactNode[];
+  children: React.ReactElement | React.ReactElement[];
 }
 
 const WalletConnector = (props: WalletConnectorProps) => {
    
-  
   return (
     <WagmiConfig config={wagmiConfig}>
     <RainbowKitProvider

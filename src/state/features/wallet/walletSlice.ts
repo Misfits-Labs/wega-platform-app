@@ -1,10 +1,10 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, createSelector } from '@reduxjs/toolkit';
 import { RootState } from '../../store';
 import { apiSlice } from '../api/apiSlice';
 
 interface WalletState {
- uuid?:string;
- address?: string;
+ uuid: string;
+ address: `0x${string}` | string;
  ensName?: string;
  ensAvatar?: string;
  balanceDecimals?: number;
@@ -14,6 +14,7 @@ interface WalletState {
  displayName?: string;
  isConnected?: boolean;
  usdBalance?: string;
+ hasPendingTransactions?: boolean;
  chain?: {
   iconUrl?: string;
   id?: number;
@@ -24,16 +25,23 @@ interface WalletState {
 }
 
 export const initialWalletState: WalletState = {
- uuid: undefined,
- address: undefined,
+ uuid: "",
+ address: "",
  chain: undefined,
  isConnected: false,
+ balanceDecimals: undefined,
+ balanceFormatted: undefined,
+ balanceSymbol: undefined,
+ displayBalance: undefined,
+ displayName: undefined,
+ usdBalance: undefined,
+ hasPendingTransactions: undefined,
 };
 const walletSlice = createSlice({
  name: 'wallet',
  initialState: initialWalletState,
  reducers: {
-  setWalletInformation(state, action: PayloadAction<WalletState>){ 
+  setWalletInformation(state, action: PayloadAction<WalletState>){
    if(action.payload == null) {
     return  { ...state, ...initialWalletState }
    }
@@ -43,10 +51,14 @@ const walletSlice = createSlice({
  },
  extraReducers: (builder) => {
   builder.addMatcher(apiSlice.endpoints.loginPlayer.matchFulfilled, (state, { payload }) => {
-   state.uuid = payload;
+   return { ...state, uuid: payload };
   });
  }
 });
 export const { setWalletInformation } = walletSlice.actions;
 export default walletSlice.reducer;
-export const selectAccountInformation = ({ wallet }: RootState ) => ({ ...wallet });
+export const selectWallet = (state: RootState ) => state.wallet;
+
+export const selectAccountInformation = createSelector([selectWallet], ({ chain, ...account }) => {
+ return ({ chain, account });
+});

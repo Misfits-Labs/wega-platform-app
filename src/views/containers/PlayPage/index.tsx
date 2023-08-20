@@ -8,20 +8,11 @@ import {
 } from '../../components/GameCard';
 import 'twin.macro';
 import JoinableGamesSection from '../JoinableGamesSection';
-import { WegaTypes, WagerTypes, WegaTypesEnum, Wager, WagerTypesEnum, CurrencyTypes, CurrencyTypesEnum, Wega } from '../../../models';
+import { selectAllGamesIds } from '../../../state/features/games/gamesSlice';
+import { useSelector } from 'react-redux';
 
 const PlayPage = () => {
-  const dummyGames: Wega[] = Array.from({ length: 5 }, () => ({
-    gameType: WegaTypes[WegaTypesEnum.DICE],
-    createdAt: new Date().getTime(),
-    wager: new Object({ 
-      wagerType: WagerTypes[WagerTypesEnum.TOKEN],
-      wagerCurrency: CurrencyTypes[CurrencyTypesEnum.USDT],
-      wagerAmount: 5,
-     }) as Wager,
-  }) as Wega);  
-
-
+  const gameIds = useSelector(state => selectAllGamesIds(state));
   return (<>
     <Helmet>
     <title>Play</title>
@@ -46,7 +37,7 @@ const PlayPage = () => {
         <RaffleGameCard />
       </div>
     </Section>
-    <JoinableGamesSection games={dummyGames} />
+    <JoinableGamesSection gameIds={gameIds} />
   </>)
 } 
 
