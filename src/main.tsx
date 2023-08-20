@@ -9,11 +9,11 @@ import WalletConnector from './views/containers/WalletConnector'
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-   <ReduxProvider store={store}>
-    <WalletConnector isDark={true}>
-      <GlobalStyles />
-      <App />
-    </WalletConnector>
-   </ReduxProvider>
+    <ReduxProvider store={store}>
+      <WalletConnector isDark={true}>
+          <GlobalStyles />
+          <App />
+      </WalletConnector>
+    </ReduxProvider>
  </React.StrictMode>
 )

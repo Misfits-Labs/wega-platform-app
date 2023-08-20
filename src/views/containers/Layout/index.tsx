@@ -1,7 +1,14 @@
 import { useCallback } from 'react'
-import { Outlet, useNavigation, type Location, type useMatches, ScrollRestoration } from 'react-router-dom';
+import { 
+  Outlet, 
+  useNavigation, 
+  type Location, 
+  type useMatches, 
+  ScrollRestoration 
+} from 'react-router-dom';
 import 'twin.macro';
 import Navigation from '../Navigation'
+import { Toaster } from 'react-hot-toast';
 
 const Layout = () => {
  const navigation = useNavigation();
@@ -27,11 +34,12 @@ const Layout = () => {
        Navigating...
      </div>
      <Navigation />
-     <main tw="container mt-20 flex justify-center">
+     <main tw="container mt-36 w-[978px] flex flex-col justify-center gap-y-[48px]">
       <Outlet />
      </main>
      <footer tw="container flex justify-center">This is the footer</footer>
      <ScrollRestoration getKey={getKey} />
+     <Toaster />
     </>
   )
 }

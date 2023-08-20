@@ -1,0 +1,83 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - "trunk"
+  workflow_dispatch:
+
+env:
+  NODEJS_VERSION: 18.16.1
+  IMAGE_NAME: ghcr.io/misfits-labs/wega-platform
+  REGISTRY: ghcr.io
+
+jobs:
+  # NOTE: Each job runs in its own VM
+  job_build:
+    name: Build
+    runs-on: ubuntu-22.04
+    environment: qa
+    steps:
+      - uses: actions/checkout@v3
+        # NOTE: Checkout action shall change working dir
+
+      - name: Versioning
+        env:
+          REF: ${{github.ref}}
+          GSAP_TOKEN: ${{github.GSAP_TOKEN}}
+          VITE_RPC_PROVIDER_ALCHEMY: ${{ github.VITE_RPC_PROVIDER_ALCHEMY }}
+          VITE_WALLET_CONNECT_ID: ${{ github.VITE_WALLET_CONNECT_ID }}
+        run: |
+          echo "REF=$REF"
+          echo "REF=$REF" >> $GITHUB_ENV
+
+          SHORT_COMMIT=$(echo $GITHUB_SHA | cut -c -7)
+          echo "SHORT_COMMIT=$SHORT_COMMIT"
+          echo "SHORT_COMMIT=$SHORT_COMMIT" >> $GITHUB_ENV
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{env.NODEJS_VERSION}}
+          # yarn.lock is ignored?
+          #cache: 'yarn'
+      #- run: yarn install --frozen-lockfile
+      # yarn.lock is ignored?
+      - run: npm install
+        env:
+          GSAP_TOKEN: ${{secrets.GSAP_TOKEN}}
+
+      # Due to front-end nature of environment config, need specific image for each environment
+      - name: Build image qa
+        env:
+          GSAP_TOKEN: ${{secrets.GSAP_TOKEN}}
+          NPM_TOKEN:  ${{secrets.NPM_TOKEN}}
+          VITE_RPC_PROVIDER_ALCHEMY:  ${{secrets.VITE_RPC_PROVIDER_ALCHEMY}}
+          VITE_WALLET_CONNECT_ID:  ${{secrets.VITE_WALLET_CONNECT_ID}}
+        run: |
+          #cp .env.qa .env
+
+          # TODO Temporary disable CI to test deployment
+          CI=false yarn build
+
+          QA_TAG=${SHORT_COMMIT}-qa
+          echo "QA_TAG=$QA_TAG"
+          echo "QA_TAG=$QA_TAG" >> $GITHUB_ENV
+
+          echo "docker build -t $IMAGE_NAME:$QA_TAG ."
+          docker build -t $IMAGE_NAME:$QA_TAG .
+
+      - name: Docker login
+        uses: docker/login-action@v2.1.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push image qa
+        run: |
+          echo "docker push $IMAGE_NAME:$QA_TAG"
+          docker push $IMAGE_NAME:$QA_TAG
+
+      # TODO Build stg
+      # TODO Build prod

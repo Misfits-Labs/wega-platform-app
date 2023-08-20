@@ -33,13 +33,15 @@
         "vars": "all",
         "args": "after-used",
         "ignoreRestSiblings": true,
-        "argsIgnorePattern": "^_"
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "[iI]gnored"
       }
     ],
     "react/react-in-jsx-scope": "off",
     "import/named": "off",
     "@typescript-eslint/no-var-requires": "off",
     "@typescript-eslint/no-explicit-any": "off",
-    "react/no-unknown-property": ["error", { "ignore": ["tw"] }]
+    "react/no-unknown-property": ["error", { "ignore": ["tw"] }],
+    "react/display-name": "off"
   }
 }

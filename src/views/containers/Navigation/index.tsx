@@ -1,22 +1,24 @@
 import { Link } from 'react-router-dom';
-import { logoDark } from '../../../assets/images';
+import { LogoDarkWo } from '../../../assets/images';
 import { 
   BrandContainer, 
   Brand, 
   NavigationLinksContainer,
+  NavigationBar
 } from './types';
 import RainbowConnectButton from '../../components/RainBowConnectButton';
+import { useAnimateNav } from '../../../hooks';
 import 'twin.macro';
 
-
-
 const Navigation = () => {
+  useAnimateNav();
+
   return (
-    <nav tw="box-border fixed w-full z-50 top-0">
-      <div tw="container dark:text-blanc flex w-full py-5 justify-center">
+    <NavigationBar className="box-border fixed w-full top-0 font-primary">
+      <div tw="container dark:text-blanc flex w-full py-5 px-[20px] justify-center">
         <BrandContainer>
           <li tw="mr-5">
-            <Link to="/"><img className="logo" src={logoDark}  alt="logo"/></Link>
+            <Link to="/"><LogoDarkWo /></Link>
           </li>
           <Brand><Link to="/">Wega</Link><span className="ms-2"><sup>Play</sup></span></Brand>
         </BrandContainer>
@@ -29,7 +31,7 @@ const Navigation = () => {
           </li>
         </NavigationLinksContainer>
       </div>
-    </nav>
+    </NavigationBar>
   )
 }
 

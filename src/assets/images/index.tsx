@@ -1,11 +1,8 @@
 export { default as logoDark } from './logo-dark.png';
-export { default as LandingSOneNFTCardOne } from './landing-s1-nft-card-1.jpg';
-export { default as LandingSOneNFTCardTwo } from './landing-s1-nft-card-2.jpg';
+export { default as LogoDarkWo } from './LogoDarkWo';
 export { default as S1NFTHero } from './S1NFTHero';
 export { default as S1NFTHeroV2 } from './S1NFTHeroV2';
 export { default as S1NFTHeroMobile } from './S1NFTHeroMobile';
-export { default as S2NFT1 } from './S2NFT1';
-export { default as S2NFT2 } from './S2NFT2';
 export { default as S2NFT2Mobile } from './S2NFT2Mobile';
 export { default as S2Or } from './S2Or';
 export { default as LandingS3Poker } from './LandingS3Poker';
@@ -20,3 +17,4 @@ export { default as requestCardPlaceholder } from './placeholder-500x500.png';
 export { default as dummyTheirs } from './dummyTheirs.png';
 export { default as dummyYours } from './dummyYours.png';
 export { default as SwapIcon } from './SwapIcon';
+export { default as GameCardOrb } from './GameCardOrb';
