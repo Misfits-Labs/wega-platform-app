@@ -1,7 +1,7 @@
 import { useContractEvent } from 'wagmi';
 import { escrowConfig } from '../utils';
 import { AllPossibleWegaTypes, Wager, Player} from '../models';
-import { useCreateGameMutation } from '../state/features/games/gamesSlice';
+import { useCreateGameMutation } from '../containers/App/api';
 
 
 

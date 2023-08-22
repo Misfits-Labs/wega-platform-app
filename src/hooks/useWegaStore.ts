@@ -1,12 +1,19 @@
 import { useAppSelector } from ".";
-import {selectAccountInformation} from '../state/features/wallet/walletSlice';
+import {
+ selectNetwork,
+ selectUser,
+ selectWallet,
+} from '../containers/App/AppSlice';
 
 
 export function useWegaStore(){
- const { chain, account } = useAppSelector(state => selectAccountInformation(state));
+ const network = useAppSelector(state => selectNetwork(state));
+ const user = useAppSelector(state => selectUser(state));
+ const wallet = useAppSelector(state => selectWallet(state));
  
  return {
-  account,
-  chain,
+  network,
+  user,
+  wallet
  }
 }

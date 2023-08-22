@@ -1,5 +1,5 @@
 import { useAsyncFn } from 'react-use';
-import { BlockchainAPI } from '../state/features/blockchain/blokchainApi';
+import { BlockchainAPI } from '../api/blockchain/blokchainApi';
 import { utils, BigNumber} from 'ethers';
 
 export function useBlockchainHelpers(){
