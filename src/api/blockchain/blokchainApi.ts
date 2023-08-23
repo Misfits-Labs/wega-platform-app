@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { utils } from 'ethers';
+import { utils, BigNumber } from 'ethers';
 import { 
  prepareWriteContract, 
  writeContract, 
@@ -7,120 +7,133 @@ import {
  readContract, 
  waitForTransaction
  } from '@wagmi/core';
-import { toastSettings, tokenConfig, escrowConfig, erc20ABI } from "../../utils";
-import toast from 'react-hot-toast';
+import { tokenConfig, escrowConfig, erc20ABI } from "../../utils";
+import { HexIshString } from '../../models';
 
 
 interface IBlockchainAPI {
   createWagerAndDeposit: any,
+  hash: any,
   approveERC20: any,
   getRequests: any,
   getRequest: any,
-  isEscrowApproved: any,
-  hash: any,
+  allowance: any,
 }
+
+// TODO 
+  // add appropriate logging lib
 
 export class BlockchainAPI implements IBlockchainAPI {
  private chain = (getNetwork()).chain;
  private tokenConfig = {
-  address: tokenConfig.address[this.chain?.id as keyof typeof tokenConfig.address] as `0x${string}`,
+  address: tokenConfig.address[this.chain?.id as keyof typeof tokenConfig.address] as HexIshString,
   abi: erc20ABI,
  };
  private escrowConfig = {
-  address: escrowConfig.address[this.chain?.id as keyof typeof escrowConfig.address] as `0x${string}`,
+  address: escrowConfig.address[this.chain?.id as keyof typeof escrowConfig.address] as HexIshString,
   abi: escrowConfig.abi,
  }
+ 
+
 
  constructor(){}
  async createWagerAndDeposit({ token, creator, accountsCount, wager }: {
-  token?: `0x${string}`
-  creator: `0x${string}`
+  token: HexIshString
+  creator: HexIshString
   accountsCount: bigint,
   wager: bigint,
  }){
-    try {
-      const config = await prepareWriteContract({
-       ...this.escrowConfig,
-       functionName: 'createWagerAndDeposit',
-       args: [
-        token ?? tokenConfig.address[this.chain?.id as keyof typeof tokenConfig.address] as `0x${string}`, 
-        creator, 
-        accountsCount as bigint,
-        wager as bigint,
-       ]
-      })
-      const { hash } = await writeContract(config);
-      toast.success(`Success fully created tx: ${hash}`, toastSettings('success', 'top-right') as any);
-      this.handleTransactionMine(
-        hash,
-        'Creating game...',
-        'Create game success!'
-      )
-      return;
-    } catch(error: any) {
-      this.handleError(error)
-    }
+  const config = await prepareWriteContract({
+    ...this.escrowConfig,
+    functionName: 'createWagerAndDeposit',
+    args: [
+    token, 
+    creator, 
+    accountsCount as bigint,
+    wager as bigint,
+    ]
+  })
+  return await this.handleWriteRequest(config);
  }
- async isEscrowApproved(tokenAddress: `0x${string}`, owner: `0x${string}`,  wagerAmount: number){
+ async allowance(tokenAddress: HexIshString, owner: HexIshString){
   const allowance = await readContract({
     address: tokenAddress, 
     abi: this.tokenConfig.abi,
     functionName: 'allowance',
-    args: [ owner, escrowConfig.address[this.chain?.id as keyof typeof escrowConfig.address] as `0x${string}`,  ]
+    args: [ owner, escrowConfig.address[this.chain?.id as keyof typeof escrowConfig.address] as HexIshString ]
   })
-  return Number(utils.formatEther(allowance)) >= wagerAmount;
+  return Number(utils.formatEther(allowance));
  }
 
- async approveERC20(tokenAddress: `0x${string}`, wager: bigint){
-  try {
+ async approveERC20(tokenAddress: HexIshString, wager: bigint){
     const config = await prepareWriteContract({
       address: tokenAddress,
       abi: this.tokenConfig.abi,
       functionName: 'approve',
-      args: [ escrowConfig.address[this.chain?.id as keyof typeof escrowConfig.address] as `0x${string}`, wager]
+      args: [ escrowConfig.address[this.chain?.id as keyof typeof escrowConfig.address] as HexIshString, wager]
     })
-    const {hash} = await writeContract(config);
-    toast.success(`Success fully created tx: ${hash}`, toastSettings('success', 'top-right') as any);
-    toast.promise(waitForTransaction({ hash }), { 
-      success: 'Approval success' ,
-      loading: 'Waiting for approval...',
-      error: (e) => e.message,
-    });
-    return true;
-  } catch (error: any) {
-    this.handleError(error);
-  }
+    return await this.handleWriteRequest(config);
  }
 
- async getRequests(wagerId: string | `0x${string}`){
+ async getRequests(wagerId: string | HexIshString){
   const requests = await readContract({
    address: this.escrowConfig.address,
    abi: this.escrowConfig.abi,
    functionName: 'getWagerRequest',
    args: [ 
-    wagerId as `0x${string}`,
+    wagerId as HexIshString,
    ]
   })
   return requests;
  }
-
- private handleError(error: any){
-  let message = error.message;
-  if (error.message && error.message.split("\n\n") && error.message.split("\n\n").length > 0) {
-    message = error.message.split("\n\n")[0];
-  }
-  toast.error(message, toastSettings('error', 'bottom-center') as any);
- }
-
- private handleTransactionMine(hash: any, loading: string, success: string){
-  toast.promise(waitForTransaction({ hash }), { 
-    success: success ,
-    loading: loading,
-    error: (e) => e.message,
+ async hash({ token, creator, accountsCount, wager }: 
+  { token: HexIshString, 
+    creator: HexIshString, 
+    accountsCount: number, 
+    wager: number 
+  }) {
+  const wagerAsBigInt = utils.parseEther(String(wager)).toBigInt();
+  const numPlayers = BigNumber.from(accountsCount).toBigInt();  
+  const nonce = await readContract({
+    address: this.escrowConfig.address,
+    abi: this.escrowConfig.abi,
+    functionName: 'currentNonce',
+    args: [
+      creator,
+    ]
   });
+  const hash = await readContract({
+    address: this.escrowConfig.address,
+    abi: this.escrowConfig.abi,
+    functionName: 'hash',
+    args: [ 
+      token,
+      creator,
+      numPlayers,
+      wagerAsBigInt,
+      nonce,
+    ]
+   });
+   return hash;
  }
+ 
+ handleError(error: any, customMessage: string){
+  console.log(error);
+  if (error.message && error.message.split("\n\n") && error.message.split("\n\n").length > 0) {
+    return error.message.split("\n\n")[0];
+  } else {
+    return customMessage;
+  }
+ }
+ 
+ private async handleWriteRequest(config: any) {
+  const { hash } = await writeContract(config);
+  return hash;
+ } 
 
- hash(){}
+ async waitForMined(hash: HexIshString) {
+  return await waitForTransaction({ hash })
+ }
  getRequest(){}
 }
 

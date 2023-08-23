@@ -4,26 +4,28 @@
         "1337": {
             "contracts": {
                 "WegaERC20Escrow": {
-                    "address": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+                    "address": "0x82e01223d51Eb87e16A03E24687EDF0F294da6f1",
                     "legacyAddresses": [],
-                    "deploymentBlock": "0x02"
+                    "deploymentBlock": "0x37"
                 },
                 "WegaERC20Dummy": {
-                    "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+                    "address": "0x99bbA657f2BbC93c02D617f8bA121cB8Fc104Acf",
                     "legacyAddresses": [],
-                    "deploymentBlock": "0x01"
+                    "deploymentBlock": "0x2b"
                 }
             }
         },
         "80001": {
             "contracts": {
                 "WegaERC20Escrow": {
-                    "address": "0x06d5f7281dBbfEC41344309FF5CA4310C364091A",
+                    "address": "0xBe51a6996C1ee378400D063f88626928940F7DD7",
                     "legacyAddresses": [],
-                    "deploymentBlock": "0x025640ae"
+                    "deploymentBlock": "0x0257b326"
                 },
                 "WegaERC20Dummy": {
-                    "address": "0xb86659f04CD9e05C32D8c57F0D13d0FDe2394a78"
+                    "address": "0xAC8c9097789A5608e33144EAa868B0E7725d1705",
+                    "legacyAddresses": [],
+                    "deploymentBlock": "0x0257b2b7"
                 }
             }
         },
@@ -33,7 +35,7 @@
                     "address": "0x0000000000000000000000000000000000000000"
                 },
                 "WegaERC20Dummy": {
-                    "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+                    "address": "0x0000000000000000000000000000000000000000"
                 }
             }
         }

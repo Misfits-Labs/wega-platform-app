@@ -1,0 +1,1 @@
+export type HexIshString = string & `0x${string}`;

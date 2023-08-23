@@ -2,11 +2,13 @@ import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import appReducer from '../containers/App/AppSlice'
 import { appApiSlice } from '../containers/App/api'
 import intlReducer from '../containers/LanguageProvider/intlSlice'
+import blockchainReducer from '../api/blockchain/blockchainSlice'
 
 
 export const store = configureStore({
   reducer: {
     [appApiSlice.reducerPath]: appApiSlice.reducer,
+    blockchain: blockchainReducer,
     app: appReducer,
     language: intlReducer,
     
