@@ -19,7 +19,7 @@ export interface CreateGameCardInterface {
 }
 
 const CreateGameCard = ({ wagerType, currencyType, ...rest }: CreateGameCardInterface & React.Attributes & React.AllHTMLAttributes<HTMLDivElement> ) => {
-  const { user, network, wallet } = useWegaStore(); // change these to use normal selector instead
+  const { user, network, wallet } = useWegaStore(); 
   const { 
     wagerApprovalQuery, 
     wagerApprovalMutation,

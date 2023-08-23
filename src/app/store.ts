@@ -6,10 +6,10 @@ import intlReducer from '../containers/LanguageProvider/intlSlice'
 
 export const store = configureStore({
   reducer: {
-   [appApiSlice.reducerPath]: appApiSlice.reducer,
-   app: appReducer,
-   language: intlReducer,
-
+    [appApiSlice.reducerPath]: appApiSlice.reducer,
+    app: appReducer,
+    language: intlReducer,
+    
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({
     serializableCheck: false

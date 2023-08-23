@@ -10,14 +10,14 @@ import  {
  DiceIcon, 
  CoinFlipIcon, 
  RaffleIcon, 
-} from '../../../assets/icons';
-import  { GameCardOrb } from '../../../assets/images';
+} from '../../assets/icons';
+import  { GameCardOrb } from '../../assets/images';
 import Button from '../../common/Button';
 import { gsap } from 'gsap'; 
 import {
   useConnectModal,
 } from '@rainbow-me/rainbowkit';
-import { useWegaStore } from '../../../hooks';
+import { useWegaStore } from '../../hooks';
 import { Link } from "react-router-dom";
 
 
@@ -28,7 +28,7 @@ export const DiceGameCard = () => {
   const orbRef = useRef<SVGSVGElement>(null);
   const [hovering, setHovering] = useState<boolean>();
   const { openConnectModal } = useConnectModal();
-  const { account } = useWegaStore();
+  const { wallet } = useWegaStore();
   
   useEffect(() => {    
     const ctx = gsap.context(() => {
@@ -80,7 +80,7 @@ export const DiceGameCard = () => {
         Roll the dice, the player with the highest number wins.
       </GameCardDescription>
       {
-        (account && !account.isConnected && openConnectModal) ?
+        (wallet && !wallet.isConnected && openConnectModal) ?
         <Button buttonType="primary" content='Play' className="w-[75%]" onClick={()=> openConnectModal() } />
         : <Link to="/play/create" className="w-[75%]"><Button buttonType="primary" content='Play' className="w-[100%]" /></Link>
       }
@@ -94,7 +94,7 @@ export const CoinFlipGameCard = () => {
   const orbRef = useRef<SVGSVGElement>(null);
   const [hovering, setHovering] = useState<boolean>();
   const { openConnectModal } = useConnectModal();
-  const { account } = useWegaStore();
+  const { wallet } = useWegaStore();
   
   useEffect(() => {    
     const ctx = gsap.context(() => {
@@ -145,7 +145,7 @@ export const CoinFlipGameCard = () => {
      </GameCardDescription>
 
      {
-      (account && !account.isConnected && openConnectModal) ?
+      (wallet && !wallet.isConnected && openConnectModal) ?
         <Button buttonType="primary" content='Play' className="w-[75%]" onClick={()=> openConnectModal() } /> :
         <Link to="/play/create" className="w-[75%]"><Button buttonType="primary" content='Play' className="w-[100%]" /></Link>
      }

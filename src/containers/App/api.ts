@@ -78,3 +78,5 @@ export const {
   selectIds: selectAllGamesIds
 } = gamesAdapter.getSelectors((state: any) => selectGamesData(state) ?? gamesInitialState);
 
+
+
