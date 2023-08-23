@@ -14,6 +14,7 @@ import { HexIshString } from '../../models';
 interface IBlockchainAPI {
   createWagerAndDeposit: any,
   hash: any,
+  depositOf: any,
   approveERC20: any,
   getRequests: any,
   getRequest: any,
@@ -22,6 +23,7 @@ interface IBlockchainAPI {
 
 // TODO 
   // add appropriate logging lib
+  // add correct fn typing on class interface
 
 export class BlockchainAPI implements IBlockchainAPI {
  private chain = (getNetwork()).chain;
@@ -34,24 +36,21 @@ export class BlockchainAPI implements IBlockchainAPI {
   abi: escrowConfig.abi,
  }
  
-
-
  constructor(){}
+ 
  async createWagerAndDeposit({ token, creator, accountsCount, wager }: {
   token: HexIshString
   creator: HexIshString
-  accountsCount: bigint,
-  wager: bigint,
+  accountsCount: number,
+  wager: number,
  }){
+  const playerNum = BigNumber.from(accountsCount).toBigInt()
+  const wagerAsBigint = BigNumber.from(wager).toBigInt()
+
   const config = await prepareWriteContract({
     ...this.escrowConfig,
     functionName: 'createWagerAndDeposit',
-    args: [
-    token, 
-    creator, 
-    accountsCount as bigint,
-    wager as bigint,
-    ]
+    args: [ token, creator, playerNum, wagerAsBigint ]
   })
   return await this.handleWriteRequest(config);
  }
@@ -65,14 +64,15 @@ export class BlockchainAPI implements IBlockchainAPI {
   return Number(utils.formatEther(allowance));
  }
 
- async approveERC20(tokenAddress: HexIshString, wager: bigint){
-    const config = await prepareWriteContract({
-      address: tokenAddress,
-      abi: this.tokenConfig.abi,
-      functionName: 'approve',
-      args: [ escrowConfig.address[this.chain?.id as keyof typeof escrowConfig.address] as HexIshString, wager]
-    })
-    return await this.handleWriteRequest(config);
+ async approveERC20(tokenAddress: HexIshString, wager: number){
+  const wagerAsBigint = BigNumber.from(wager).toBigInt();
+  const config = await prepareWriteContract({
+    address: tokenAddress,
+    abi: this.tokenConfig.abi,
+    functionName: 'approve',
+    args: [ escrowConfig.address[this.chain?.id as keyof typeof escrowConfig.address] as HexIshString, wagerAsBigint]
+  })
+  return await this.handleWriteRequest(config);
  }
 
  async getRequests(wagerId: string | HexIshString){
@@ -86,6 +86,20 @@ export class BlockchainAPI implements IBlockchainAPI {
   })
   return requests;
  }
+
+ async depositOf(escrowHash: HexIshString, account: HexIshString){
+  const deposit = await readContract({
+   address: this.escrowConfig.address,
+   abi: this.escrowConfig.abi,
+   functionName: 'depositOf',
+   args: [ 
+    escrowHash,
+    account,
+   ]
+  })
+  return Number(utils.formatEther(deposit));
+ }
+
  async hash({ token, creator, accountsCount, wager }: 
   { token: HexIshString, 
     creator: HexIshString, 
@@ -134,6 +148,7 @@ export class BlockchainAPI implements IBlockchainAPI {
  async waitForMined(hash: HexIshString) {
   return await waitForTransaction({ hash })
  }
+
  getRequest(){}
 }
 

@@ -5,5 +5,5 @@ export { type AllPossibleCurrencyTypes, CurrencyTypes, CurrencyTypesEnum } from 
 export { type User } from './user';
 export { type Network } from './network';
 export { type Wallet } from './wallet';
-export { type HexIsh } from './blockchain';
+export { type HexIshString } from './blockchain';
 
