@@ -8,7 +8,7 @@ import { ErrorMessage } from '@hookform/error-message';
 import { ArrowDownIcon, StarLoaderIcon } from '../../assets/icons';
 import 'twin.macro';
 import { useForm } from 'react-hook-form';
-import { useWegaStore, useCreateGameOnEscrowEvent, useBlockchainHelpers } from '../../hooks';
+import { useWegaStore, useBlockchainHelpers, useBlockchainApiHooks } from '../../hooks';
 import { SupportedWagerTokenAddresses } from '../../models/constants';
 import Button from '../Button';
 
@@ -19,12 +19,14 @@ export interface CreateGameCardInterface {
 }
 
 const CreateGameCard = ({ wagerType, currencyType, ...rest }: CreateGameCardInterface & React.Attributes & React.AllHTMLAttributes<HTMLDivElement> ) => {
+  const { useAllowanceQuery } = useBlockchainApiHooks;
   const { user, network, wallet } = useWegaStore();
   const { 
     wagerApprovalQuery, 
     wagerApprovalMutation,
     createWagerMutation,
   } = useBlockchainHelpers();
+  const { allowance, isLoading, data, error, isSuccess, isError } = useAllowanceQuery();
 
 
   const tokenAddress = SupportedWagerTokenAddresses(network?.id as number)[currencyType];
@@ -47,13 +49,6 @@ const CreateGameCard = ({ wagerType, currencyType, ...rest }: CreateGameCardInte
     createWagerMutation.createWager({ token: tokenAddress, creator: wallet?.address as `0x${string}`, numberOfPlayers: 2, wager })
   }
 
-  useCreateGameOnEscrowEvent(
-    "DICE",
-    user && user.uuid as string,
-    wallet?.address as `0x${string}`,
-    network?.id as number,
-  );
-
   const handleWagerOptionClicked = (e: any, wagerAmount: number) => {
     e.preventDefault();
     setValue("wager", wagerAmount);
@@ -61,7 +56,10 @@ const CreateGameCard = ({ wagerType, currencyType, ...rest }: CreateGameCardInte
 
 
   useEffect(() => {
-    if(tokenAddress && wallet && wallet.address && getValues('wager') > 0) wagerApprovalQuery.wagerApproval(tokenAddress, wallet.address as `0x${string}`, getValues('wager'));
+    if(tokenAddress && wallet && wallet.address && getValues('wager') > 0) allowance(tokenAddress, 0)
+    console.log(`loading: ${isLoading} \n data: ${data} error: ${JSON.stringify(error)} \n success: ${isSuccess} \n isError: ${isError}`)
+    
+    // wagerApprovalQuery.wagerApproval(tokenAddress, wallet.address as `0x${string}`, getValues('wager'));
     // if(wagerApprovalMutation.approved.value) wagerApprovalQuery.wagerApproval(tokenAddress, account?.address as `0x${string}`, getValues('wager'))
   }, [watch('wager'), tokenAddress, wagerApprovalMutation.approved.value]);
 

@@ -132,12 +132,14 @@ export class BlockchainAPI implements IBlockchainAPI {
  }
  
  handleError(error: any, customMessage: string){
-  console.log(error);
-  if (error.message && error.message.split("\n\n") && error.message.split("\n\n").length > 0) {
-    return error.message.split("\n\n")[0];
+  if (error.message){
+    if(error.message.split("\n\n") && error.message.split("\n\n").length > 0) {
+      error.message = error.message.split("\n\n")[0];
+    }
   } else {
-    return customMessage;
+    error.message = customMessage;
   }
+  return error;
  }
  
  private async handleWriteRequest(config: any) {
