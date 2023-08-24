@@ -4,6 +4,7 @@ import {
 import Layout from "../Layout";
 import PlayPage  from '../PlayPage';
 import CreateGamePage  from '../CreateGamePage';
+import JoinGamePage  from '../JoinGamePage';
 
 const router = createHashRouter([
  {
@@ -15,15 +16,19 @@ const router = createHashRouter([
     element: <PlayPage />
    },
    {
-    path: 'play',
+    path: ':gameType',
     children: [
      {
       index: true,
       element: <PlayPage />
      },
      {
-      path: ':gameType/create',
+      path: 'create',
       element: <CreateGamePage />
+     },
+     {
+      path: 'join/:id',
+      element: <JoinGamePage />
      }
     ]
    },

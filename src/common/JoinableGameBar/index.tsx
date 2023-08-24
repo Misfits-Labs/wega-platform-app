@@ -22,6 +22,11 @@ import Button from '../Button';
 import { selectGameById } from '../../containers/App/api';
 import { useSelector } from 'react-redux' 
 import { utils } from 'ethers';
+import { Link } from 'react-router-dom';
+import {
+  useConnectModal,
+} from '@rainbow-me/rainbowkit';
+import { useWegaStore } from '../../hooks';
 
 export const BADGE_TEXTS: any = {
  [WegaTypes[WegaTypesEnum.DICE]]: 'Dice',
@@ -29,8 +34,9 @@ export const BADGE_TEXTS: any = {
 }
 
 function JoinableGameBar({ gameId , ...rest}: { gameId: number } & React.Attributes & Partial<React.AllHTMLAttributes<HTMLDivElement>>) {
-  
-  const game = useSelector(state => selectGameById(state, gameId))
+  const game = useSelector(state => selectGameById(state, gameId));
+  const { wallet } = useWegaStore();
+  const {openConnectModal} = useConnectModal();
   
   return game && (
    <BarWrapper {...rest}>
@@ -51,17 +57,29 @@ function JoinableGameBar({ gameId , ...rest}: { gameId: number } & React.Attribu
     {/* escrow link button */}
     
     {/* play button should get activated on action */} 
-    
-     <Button buttonType="secondary"  className="flex items-center">
-      <>
-       Play
-       <StarLoaderIcon className="dark:fill-blanc h-[16px] w-[16px] ms-[5px]" />
-      </>
-     </Button>
+    {
+      (!wallet && openConnectModal) ?
+      <Button 
+          buttonType="secondary"  
+          className="flex items-center"
+          onClick={openConnectModal}
+        >
+        Play
+        <StarLoaderIcon className="dark:fill-blanc h-[16px] w-[16px] ms-[5px]" />
+      </Button> :
+      <Link to={`/${game.gameType.toLowerCase()}/join/${game.id}`}>
+        <Button buttonType="secondary" className="flex items-center">
+          Play
+        <StarLoaderIcon className="dark:fill-blanc h-[16px] w-[16px] ms-[5px]" />
+        </Button>
+      </Link>      
+
+    }
    </BarWrapper>
   )
 }
-
+{/* <Button buttonType="primary" content='Play' className="w-[75%]" onClick={()=> openConnectModal() } /> :
+<Link to="/coinflip/create" className="w-[75%]"><Button buttonType="primary" content='Play' className="w-[100%]" /></Link> */}
 export default JoinableGameBar;
 
 const BADGE_GAME_TYPE_COMPONENTS: any = {
@@ -97,12 +115,3 @@ export const renderWagerBadge = (wagerType: AllPossibleWagerTypes, currencyType:
       return !BadgeWagerTypeComponent ? null : <BadgeWagerTypeComponent /> 
   }
 }
-
-
-// const renderComponent = () => {
-//  const ModalComponent = MODAL_COMPONENTS[modalType!]
-//  if (!modalType || !ModalComponent) {
-//    return null
-//  }
-//  return <ModalComponent {...modalProps} />
-// }

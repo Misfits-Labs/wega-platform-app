@@ -13,6 +13,7 @@ export const WegaTypes = {
 export type AllPossibleWegaTypes = typeof WegaTypes[keyof typeof WegaTypes];
 
 export type Wega = {
+ id: number;
  uuid: string;
  gameType: AllPossibleWegaTypes;
  createdAt:  string;

@@ -77,9 +77,9 @@ export const DiceGameCard = () => {
         Roll the dice, the player with the highest number wins.
       </GameCardDescription>
       {
-        (wallet && !wallet.isConnected && openConnectModal) ?
+        (!wallet && openConnectModal) ?
         <Button buttonType="primary" content='Play' className="w-[75%]" onClick={()=> openConnectModal() } />
-        : <Link to="/play/dice/create" className="w-[75%]"><Button buttonType="primary" content='Play' className="w-[100%]"/></Link>
+        : <Link to="/dice/create" className="w-[75%]"><Button buttonType="primary" content='Play' className="w-[100%]"/></Link>
       }
       </GameCardBody>
     </GameCardContainer>
@@ -142,9 +142,9 @@ export const CoinFlipGameCard = () => {
      </GameCardDescription>
 
      {
-      (wallet && !wallet.isConnected && openConnectModal) ?
+      (!wallet && openConnectModal) ?
         <Button buttonType="primary" content='Play' className="w-[75%]" onClick={()=> openConnectModal() } /> :
-        <Link to="/play/coinflip/create" className="w-[75%]"><Button buttonType="primary" content='Play' className="w-[100%]" /></Link>
+        <Link to="/coinflip/create" className="w-[75%]"><Button buttonType="primary" content='Play' className="w-[100%]" /></Link>
      }
     </GameCardBody>
    </GameCardContainer>
