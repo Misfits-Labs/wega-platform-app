@@ -6,7 +6,7 @@ import {
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
  buttonType: 'primary' | 'secondary' | 'tertairy',
- children?: React.ReactElement 
+ children?: React.ReactNode 
  content?: string,
  disabled?: boolean; 
 }
@@ -28,4 +28,5 @@ const Button = ({
   }
 }
 export default Button;
+
 

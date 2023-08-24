@@ -19,6 +19,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.1",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^3.2.0",
     "@joi/date": "^2.1.0",

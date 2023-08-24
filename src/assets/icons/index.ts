@@ -22,3 +22,4 @@ export { default as USDCIcon } from './USDCIcon';
 export { default as StarLoaderIcon } from './StarLoaderIcon';
 export { default as USDTIcon } from './USDTIcon';
 export { default as ArrowDownIcon } from './ArrowDownIcon';
+export { default as WegaLoaderIcon } from './WegaLoaderIcon';

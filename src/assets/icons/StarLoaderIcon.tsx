@@ -4,14 +4,15 @@ interface StarloaderIconProps {
   color?: string;
 }
 
-const SvgComponent = (props: SVGProps<SVGSVGElement> & StarloaderIconProps) => (
-  <svg
+const SvgComponent = ({ ...props }: SVGProps<SVGSVGElement> & StarloaderIconProps ) => {
+  return (<svg
     width={16}
     height={16}
     viewBox="0 0 16 16"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
+    className={ props["aria-busy"] ? props.className?.concat(' animate-spin') : props.className}
   >
     <g clipPath="url(#clip0_3321_5762)" stroke="black">
       <path
@@ -77,5 +78,5 @@ const SvgComponent = (props: SVGProps<SVGSVGElement> & StarloaderIconProps) => (
       </clipPath>
     </defs>
   </svg>
-)
+)}
 export default SvgComponent

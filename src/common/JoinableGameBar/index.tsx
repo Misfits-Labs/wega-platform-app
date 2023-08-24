@@ -79,15 +79,15 @@ const BADGE_CURRENCY_TYPE_COMPONENTS: any = {
  [CurrencyTypes[CurrencyTypesEnum.USDC]]: USDCIcon, // Tdo - refactor
 }
 
-export const BadgeIcon = (props: { children: React.ReactElement }) => <div className="w-[24px] h-[24px]">{props.children}</div> 
+export const BadgeIcon = (props: { children: React.ReactElement | React.ReactNode }) => <div className="w-[24px] h-[24px]">{props.children}</div> 
 
 const renderGameTypeBadge = (gameType: AllPossibleWegaTypes) => {
  const BadgeComponent = BADGE_GAME_TYPE_COMPONENTS[gameType];
  return <BadgeComponent /> ?? null;
 }
 
-export const renderWagerBadge = (wagerType: AllPossibleWagerTypes, currencyType?: AllPossibleCurrencyTypes) => {
-  const BadgeWagerTypeComponent = BADGE_WAGER_TYPE_COMPONENTS[wagerType]; 
+export const renderWagerBadge = (wagerType: AllPossibleWagerTypes, currencyType: AllPossibleCurrencyTypes) => {
+  const BadgeWagerTypeComponent = BADGE_WAGER_TYPE_COMPONENTS[wagerType];
   const BadgeCurrencyTypeComponent = currencyType && BADGE_CURRENCY_TYPE_COMPONENTS[currencyType];
   
   switch(wagerType){

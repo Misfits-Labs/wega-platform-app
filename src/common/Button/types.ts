@@ -68,6 +68,8 @@ export const TertairyButton = styled(BaseButton)<ButtonProps>(({ disabled })=> !
   `
 ])
 
+export const ToggleBadgeWrapper = styled.div`
+`
 
 
 

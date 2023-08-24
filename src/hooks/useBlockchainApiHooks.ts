@@ -18,10 +18,6 @@ import {
  selectDepositOfQueryData,
  selectDepositOfQueryStatus,
  selectDepositOfQueryError
- 
- // selectHashQuery,
- // selectCreateWagerMutation,
- // selectDepositOfQuery
 } from '../api/blockchain/blockchainSlice';
 import {
  allowanceQuery,
@@ -29,9 +25,6 @@ import {
  hashWagerQuery,
  createWagerMutation,
  depositOfQuery
- // selectHashQuery,
- // selectCreateWagerMutation,
- // selectDepositOfQuery
 } from '../api/blockchain/thunks';
 
 
@@ -44,7 +37,7 @@ function useAllowanceQuery(){
   const [isLoading, setisloading] = useState<boolean>();
   const [isIdle, setIsIdle] = useState<boolean>();
   const [isSuccess, setIsSuccess] = useState<boolean>();  
-  const allowance = (tokenAddress: HexIshString, owner: HexIshString) => dispatch(allowanceQuery({ tokenAddress, owner }));
+  const allowance = (tokenAddress: HexIshString, owner: HexIshString, wager?: number) => dispatch(allowanceQuery({ tokenAddress, owner, wager }));
   
   useEffect(() => {
     setIsError(status === 'rejected')
@@ -52,7 +45,8 @@ function useAllowanceQuery(){
     setIsIdle(status === 'idle')
     setIsSuccess(status === 'fulfilled')
   }, [status, data, error, dispatch]);
-  return [allowance, {error, data, isLoading, isError, isIdle, isSuccess }]
+
+  return {allowance, error, data, isLoading, isError, isIdle, isSuccess }
 }
 
 function useHashWagerQuery(){
@@ -72,7 +66,7 @@ function useHashWagerQuery(){
     setIsIdle(status === 'idle')
     setIsSuccess(status === 'fulfilled')
   }, [status, data, error, dispatch]);
-  return [hashWager, {error, data, isLoading, isError, isIdle, isSuccess }]
+  return { hashWager, error, data, isLoading, isError, isIdle, isSuccess }
 }
 
 function useApproveERC20Mutation(){
@@ -87,15 +81,13 @@ function useApproveERC20Mutation(){
   const approveERC20 = (tokenAddress: HexIshString, wager: number) => {
     dispatch(approveERC20Mutation({ tokenAddress, wager }));
   };
-  
   useEffect(() => {
     setIsError(status === 'rejected');
     setisloading(status === 'pending');
     setIsIdle(status === 'idle');
     setIsSuccess(status === 'fulfilled');
   }, [status, data, error, dispatch]);
-
-  return [approveERC20, { error, data, isLoading, isError, isIdle, isSuccess }]; 
+  return { approveERC20, error, data, isLoading, isError, isIdle, isSuccess }; 
 }
 
 function useCreateWagerMutation(){
@@ -118,7 +110,7 @@ function useCreateWagerMutation(){
     setIsSuccess(status === 'fulfilled');
   }, [status, data, error, dispatch]);
 
-  return [createWager, { error, data, isLoading, isError, isIdle, isSuccess }]; 
+  return { createWager, error, data, isLoading, isError, isIdle, isSuccess }; 
 }
 
 function useDepositOfQuery(){
@@ -130,7 +122,7 @@ function useDepositOfQuery(){
   const [isLoading, setisloading] = useState<boolean>();
   const [isIdle, setIsIdle] = useState<boolean>();
   const [isSuccess, setIsSuccess] = useState<boolean>();  
-  const depositsOf = (escrowHash: HexIshString, account: HexIshString) => dispatch(depositOfQuery({ escrowHash, account }));
+  const depositOf = (escrowHash: HexIshString, account: HexIshString) => dispatch(depositOfQuery({ escrowHash, account }));
   
   useEffect(() => {
     setIsError(status === 'rejected')
@@ -138,7 +130,7 @@ function useDepositOfQuery(){
     setIsIdle(status === 'idle')
     setIsSuccess(status === 'fulfilled')
   }, [status, data, error, dispatch]);
-  return [depositsOf, {error, data, isLoading, isError, isIdle, isSuccess }]
+  return {depositOf, error, data, isLoading, isError, isIdle, isSuccess }
 }
 
 export const useBlockchainApiHooks = {

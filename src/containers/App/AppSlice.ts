@@ -43,6 +43,7 @@ export const appSlice = createSlice({
  },
  extraReducers: (builder) => {
   builder.addMatcher(appApiSlice.endpoints.createPlayer.matchFulfilled, (state, action) =>  { state.user.uuid = action.payload });
+  builder.addMatcher(appApiSlice.endpoints.createPlayer.matchRejected, (state) =>  { state.user.loading = false });
   builder.addMatcher(appApiSlice.endpoints.createPlayer.matchPending, (state) =>  { state.user.loading = true });
  }
 });

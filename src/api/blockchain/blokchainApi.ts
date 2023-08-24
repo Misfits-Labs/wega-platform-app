@@ -65,7 +65,7 @@ export class BlockchainAPI implements IBlockchainAPI {
  }
 
  async approveERC20(tokenAddress: HexIshString, wager: number){
-  const wagerAsBigint = BigNumber.from(wager).toBigInt();
+  const wagerAsBigint = utils.parseEther(String(wager)).toBigInt();
   const config = await prepareWriteContract({
     address: tokenAddress,
     abi: this.tokenConfig.abi,
@@ -134,12 +134,12 @@ export class BlockchainAPI implements IBlockchainAPI {
  handleError(error: any, customMessage: string){
   if (error.message){
     if(error.message.split("\n\n") && error.message.split("\n\n").length > 0) {
-      error.message = error.message.split("\n\n")[0];
+      return error.message.split("\n\n")[0];
     }
+    return error.message
   } else {
-    error.message = customMessage;
+    return customMessage;
   }
-  return error;
  }
  
  private async handleWriteRequest(config: any) {

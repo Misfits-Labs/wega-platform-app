@@ -95,7 +95,7 @@ const WalletInformation: React.FC<WalletInformationCompProps> = ({ account,  cha
 
   useEffect(() => {
     dispatch(setWallet({ ...account  }));
-    dispatch(setNetwork({ ...chain, isConnected  }));
+    dispatch(setNetwork({ ...chain, isConnected }));
     if(!account.uuid || account.uuid.length < 1 ) createPlayer(account.address);
   }, [account.address]);
   return (

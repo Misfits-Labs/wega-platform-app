@@ -73,12 +73,8 @@ const blockchainSlice = createSlice({
  name: 'blockchain-api',
  initialState: initialBlockchainState,
  reducers: {
-  setApprovedWager(state, action: PayloadAction<number>){
-   if(state.allowance.data && state.allowance?.data >= action.payload ) {
-    state.wagerApproved = true;
-   } else {
-    state.wagerApproved = false;
-   };
+  setApprovedWager(state, action: PayloadAction<boolean>){
+   state.wagerApproved = action.payload;
   }
  },
  extraReducers: (builder) => {
@@ -86,7 +82,7 @@ const blockchainSlice = createSlice({
   builder.addCase(allowanceQuery.pending, (state, action) => { state.allowance.status = action.meta.requestStatus });
   builder.addCase(allowanceQuery.rejected, (state, action) => { 
    state.allowance.status = action.meta.requestStatus;
-   state.allowance.error = action.payload; 
+   state.allowance.error = action.payload;
   });
   builder.addCase(allowanceQuery.fulfilled, (state, action) => { 
    state.allowance.status = action.meta.requestStatus;

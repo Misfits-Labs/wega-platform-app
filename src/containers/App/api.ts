@@ -8,7 +8,6 @@ import {
   type Wager,
   type AllPossibleWegaTypes
 } from '../../models';
-
 const baseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_BACKEND_API_URL,
   prepareHeaders: (headers, ) => {
