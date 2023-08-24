@@ -20,9 +20,6 @@ import {
 import { useWegaStore } from '../../hooks';
 import { Link } from "react-router-dom";
 
-
-
-
 export const DiceGameCard = () => {
   const iconRef = useRef<SVGSVGElement>(null);
   const orbRef = useRef<SVGSVGElement>(null);
@@ -40,13 +37,13 @@ export const DiceGameCard = () => {
         y: '-=12.5px',
         ease,
         duration, 
+ 
       });
       const diceAnimation = gsap.to(iconRef.current, {
         rotate: '360deg',
         ease,
         duration 
       })
-
       if(hovering){
         orbAnimation.play();
         diceAnimation.play();
@@ -82,7 +79,7 @@ export const DiceGameCard = () => {
       {
         (wallet && !wallet.isConnected && openConnectModal) ?
         <Button buttonType="primary" content='Play' className="w-[75%]" onClick={()=> openConnectModal() } />
-        : <Link to="/play/create" className="w-[75%]"><Button buttonType="primary" content='Play' className="w-[100%]" /></Link>
+        : <Link to="/play/dice/create" className="w-[75%]"><Button buttonType="primary" content='Play' className="w-[100%]"/></Link>
       }
       </GameCardBody>
     </GameCardContainer>
@@ -147,7 +144,7 @@ export const CoinFlipGameCard = () => {
      {
       (wallet && !wallet.isConnected && openConnectModal) ?
         <Button buttonType="primary" content='Play' className="w-[75%]" onClick={()=> openConnectModal() } /> :
-        <Link to="/play/create" className="w-[75%]"><Button buttonType="primary" content='Play' className="w-[100%]" /></Link>
+        <Link to="/play/coinflip/create" className="w-[75%]"><Button buttonType="primary" content='Play' className="w-[100%]" /></Link>
      }
     </GameCardBody>
    </GameCardContainer>

@@ -22,7 +22,7 @@ const router = createHashRouter([
       element: <PlayPage />
      },
      {
-      path: 'create',
+      path: ':gameType/create',
       element: <CreateGamePage />
      }
     ]

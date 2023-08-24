@@ -81,7 +81,7 @@ const BADGE_CURRENCY_TYPE_COMPONENTS: any = {
 
 export const BadgeIcon = (props: { children: React.ReactElement | React.ReactNode }) => <div className="w-[24px] h-[24px]">{props.children}</div> 
 
-const renderGameTypeBadge = (gameType: AllPossibleWegaTypes) => {
+export const renderGameTypeBadge = (gameType: AllPossibleWegaTypes) => {
  const BadgeComponent = BADGE_GAME_TYPE_COMPONENTS[gameType];
  return <BadgeComponent /> ?? null;
 }

@@ -4,18 +4,20 @@ import { SectionHeaderTitle } from '../../common/Section/types';
 import CreateGameCard from '../../common/CreateGameCard';
 import 'twin.macro';
 import JoinableGamesSection from '../../components/JoinableGamesSection';
-import {  WagerTypes, WagerTypesEnum, CurrencyTypes, CurrencyTypesEnum  } from '../../models';
+import {  WagerTypes, WagerTypesEnum, CurrencyTypes, CurrencyTypesEnum, AllPossibleWegaTypes  } from '../../models';
 import { SupportedWagerTokenAddresses } from '../../models/constants';
 import { selectAllGamesIds } from '../App/api';
 import { useSelector } from 'react-redux';
 import { useWegaStore } from '../../hooks';
 import { ComponentLoader } from '../../common/loaders'
+import { useParams } from 'react-router-dom';
 
 const CreateGamePage = () => {
   const gameIds = useSelector(state => selectAllGamesIds(state));
   const { user, network, wallet } = useWegaStore();
+  const { gameType } = useParams();
 
-  return (network?.id && wallet && user.uuid) ? (<>
+  return (network?.id && wallet && user.uuid && gameType) ? (<>
     <Helmet>
      <title>Create</title>
     </Helmet>
@@ -28,6 +30,7 @@ const CreateGamePage = () => {
         currencyType={CurrencyTypes[CurrencyTypesEnum.USDC]}
         tokenAddress={SupportedWagerTokenAddresses(network?.id as number)[CurrencyTypes[CurrencyTypesEnum.USDC]]}
         playerAddress={wallet.address}
+        gameType={gameType.toUpperCase() as AllPossibleWegaTypes}
       />
     </Section>
     <JoinableGamesSection gameIds={gameIds}  />

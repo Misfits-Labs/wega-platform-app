@@ -1,12 +1,32 @@
 import { useEffect, useRef, useState } from 'react';
 import Joi from 'joi';
-import { CreateGameCardContainer, InputBox, NormalText, SmallText, MediumText } from "./types";
-import { AllPossibleCurrencyTypes, AllPossibleWagerTypes, HexIshString} from "../../models";
-import { BadgeIcon, renderWagerBadge } from "../JoinableGameBar";
+import { 
+  CreateGameCardContainer, 
+  InputBox, 
+  NormalText, 
+  SmallText, 
+  MediumText, 
+  LargeText 
+} from "./types";
+import { 
+  GameTypeBadgeWrapper,
+ } from '../JoinableGameBar/types';
+import { 
+  AllPossibleCurrencyTypes, 
+  AllPossibleWagerTypes, 
+  HexIshString,
+  AllPossibleWegaTypes,
+} from "../../models";
+import { 
+  BadgeIcon, 
+  renderWagerBadge,
+  renderGameTypeBadge,
+  BADGE_TEXTS
+} from "../JoinableGameBar";
 import { joiResolver } from '@hookform/resolvers/joi';
 import { ErrorMessage } from '@hookform/error-message';
 import { ArrowDownIcon, StarLoaderIcon } from '../../assets/icons';
-import 'twin.macro';
+import tw from 'twin.macro';
 import { useForm } from 'react-hook-form';
 import { useBalance, useWaitForTransaction } from 'wagmi';
 import { useBlockchainHelpers, useBlockchainApiHooks, useAppSelector } from '../../hooks';
@@ -15,6 +35,8 @@ import toast from 'react-hot-toast';
 import { toastSettings } from '../../utils';
 import Button from '../Button';
 import { ToggleWagerBadge } from '../ToggleWagerBadge';
+import { useFormReveal } from './animations';
+
 
 
 export interface CreateGameCardInterface {
@@ -22,6 +44,7 @@ export interface CreateGameCardInterface {
   currencyType: AllPossibleCurrencyTypes;
   tokenAddress: HexIshString;
   playerAddress: HexIshString;
+  gameType: AllPossibleWegaTypes;
 }
 
 const CreateGameCard = ({ 
@@ -29,11 +52,16 @@ const CreateGameCard = ({
   currencyType,
   tokenAddress,
   playerAddress,
+  gameType,
   ...rest 
 }: CreateGameCardInterface & React.Attributes & React.AllHTMLAttributes<HTMLDivElement> ) => {
   
-  const [currentWagerType, setCurrentWagerType] = useState<AllPossibleWagerTypes>(wagerType);
+  const formRef = useRef<HTMLFormElement>(null);
+  const detailsBlock = useRef<HTMLDivElement>(null)
+  const [currentWagerType] = useState<AllPossibleWagerTypes>(wagerType);
   const [currentCurrencyType, setCurrentCurrencyType] = useState<AllPossibleCurrencyTypes>(currencyType);
+  
+  const {revealed, triggerRevealAnimation} = useFormReveal(false, formRef, detailsBlock);
   
   const { 
     useAllowanceQuery,
@@ -85,7 +113,6 @@ const CreateGameCard = ({
     setValue("wager", wagerAmount);
   }
 
-
   useEffect(() => {
     allowance(tokenAddress, playerAddress, getValues('wager'));
     // alert user
@@ -95,18 +122,18 @@ const CreateGameCard = ({
     }
   }, [watch('wager'), tokenAddress, wagerApprovalReceipt]);
   
+
+
   return (
-    <form tw="w-full flex flex-row justify-center" onSubmit={isWagerApproved ? handleSubmit(handleCreateGameClick) : handleSubmit(handleApproveWagerClick)}>
+    <form 
+      tw="w-full flex flex-row justify-center" 
+      onSubmit={isWagerApproved ? handleSubmit(handleCreateGameClick) : handleSubmit(handleApproveWagerClick)} 
+      ref={formRef}
+    >
       <CreateGameCardContainer {...rest} tw="dark:bg-[#282828] rounded-[10px]">
         {/* badge selection */}
         <ToggleWagerBadge currentCurrencyType={currentCurrencyType} setCurrentCurrencyType={setCurrentCurrencyType} />
 
-
-        <div tw="flex w-[fit-content] justify-center items-center gap-[10px]">
-          {/* icon */}
-          <BadgeIcon><>{renderWagerBadge(currentWagerType, currentCurrencyType)}</></BadgeIcon>
-          <span>{currentCurrencyType}</span>
-        </div>
         <div >
           {/* wager */}
           <div tw="flex flex-col items-center gap-y-[16px]">
@@ -167,10 +194,34 @@ const CreateGameCard = ({
         }
         {/* button approve */}
         {/* button start game */}
+        
+        
+        {/* details */}
+        {/* wager  */}
+        <div tw="h-0 w-full" ref={detailsBlock}>
+          <div tw="flex justify-between p-[20px] items-center" className="details-1 invisible">
+            <LargeText>Wager</LargeText>
+            <div tw="dark:bg-[#4B4B4B] rounded-[10px] flex w-[fit-content] justify-center items-center gap-[10px] py-[5px] px-[10px]">
+              <span>{watch('wager')}</span>
+              <BadgeIcon><>{renderWagerBadge(currentWagerType, currentCurrencyType)}</></BadgeIcon>
+              <span>{currencyType}</span>
+            </div>
+          </div>
+          
+          {/* game */}
+          <div tw="flex justify-between p-[20px] items-center" className="details-2 invisible">
+            <LargeText>Game</LargeText>
+            <GameTypeBadgeWrapper tw="rounded-[10px] dark:bg-[#414141]">
+              {renderGameTypeBadge(gameType)}
+              <NormalText>{BADGE_TEXTS[gameType]}</NormalText>
+            </GameTypeBadgeWrapper>
+          </div>
+        </div>
+        
         {/* game details */}
         <div tw="flex items-center gap-x-[8px]">
-          <MediumText tw="dark:text-blanc">Show game details</MediumText>
-          <ArrowDownIcon className="cursor-pointer"/>
+          <MediumText tw="dark:text-blanc">{revealed ? "Hide game details" : "Show game details"}</MediumText>
+          <ArrowDownIcon className="cursor-pointer" css={[revealed && tw`rotate-180`]} onClick={triggerRevealAnimation}/>
         </div>
       </CreateGameCardContainer>
     </form>

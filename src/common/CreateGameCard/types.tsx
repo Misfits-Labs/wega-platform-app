@@ -10,7 +10,6 @@ export const CreateGameCardContainer = styled.div`
 ` 
 
 export const InputBox = styled.input`
- font-family: League Spartan;
  font-size: 67px;
  font-style: normal;
  font-weight: 600;
@@ -28,15 +27,21 @@ export const InputBox = styled.input`
 `
 
 export const NormalText = styled.span`
- font-family: League Spartan;
  font-size: 16px;
  font-style: normal;
  font-weight: 400;
  line-height: 15px;
 `
 
+export const LargeText = styled.span`
+ font-family: League Spartan;
+ font-size: 28px;
+ font-style: normal;
+ font-weight: 500;
+ line-height: 32px;
+`
+
 export const MediumText = styled.span`
-font-family: League Spartan;
 leading-trim: both;
 text-edge: cap;
 font-family: League Spartan;
@@ -47,7 +52,6 @@ line-height: 12px;
 `
 
 export const SmallText = styled.span`
- font-family: League Spartan;
  font-size: 12px;
  font-style: normal;
  font-weight: 300;
