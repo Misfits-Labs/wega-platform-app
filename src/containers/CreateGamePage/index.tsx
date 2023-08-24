@@ -16,7 +16,6 @@ const CreateGamePage = () => {
   const gameIds = useSelector(state => selectAllGamesIds(state));
   const { user, network, wallet } = useWegaStore();
   const { gameType } = useParams();
-
   return (network?.id && wallet && user.uuid && gameType) ? (<>
     <Helmet>
      <title>Create</title>
@@ -31,6 +30,7 @@ const CreateGamePage = () => {
         tokenAddress={SupportedWagerTokenAddresses(network?.id as number)[CurrencyTypes[CurrencyTypesEnum.USDC]]}
         playerAddress={wallet.address}
         gameType={gameType.toUpperCase() as AllPossibleWegaTypes}
+        playerUuid={user.uuid}
       />
     </Section>
     <JoinableGamesSection gameIds={gameIds}  />

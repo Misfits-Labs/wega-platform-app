@@ -58,7 +58,7 @@ function useHashWagerQuery(){
   const [isLoading, setisloading] = useState<boolean>();
   const [isIdle, setIsIdle] = useState<boolean>();
   const [isSuccess, setIsSuccess] = useState<boolean>();  
-  const hashWager = (inpts:{ token: HexIshString, creator: HexIshString, accountsCount: number, wager: number }) => dispatch(hashWagerQuery({ ...inpts }));
+  const hashWager = (inpts:{ tokenAddress: HexIshString, playerAddress: HexIshString, accountsCount: number, wager: number }) => dispatch(hashWagerQuery({ ...inpts }));
   
   useEffect(() => {
     setIsError(status === 'rejected')
@@ -95,13 +95,13 @@ function useCreateWagerMutation(){
   const data = useAppSelector((state: RootState) => selectCreateWagerMutationData(state));
   const status = useAppSelector((state: RootState) => selectCreateWagerMutationStatus(state));
   const error = useAppSelector((state: RootState) => selectCreateWagerMutationError(state));
+
   const [isError, setIsError] = useState<boolean>();
   const [isLoading, setisloading] = useState<boolean>();
   const [isIdle, setIsIdle] = useState<boolean>();
   const [isSuccess, setIsSuccess] = useState<boolean>();
-  const createWager = (inpts: { token: HexIshString, creator: HexIshString, accountsCount: number, wager: number }) => {
-    dispatch(createWagerMutation({ ...inpts }));
-  };
+  
+  const createWager = (inpts: { tokenAddress: HexIshString, playerAddress: HexIshString, accountsCount: number, wager: number }) => dispatch(createWagerMutation({ ...inpts }));
   
   useEffect(() => {
     setIsError(status === 'rejected');

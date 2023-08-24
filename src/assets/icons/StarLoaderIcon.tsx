@@ -2,9 +2,10 @@ import { SVGProps } from "react";
 
 interface StarloaderIconProps {
   color?: string;
+  loading?: boolean;
 }
 
-const SvgComponent = ({ ...props }: SVGProps<SVGSVGElement> & StarloaderIconProps ) => {
+const SvgComponent: React.FC<StarloaderIconProps & SVGProps<SVGSVGElement>> = ({ loading, ...props }: SVGProps<SVGSVGElement> & StarloaderIconProps ) => {
   return (<svg
     width={16}
     height={16}
@@ -12,7 +13,7 @@ const SvgComponent = ({ ...props }: SVGProps<SVGSVGElement> & StarloaderIconProp
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
-    className={ props["aria-busy"] ? props.className?.concat(' animate-spin') : props.className}
+    className={ loading ? props.className?.concat(' animate-spin') : props.className}
   >
     <g clipPath="url(#clip0_3321_5762)" stroke="black">
       <path

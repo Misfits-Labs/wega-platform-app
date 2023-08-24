@@ -21,13 +21,15 @@ export const appApiSlice = createApi({
   reducerPath: 'platform-api',
   tagTypes: ['Games', 'Game'],
   endpoints: (builder) => ({
-    createPlayer: builder.mutation<string, Partial<User> & Pick<User, 'uuid'>>({
+    createPlayer: builder.mutation<any, Partial<User> & Pick<User, 'uuid'>>({
       query: (walletAddress) => ({
         url: '/users',
         method: 'POST',
         body: { walletAddress }
       }),
-      transformResponse: (response: string) => { return response },
+      transformResponse: (response: any) => { 
+        return response.uuid 
+      },
     }),
     getGames: builder.query<any, void>({
       query: () => ({

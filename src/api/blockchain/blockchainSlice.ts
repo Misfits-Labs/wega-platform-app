@@ -24,12 +24,12 @@ interface BlockchainState {
   error: any;
  },
  approveERC20: {
-  data: HexIshString | undefined;
+  data: any;
   status: RequestState;
   error: any;
  } 
  createWager: {
-  data: HexIshString | undefined;
+  data: any;
   status: RequestState;
   error: any;
  },

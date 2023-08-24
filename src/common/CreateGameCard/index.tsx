@@ -28,14 +28,16 @@ import { ErrorMessage } from '@hookform/error-message';
 import { ArrowDownIcon, StarLoaderIcon } from '../../assets/icons';
 import tw from 'twin.macro';
 import { useForm } from 'react-hook-form';
-import { useBalance, useWaitForTransaction } from 'wagmi';
-import { useBlockchainHelpers, useBlockchainApiHooks, useAppSelector } from '../../hooks';
+import { useBalance } from 'wagmi';
+import { useBlockchainApiHooks, useAppSelector } from '../../hooks';
 import { selectWagerApproved } from '../../api/blockchain/blockchainSlice';
+import { useCreateGameMutation } from '../../containers/App/api';
 import toast from 'react-hot-toast';
 import { toastSettings } from '../../utils';
 import Button from '../Button';
 import { ToggleWagerBadge } from '../ToggleWagerBadge';
 import { useFormReveal } from './animations';
+import { utils } from 'ethers';
 
 
 
@@ -45,6 +47,7 @@ export interface CreateGameCardInterface {
   tokenAddress: HexIshString;
   playerAddress: HexIshString;
   gameType: AllPossibleWegaTypes;
+  playerUuid: string;
 }
 
 const CreateGameCard = ({ 
@@ -52,6 +55,7 @@ const CreateGameCard = ({
   currencyType,
   tokenAddress,
   playerAddress,
+  playerUuid,
   gameType,
   ...rest 
 }: CreateGameCardInterface & React.Attributes & React.AllHTMLAttributes<HTMLDivElement> ) => {
@@ -65,19 +69,10 @@ const CreateGameCard = ({
   
   const { 
     useAllowanceQuery,
-    useApproveERC20Mutation, 
+    useApproveERC20Mutation,
+    useCreateWagerMutation,
   } = useBlockchainApiHooks;
-  const isWagerApproved = useAppSelector(state => selectWagerApproved(state))
-  const { 
-    createWagerMutation,
-  } = useBlockchainHelpers();
   
-  const { isLoading: isGetAllowanceLoading, allowance } = useAllowanceQuery();
-  const { isLoading: isApproveAllowanceLoading, data: approveMutationHash, approveERC20 } = useApproveERC20Mutation();
-
-
-  // get user usdt balance;
-  // const [wager, setWager] = useGetSet<number>(0);
   const { register, formState: { errors }, getValues, watch, handleSubmit, setValue } = useForm({ 
     mode: 'onChange', 
     resolver: joiResolver(createGameSchema('wager')) , 
@@ -86,41 +81,57 @@ const CreateGameCard = ({
       wager: 1
     }
   });
-
+  
+  // approval for allowance
+  const isWagerApproved = useAppSelector(state => selectWagerApproved(state));
+  const { isLoading: isGetAllowanceLoading, allowance } = useAllowanceQuery();
+  
   // get token balance of user
   const { data: userWagerBalance, isLoading: isWagerbalanceLoading } = useBalance({ 
     address: playerAddress,
     token: tokenAddress,
   })
-
-  // wait for mint of approval
-  const { data: wagerApprovalReceipt, isLoading: isWagerApprovalLoading, isSuccess: wagerApprovalSuccess } = useWaitForTransaction({
-    hash: approveMutationHash,
-  })
-
-  const triggerWagerApprovalToast = useRef<any>();
+  
+  // approve token
+  const { isLoading: isApproveERC20Loading, approveERC20 } = useApproveERC20Mutation();  
   const handleApproveWagerClick = ({ wager }: { wager: number }) => {
-    triggerWagerApprovalToast.current = false;
     approveERC20(tokenAddress, wager);
   };
-
-  const handleCreateGameClick = ({ wager }: { wager: number }) => {
-    createWagerMutation.createWager({ token: tokenAddress, creator: playerAddress, numberOfPlayers: 2, wager })
+  
+  // create game
+  const { isLoading: isCreateWagerLoading,  createWager } = useCreateWagerMutation();
+  const [ createGame, { isLoading: isCreateGameLoading  } ] = useCreateGameMutation();
+  const handleCreateGameClick = async ({ wager }: { wager: number }) => {
+    try {
+      const data = await createWager({ tokenAddress, playerAddress, accountsCount: 2, wager }).unwrap();
+      await createGame({ 
+        gameType, 
+        players: [ { uuid: playerUuid } ], 
+        wager: { 
+          wagerType: wagerType.toUpperCase() as AllPossibleWagerTypes, 
+          wagerHash: data.wagerId as string, 
+          tokenAddress, 
+          wagerAmount: utils.parseEther(String(wager)).toString(), 
+          wagerCurrency: currencyType,
+          nonce: data.nonce, 
+        } 
+      }).unwrap();
+      toast.success('Create game success', { ...toastSettings('success', 'top-center') as any });
+    } catch (e: any){
+      const message = e?.message ?? 'Create game error'
+      toast.error(message, { ...toastSettings('error', 'bottom-center') as any });
+    }
   }
-
+  
   const handleWagerOptionClicked = (e: any, wagerAmount: number) => {
     e.preventDefault();
     setValue("wager", wagerAmount);
   }
 
+
   useEffect(() => {
     allowance(tokenAddress, playerAddress, getValues('wager'));
-    // alert user
-    if(wagerApprovalReceipt && wagerApprovalSuccess && !triggerWagerApprovalToast.current) {
-      toast.success('Wager approval success', {... {...toastSettings('promise', 'top-center') } as any });
-      triggerWagerApprovalToast.current = true;
-    }
-  }, [watch('wager'), tokenAddress, wagerApprovalReceipt]);
+  }, [watch('wager'), tokenAddress ]);
   
 
 
@@ -184,12 +195,12 @@ const CreateGameCard = ({
         {
           isWagerApproved ? 
           <Button type="submit" buttonType="primary" tw="flex">
-              { isWagerApprovalLoading ? "Loading..." : "Start game" }
-              <StarLoaderIcon area-busy={isWagerApprovalLoading} color="#000000" tw="h-[16px] w-[16px] ms-[5px]" />
+              { (isCreateWagerLoading || isCreateGameLoading) ? "Loading..." : "Start game" }
+              <StarLoaderIcon loading={(isCreateWagerLoading || isCreateGameLoading)} color="#000000" tw="h-[16px] w-[16px] ms-[5px]" />
           </Button> :
           <Button type="submit" buttonType="primary" tw="flex">
-            { (isGetAllowanceLoading || isApproveAllowanceLoading) ? "Loading..." : "Approve" }
-            <StarLoaderIcon aria-busy={isGetAllowanceLoading || isApproveAllowanceLoading} color="#000000" tw="h-[16px] w-[16px] ms-[5px]" />
+            { (isGetAllowanceLoading || isApproveERC20Loading) ? "Loading..." : "Approve" }
+            <StarLoaderIcon loading={(isGetAllowanceLoading || isApproveERC20Loading)} color="#000000" tw="h-[16px] w-[16px] ms-[5px]" />
           </Button>
         }
         {/* button approve */}

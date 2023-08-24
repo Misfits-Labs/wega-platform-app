@@ -38,19 +38,19 @@ export class BlockchainAPI implements IBlockchainAPI {
  
  constructor(){}
  
- async createWagerAndDeposit({ token, creator, accountsCount, wager }: {
-  token: HexIshString
-  creator: HexIshString
+ async createWagerAndDeposit({ tokenAddress, playerAddress, accountsCount, wager }: {
+  tokenAddress: HexIshString
+  playerAddress: HexIshString
   accountsCount: number,
   wager: number,
  }){
   const playerNum = BigNumber.from(accountsCount).toBigInt()
-  const wagerAsBigint = BigNumber.from(wager).toBigInt()
+  const wagerAsBigint = utils.parseEther(String(wager)).toBigInt()
 
   const config = await prepareWriteContract({
     ...this.escrowConfig,
     functionName: 'createWagerAndDeposit',
-    args: [ token, creator, playerNum, wagerAsBigint ]
+    args: [ tokenAddress, playerAddress, playerNum, wagerAsBigint ]
   })
   return await this.handleWriteRequest(config);
  }
@@ -100,9 +100,9 @@ export class BlockchainAPI implements IBlockchainAPI {
   return Number(utils.formatEther(deposit));
  }
 
- async hash({ token, creator, accountsCount, wager }: 
-  { token: HexIshString, 
-    creator: HexIshString, 
+ async hash({ tokenAddress, playerAddress , accountsCount, wager }: 
+  { tokenAddress: HexIshString, 
+    playerAddress: HexIshString, 
     accountsCount: number, 
     wager: number 
   }) {
@@ -113,7 +113,7 @@ export class BlockchainAPI implements IBlockchainAPI {
     abi: this.escrowConfig.abi,
     functionName: 'currentNonce',
     args: [
-      creator,
+      playerAddress,
     ]
   });
   const hash = await readContract({
@@ -121,14 +121,14 @@ export class BlockchainAPI implements IBlockchainAPI {
     abi: this.escrowConfig.abi,
     functionName: 'hash',
     args: [ 
-      token,
-      creator,
+      tokenAddress,
+      playerAddress,
       numPlayers,
       wagerAsBigInt,
       nonce,
     ]
    });
-   return hash;
+   return { hash, nonce: Number(nonce.toString()) };
  }
  
  handleError(error: any, customMessage: string){
