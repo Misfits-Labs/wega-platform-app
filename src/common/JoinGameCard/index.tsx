@@ -158,24 +158,20 @@ const JoinGameCard = ({
           {/* balance of users currency type */}
         </div>
         {/* <Button buttonType="primary"><>Approve</></Button> */}
-        { 
-          (isWagerApproved && !isDepositWagerSuccess && !isUpdateGameSuccess) ?
-          <Button type="submit" buttonType="primary" tw="flex">
-          {(isDepositWagerLoading || isUpdateGameLoading) ? "Loading..." : "Deposit" }
-          <StarLoaderIcon color="#000000" tw="h-[16px] w-[16px] ms-[5px]" />
-          </Button> : <Link to={`/${gameType.toLowerCase()}/play/${gameId}`}>
-            <Button buttonType="primary" tw="flex">
-              Play
-            <StarLoaderIcon className="dark:fill-blanc h-[16px] w-[16px] ms-[5px]" />
-            </Button>
-          </Link>    
-        }
 
-        { !isWagerApproved &&
+        { !isWagerApproved ?
           <Button type="submit" buttonType="primary" tw="flex">
               { (isGetAllowanceLoading || isApproveERC20Loading) ? "Loading..." : "Approve" }
               <StarLoaderIcon loading={(isGetAllowanceLoading || isApproveERC20Loading)} color="#000000" tw="h-[16px] w-[16px] ms-[5px]" />
-          </Button> 
+          </Button> : !isDepositWagerSuccess && !isUpdateGameSuccess ? <Button type="submit" buttonType="primary" tw="flex">
+          {(isDepositWagerLoading || isUpdateGameLoading) ? "Loading..." : "Deposit" }
+          <StarLoaderIcon color="#000000" tw="h-[16px] w-[16px] ms-[5px]" /> 
+          </Button> : <Link to={`/${gameType.toLowerCase()}/play/${gameId}`}>
+            <Button buttonType="primary" tw="flex">
+              Play
+            <StarLoaderIcon className="dark:fill-pretu h-[16px] w-[16px] ms-[5px]" />
+            </Button>
+          </Link>
         }
         {/* details */}
         {/* wager  */}

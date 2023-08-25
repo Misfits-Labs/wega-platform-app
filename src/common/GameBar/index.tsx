@@ -30,7 +30,7 @@ export const BADGE_TEXTS: any = {
 }
 
 interface GameBarProps {
- gameBarType: 'playable' | 'joinable';
+ gameBarType?: 'playable' | 'joinable';
 }
 
 function GameBar({ gameId , gameBarType, ...rest}: { gameId: number } & React.Attributes & Partial<React.AllHTMLAttributes<HTMLDivElement>> & GameBarProps) {
@@ -57,12 +57,12 @@ function GameBar({ gameId , gameBarType, ...rest}: { gameId: number } & React.At
     
     {/* render for a joinable game */} 
     {  
-      gameBarType == 'joinable' && <ButtonForJoinableGame gameType={game.gameType} gameId={game.id} />  
+      gameBarType == 'joinable' || game.players.length < 1 && <ButtonForJoinableGame gameType={game.gameType} gameId={game.id} />  
     }
 
     {/* playable game button */}
     {  
-      gameBarType == 'playable' && <ButtonForWaitingGame gameType={game.gameType} gameId={game.id} />  
+      gameBarType == 'playable' ||  game.players.length > 1 && <ButtonForWaitingGame gameType={game.gameType} gameId={game.id} />  
     }
 
    </BarWrapper>
