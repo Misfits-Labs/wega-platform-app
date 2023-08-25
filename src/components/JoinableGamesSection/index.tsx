@@ -1,5 +1,5 @@
 import Section from '../../common/Section';
-import JoinableGameBar from '../../common/JoinableGameBar';
+import GameBar from '../../common/GameBar';
 import { JoinableGamesHeaderBar } from '../../common/JoinableGameBar/types';
 // import {  constants } from 'ethers'
 
@@ -20,7 +20,7 @@ function JoinableGamesSection({ gameIds , ...rest }: JoinableGamesSectionProps){
     </JoinableGamesHeaderBar>
     {
       gameIds.map(
-      (dg, i) => (<JoinableGameBar gameId={dg} key={`joinable-game-bar${i}`} className="dark:bg-[#1C1C1C] py-2 px-3 rounded-[5px]" />))
+      (dg, i) => (<GameBar gameBarType="joinable" gameId={dg} key={`joinable-game-bar${i}`} className="dark:bg-[#1C1C1C] py-2 px-3 rounded-[5px]" />))
     }
     {/* <div className="flex flex-column justify-center items-center">
     </div> */}

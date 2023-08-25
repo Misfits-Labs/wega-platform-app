@@ -7,6 +7,7 @@ import {
  approveERC20Mutation,
  createWagerMutation,
  depositOfQuery,
+ depositWagerMutation,
 } from './thunks';
 
 type RequestState = 'pending' | 'fulfilled' | 'rejected' | 'idle';
@@ -38,6 +39,11 @@ interface BlockchainState {
   status: RequestState;
   error: any;
  }
+ depositWager: {
+  data: number | undefined;
+  status: RequestState;
+  error: any;
+ }
 }
 
 export const initialBlockchainState: BlockchainState = {
@@ -63,6 +69,11 @@ export const initialBlockchainState: BlockchainState = {
   error: undefined,
  },
  depositOf: { // refers to the hash from mutation
+  data: undefined,
+  status: 'idle',
+  error: undefined,
+ },
+ depositWager: { // refers to the hash from mutation
   data: undefined,
   status: 'idle',
   error: undefined,
@@ -101,13 +112,14 @@ const blockchainSlice = createSlice({
   });
 
   // erc20 approval
-  builder.addCase(approveERC20Mutation.pending, (state, action) => { state.hash.status = action.meta.requestStatus });
+  builder.addCase(approveERC20Mutation.pending, (state, action) => { state.approveERC20.status = action.meta.requestStatus });
   builder.addCase(approveERC20Mutation.rejected, (state, action) => { 
    state.approveERC20.status = action.meta.requestStatus;
    state.approveERC20.error = action.payload; 
   });
   builder.addCase(approveERC20Mutation.fulfilled, (state, action) => { 
    state.approveERC20.status = action.meta.requestStatus;
+   console.log(action.payload)
    state.approveERC20.data = action.payload;
   });
 
@@ -121,7 +133,6 @@ const blockchainSlice = createSlice({
    state.createWager.status = action.meta.requestStatus;
    state.createWager.data = action.payload;
   });
-
   // get user deposits
   builder.addCase(depositOfQuery.pending, (state, action) => { state.depositOf.status = action.meta.requestStatus });
   builder.addCase(depositOfQuery.rejected, (state, action) => { 
@@ -131,6 +142,16 @@ const blockchainSlice = createSlice({
   builder.addCase(depositOfQuery.fulfilled, (state, action) => { 
    state.depositOf.status = action.meta.requestStatus;
    state.depositOf.data = action.payload;
+  });
+  // deposit wager
+  builder.addCase(depositWagerMutation.pending, (state, action) => { state.depositWager.status = action.meta.requestStatus });
+  builder.addCase(depositWagerMutation.rejected, (state, action) => { 
+   state.depositWager.status = action.meta.requestStatus;
+   state.depositWager.error = action.payload; 
+  });
+  builder.addCase(depositWagerMutation.fulfilled, (state, action) => { 
+   state.depositWager.status = action.meta.requestStatus;
+   state.depositWager.data = action.payload;
   });
  }
 });
@@ -157,6 +178,11 @@ export const selectHashWagerQueryError = (state: RootState) => state.blockchain.
 export const selectCreateWagerMutationData = (state: RootState) => state.blockchain.createWager.data;
 export const selectCreateWagerMutationStatus = (state: RootState) => state.blockchain.createWager.status;
 export const selectCreateWagerMutationError = (state: RootState) => state.blockchain.createWager.error;
+
+// deposit wager mutation 
+export const selectDepositWagerMutationData = (state: RootState) => state.blockchain.depositWager.data;
+export const selectDepositWagerMutationStatus = (state: RootState) => state.blockchain.depositWager.status;
+export const selectDepositWagerMutationError = (state: RootState) => state.blockchain.depositWager.error;
 
 // depositOf query 
 export const selectDepositOfQueryData = (state: RootState) => state.blockchain.depositOf.data;

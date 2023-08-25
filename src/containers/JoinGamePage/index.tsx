@@ -4,13 +4,14 @@ import { SectionHeaderTitle } from '../../common/Section/types';
 import JoinGameCard from '../../common/JoinGameCard';
 import 'twin.macro';
 // import JoinableGamesSection from '../../components/JoinableGamesSection';
-import {  AllPossibleWegaTypes  } from '../../models';
+import {  AllPossibleWegaTypes, HexIshString  } from '../../models';
 import { SupportedWagerTokenAddresses } from '../../models/constants';
 import { selectGameById } from '../App/api';
 import { useSelector } from 'react-redux';
 import { useWegaStore } from '../../hooks';
 import { ComponentLoader } from '../../common/loaders'
 import { useParams } from 'react-router-dom';
+import { utils } from 'ethers';
 
 const JoinGamePage = () => {
  const { user, network, wallet } = useWegaStore();
@@ -31,6 +32,10 @@ const JoinGamePage = () => {
         playerAddress={wallet.address}
         gameType={game.gameType.toUpperCase() as AllPossibleWegaTypes}
         playerUuid={user.uuid}
+        wagerAmount={Number(utils.formatEther(game.wager.wagerAmount))}
+        gameUuid={game.uuid}
+        escrowId={game.wager.wagerHash as HexIshString}
+        gameId={game.id}
       />
     </Section>
     {/* <JoinableGamesSection gameIds={gameIds}  /> */}

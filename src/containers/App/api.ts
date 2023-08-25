@@ -10,8 +10,8 @@ import {
 } from '../../models';
 const baseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_BACKEND_API_URL,
-  prepareHeaders: (headers, ) => {
-    headers.set('Access-Control-Allow-Origin', '*')
+  prepareHeaders: (headers) => {
+    headers.append('Access-Control-Allow-Origin', '*')
     return headers
   },
 });
@@ -30,6 +30,14 @@ export const appApiSlice = createApi({
       transformResponse: (response: any) => { 
         return response.uuid 
       },
+    }),
+    updateGame: builder.mutation<any, { gameUuid: string, newPlayerUuid: string }>({
+      query: ({gameUuid , newPlayerUuid }) => ({
+        url: `/games/${gameUuid}/join`,
+        method: 'PATCH',
+        body: { newPlayerUuid, uuid: gameUuid }
+      }),
+      invalidatesTags: () => [ { type: 'Games', id: 'LIST' } ]
     }),
     getGames: builder.query<any, void>({
       query: () => ({
@@ -59,7 +67,8 @@ export const appApiSlice = createApi({
 export const {
   useGetGamesQuery,
   useCreateGameMutation,
-  useCreatePlayerMutation
+  useCreatePlayerMutation,
+  useUpdateGameMutation,
  } = appApiSlice;
  
  

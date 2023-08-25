@@ -8,11 +8,20 @@ import {
 } from '../../components/GameCard';
 import 'twin.macro';
 import JoinableGamesSection from '../../components/JoinableGamesSection';
-import { selectAllGamesIds } from '../App/api';
-import { useSelector } from 'react-redux';
+import { useGetGamesQuery } from '../App/api';
+import { useWegaStore } from '../../hooks';
+import { ComponentLoader } from '../../common/loaders';
+import { filter } from 'lodash'
 
 const PlayPage = () => {
-  const gameIds = useSelector(state => selectAllGamesIds(state));
+  const { user } = useWegaStore();
+  const { joinableGameIds, isLoading } = useGetGamesQuery(undefined, {
+    selectFromResult: ({ data, isLoading }) => ({
+      joinableGameIds: data ? Object.entries(data.entities).filter(([, game]: any) => (filter(game.players, { uuid: user?.uuid }).length < 1)).map(([id,]: any) => Number(id)) : [],
+      isLoading,
+    })
+  })
+      
   return (<>
     <Helmet>
     <title>Play</title>
@@ -37,7 +46,7 @@ const PlayPage = () => {
         <RaffleGameCard />
       </div>
     </Section>
-    <JoinableGamesSection gameIds={gameIds} />
+    { !isLoading ? <JoinableGamesSection gameIds={joinableGameIds} /> : <ComponentLoader tw="w-full" /> }
   </>)
 } 
 

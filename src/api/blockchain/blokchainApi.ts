@@ -100,6 +100,20 @@ export class BlockchainAPI implements IBlockchainAPI {
   return Number(utils.formatEther(deposit));
  }
 
+ async deposit(escrowHash: HexIshString, wagerAmount: number){
+  const wagerAmountAsBigInt = utils.parseEther(String(wagerAmount)).toBigInt();
+  const depositConfig = await prepareWriteContract({
+   address: this.escrowConfig.address,
+   abi: this.escrowConfig.abi,
+   functionName: 'deposit',
+   args: [ 
+    escrowHash,
+    wagerAmountAsBigInt,
+   ]
+  })
+  return await this.handleWriteRequest(depositConfig);
+ }
+
  async hash({ tokenAddress, playerAddress , accountsCount, wager }: 
   { tokenAddress: HexIshString, 
     playerAddress: HexIshString, 

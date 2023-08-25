@@ -131,7 +131,7 @@ const CreateGameCard = ({
 
   useEffect(() => {
     allowance(tokenAddress, playerAddress, getValues('wager'));
-  }, [watch('wager'), tokenAddress ]);
+  }, [watch('wager'), tokenAddress, isWagerApproved]);
   
 
 
@@ -195,12 +195,12 @@ const CreateGameCard = ({
         {
           isWagerApproved ? 
           <Button type="submit" buttonType="primary" tw="flex">
-              { (isCreateWagerLoading || isCreateGameLoading) ? "Loading..." : "Start game" }
-              <StarLoaderIcon loading={(isCreateWagerLoading || isCreateGameLoading)} color="#000000" tw="h-[16px] w-[16px] ms-[5px]" />
+              {(isCreateWagerLoading || isCreateGameLoading) ? "Loading..." : "Start game" }
+              <StarLoaderIcon loading={isCreateWagerLoading || isCreateGameLoading} color="#000000" tw="h-[16px] w-[16px] ms-[5px]" />
           </Button> :
           <Button type="submit" buttonType="primary" tw="flex">
-            { (isGetAllowanceLoading || isApproveERC20Loading) ? "Loading..." : "Approve" }
-            <StarLoaderIcon loading={(isGetAllowanceLoading || isApproveERC20Loading)} color="#000000" tw="h-[16px] w-[16px] ms-[5px]" />
+            {(isApproveERC20Loading || isGetAllowanceLoading)  ? "Loading..." : "Approve" }
+            <StarLoaderIcon loading={isApproveERC20Loading || isGetAllowanceLoading} color="#000000" tw="h-[16px] w-[16px] ms-[5px]" />
           </Button>
         }
         {/* button approve */}

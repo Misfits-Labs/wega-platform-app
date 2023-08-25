@@ -9,16 +9,13 @@ import { waitForTransaction } from '@wagmi/core';
  * @note - All blockchain mutation thunks should just return a hash that can be accessed by the hook and can be waited for on the front-end 
 */
 
-export const allowanceQuery = createAsyncThunk<number, { tokenAddress: HexIshString, owner: HexIshString, wager?: number }>('token/allowance',
+export const allowanceQuery = createAsyncThunk<number, { tokenAddress: HexIshString, owner: HexIshString, wager: number }>('token/allowance',
 async ({ tokenAddress, owner, wager }, { rejectWithValue, dispatch }) => {
    const api = new BlockchainAPI();
    try {
     const allowance = await api.allowance(tokenAddress, owner);
-    
-    if(wager){
-      const isApproved = allowance >= wager;
-      dispatch({ type: 'blockchain-api/setApprovedWager',  payload: isApproved })
-    }
+    const isApproved = allowance >= wager;
+    dispatch({ type: 'blockchain-api/setApprovedWager',  payload: isApproved })
     return allowance; 
    } catch (error: any) {
     const message = api.handleError(error, 'Allowance request failed');
@@ -28,16 +25,17 @@ async ({ tokenAddress, owner, wager }, { rejectWithValue, dispatch }) => {
  }
 )
 
-export const approveERC20Mutation = createAsyncThunk<any, { tokenAddress: HexIshString, wager: number }>('token/approve',
- async ({ tokenAddress, wager }, { rejectWithValue }) => {
+export const approveERC20Mutation = createAsyncThunk<HexIshString, { tokenAddress: HexIshString, wager: number }>('token/approve',
+ async ({ tokenAddress, wager }, { rejectWithValue, dispatch }) => {
    const api = new BlockchainAPI();
    try {
     const hash = await api.approveERC20(tokenAddress, wager);
     const receipt = await waitForTransaction({ hash });
     if(receipt) {
       toast.success('Approval success', { ...{ ...toastSettings('success', 'top-center') } as any });
+      dispatch(allowanceQuery({ tokenAddress, wager, owner: receipt.from }))
     }
-    return receipt;
+    return hash;
    } catch (error: any) {
     const message = api.handleError(error, 'ERC20 approval error');
     toast.error(message, { ...{ ...toastSettings('error', 'bottom-center') } as any })
@@ -81,12 +79,30 @@ export const createWagerMutation = createAsyncThunk<any, { tokenAddress: HexIshS
 )
 
 export const depositOfQuery = createAsyncThunk<number, { escrowHash: HexIshString, account: HexIshString }>('escrow/depositOf',
- async (inpts, { rejectWithValue }) => {
-   const api = new BlockchainAPI();
-   try {
+async (inpts, { rejectWithValue }) => {
+  const api = new BlockchainAPI();
+  try {
     return  await api.depositOf(inpts.escrowHash, inpts.account);
-   } catch (error: any) {
+  } catch (error: any) {
     const message = api.handleError(error, 'Query user deposit error');
+    toast.error(message, { ...{ ...toastSettings('error', 'bottom-center') } as any })
+    return rejectWithValue(message);
+  }
+})
+
+
+export const depositWagerMutation = createAsyncThunk<any, { escrowId: HexIshString, wager: number }>('escrow/depositWager',
+ async (inpts, { rejectWithValue }) => {
+  const api = new BlockchainAPI();
+   try {
+      const hash = await api.deposit(inpts.escrowId, inpts.wager);
+      const receipt = await waitForTransaction({ hash });
+    if(receipt) {
+      toast.success('Deposit wager success', { ...{ ...toastSettings('success', 'top-center') } as any });
+    }
+    return hash; // return wager id and nonce since it is required for creating a game
+  } catch (error: any) {
+    const message = api.handleError(error, 'Deposit wager error');
     toast.error(message, { ...{ ...toastSettings('error', 'bottom-center') } as any })
     return rejectWithValue(message);
    }

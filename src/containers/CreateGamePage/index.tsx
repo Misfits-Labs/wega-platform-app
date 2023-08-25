@@ -3,7 +3,7 @@ import Section from '../../common/Section';
 import { SectionHeaderTitle } from '../../common/Section/types';
 import CreateGameCard from '../../common/CreateGameCard';
 import 'twin.macro';
-import JoinableGamesSection from '../../components/JoinableGamesSection';
+import PlayableGamesSection from '../../components/PlayableGamesSection';
 import {  WagerTypes, WagerTypesEnum, CurrencyTypes, CurrencyTypesEnum, AllPossibleWegaTypes  } from '../../models';
 import { SupportedWagerTokenAddresses } from '../../models/constants';
 import { selectAllGamesIds } from '../App/api';
@@ -33,7 +33,7 @@ const CreateGamePage = () => {
         playerUuid={user.uuid}
       />
     </Section>
-    <JoinableGamesSection gameIds={gameIds}  />
+    <PlayableGamesSection gameIds={gameIds}  />
    </> ) : <ComponentLoader tw="min-w-[559px] min-h-[494px]" />
 } 
 
