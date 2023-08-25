@@ -11,7 +11,7 @@ interface JoinableGamesSectionProps extends React.Attributes {
 function JoinableGamesSection({ gameIds , ...rest }: JoinableGamesSectionProps){
   
 
-  return (<Section hdr="Join Matches" direction="col" className="gap-2" { ...rest } >
+  return (<Section hdr="Available Matches" direction="col" className="gap-2" { ...rest } >
     <JoinableGamesHeaderBar>
       <span>Date created</span>
       <span>Game</span>

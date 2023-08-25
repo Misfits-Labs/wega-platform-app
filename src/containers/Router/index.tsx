@@ -1,12 +1,12 @@
 import {
- createHashRouter,
+ createBrowserRouter,
 } from "react-router-dom";
 import Layout from "../Layout";
 import PlayPage  from '../PlayPage';
 import CreateGamePage  from '../CreateGamePage';
 import JoinGamePage  from '../JoinGamePage';
 
-const router = createHashRouter([
+const router = createBrowserRouter([
  {
   path: '/',
   element: <Layout />,

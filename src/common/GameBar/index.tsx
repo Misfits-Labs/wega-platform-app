@@ -57,7 +57,7 @@ function GameBar({ gameId , gameBarType, ...rest}: { gameId: number } & React.At
     
     {/* render for a joinable game */} 
     {  
-      (gameBarType == 'joinable' || game.players.length < 1) && <ButtonForJoinableGame gameType={game.gameType} gameId={game.id} />  
+      (gameBarType == 'joinable' || game.players.length < 2) && <ButtonForJoinableGame gameType={game.gameType} gameId={game.id} />  
     }
 
     {/* playable game button */}
@@ -68,8 +68,7 @@ function GameBar({ gameId , gameBarType, ...rest}: { gameId: number } & React.At
    </BarWrapper>
   )
 }
-{/* <Button buttonType="primary" content='Play' className="w-[75%]" onClick={()=> openConnectModal() } /> :
-<Link to="/coinflip/create" className="w-[75%]"><Button buttonType="primary" content='Play' className="w-[100%]" /></Link> */}
+
 export default GameBar;
 
 const BADGE_GAME_TYPE_COMPONENTS: any = {
