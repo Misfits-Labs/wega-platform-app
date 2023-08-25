@@ -57,12 +57,12 @@ function GameBar({ gameId , gameBarType, ...rest}: { gameId: number } & React.At
     
     {/* render for a joinable game */} 
     {  
-      gameBarType == 'joinable' || game.players.length < 1 && <ButtonForJoinableGame gameType={game.gameType} gameId={game.id} />  
+      (gameBarType == 'joinable' || game.players.length < 1) && <ButtonForJoinableGame gameType={game.gameType} gameId={game.id} />  
     }
 
     {/* playable game button */}
     {  
-      gameBarType == 'playable' ||  game.players.length > 1 && <ButtonForWaitingGame gameType={game.gameType} gameId={game.id} />  
+      (gameBarType == 'playable' ||  game.players.length > 1) && <ButtonForWaitingGame gameType={game.gameType} gameId={game.id} />  
     }
 
    </BarWrapper>
