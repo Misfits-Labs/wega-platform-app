@@ -43,11 +43,12 @@ jobs:
         env:
           GSAP_TOKEN: ${{secrets.GSAP_TOKEN}}
 
-      - run: |
-          yarn install --frozen-lockfile
-          yarn add gsap@npm:@gsap/shockingly
+      - name: Install dependencies
         env:
           GSAP_TOKEN: ${{secrets.GSAP_TOKEN}}
+        run: |
+          yarn install --frozen-lockfile
+          yarn add gsap@npm:@gsap/shockingly
 
       # Due to front-end nature of environment config, need specific image for each environment
       - name: Build image qa
