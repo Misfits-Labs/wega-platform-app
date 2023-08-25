@@ -39,11 +39,11 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{env.NODEJS_VERSION}}
-          # yarn.lock is ignored?
-          #cache: 'yarn'
-      #- run: yarn install --frozen-lockfile
-      # yarn.lock is ignored?
-      - run: npm install
+          cache: 'yarn'
+
+      - run: |
+          yarn install --frozen-lockfile
+          yarn add gsap@npm:@gsap/shockingly
         env:
           GSAP_TOKEN: ${{secrets.GSAP_TOKEN}}
 
