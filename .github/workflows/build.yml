@@ -40,6 +40,8 @@ jobs:
         with:
           node-version: ${{env.NODEJS_VERSION}}
           cache: 'yarn'
+        env:
+          GSAP_TOKEN: ${{secrets.GSAP_TOKEN}}
 
       - run: |
           yarn install --frozen-lockfile
