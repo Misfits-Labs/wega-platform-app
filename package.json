@@ -31,7 +31,6 @@
     "axios": "^1.4.0",
     "cli^1.2.0": "link:@wagmi/cli^1.2.0",
     "ethers": "^5",
-    "gsap": "npm:@gsap/shockingly",
     "joi": "^17.9.2",
     "react": "^18.2.0",
     "react-blockies": "^1.4.1",
