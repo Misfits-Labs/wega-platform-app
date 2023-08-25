@@ -15,9 +15,10 @@ import { filter } from 'lodash'
 
 const PlayPage = () => {
   const { user } = useWegaStore();
-  const { joinableGameIds, isLoading } = useGetGamesQuery(undefined, {
-    selectFromResult: ({ data, isLoading }) => ({
-      joinableGameIds: data ? Object.entries(data.entities).filter(([, game]: any) => (filter(game.players, { uuid: user?.uuid }).length < 1)).map(([id,]: any) => Number(id)) : [],
+  const { joinableGameIds, isLoading, playableGameIds } = useGetGamesQuery(undefined, {
+    selectFromResult: ({ data, isLoading, isSuccess  }) => ({
+      joinableGameIds: data ? isSuccess && Object.entries(data.entities).filter(([, game]: any) => (filter(game.players, { uuid: user?.uuid }).length < 1)).map(([id,]: any) => Number(id)) : [],
+      playableGameIds: data ? isSuccess && Object.entries(data.entities).filter(([, game]: any) => (filter(game.players, { uuid: user?.uuid }).length > 0)).map(([id,]: any) => Number(id)) : [],
       isLoading,
     })
   })
@@ -46,7 +47,7 @@ const PlayPage = () => {
         <RaffleGameCard />
       </div>
     </Section>
-    { !isLoading ? <JoinableGamesSection gameIds={joinableGameIds} /> : <ComponentLoader tw="w-full" /> }
+    { !isLoading && joinableGameIds && playableGameIds  ? <JoinableGamesSection gameIds={[...joinableGameIds, ...playableGameIds]} /> : <ComponentLoader tw="w-full" /> }
   </>)
 } 
 
