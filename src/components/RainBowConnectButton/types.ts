@@ -71,15 +71,14 @@ export const ConnectionInformation = styled.div`
   background: #232323; 
   border-radius: 20px;
   padding-left: 16px;
-  ${tw`flex justify-center`}
+  width: max-content;
+  ${tw`flex justify-center items-center`}
 `
 export const Chain = styled.div`
-  > img {
-    width: 24px;
-    height: 24px;
-  }
+  
 `
 export const Balance = styled.span`
+  width: fit-content;
   line-height: 9px;
   font-family: League Spartan;
   font-size: 12px;

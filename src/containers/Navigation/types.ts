@@ -1,7 +1,7 @@
 import tw, { styled } from 'twin.macro'
 
 
-export const BrandContainer = styled.ul`
+export const BrandContainer = styled.div`
  display: flex;
  align-items: end;
  box-sizing: border-box;
@@ -11,7 +11,7 @@ export const BrandContainer = styled.ul`
 
 `
 
-export const Brand = styled.li`
+export const Brand = styled.div`
  font-weight: 700;
  font-size: 32px;
  line-height: 0.8;
@@ -28,31 +28,8 @@ export const Brand = styled.li`
  }
 `
 
-export const NavigationLinksContainer = styled.ul`
-flex-grow: 1;
-display: grid;
-align-content: end;
-justify-content: center;
-grid-template-columns: 0.05fr 0.05fr 0.05fr 0.75fr;
+export const NavigationLinksContainer = styled.div`
 box-sizing: border-box;
-
-> li {
-   display: flex;
-   align-items: flex-end;
-   box-sizing: border-box;
-   -webkit-box-sizing: border-box;
-   
-   a {
-       display: block;
-       box-sizing: border-box;
-       &:hover {
-           border-bottom: 1px solid #FDFDFD;
-       }
-       & span {
-           padding-bottom: 0.5rem;
-       } 
-   }
- }
  & div:last-child, li:nth-child(4) {
    justify-self: flex-end;
    align-items: center;

@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unknown-property */
 import { Link } from 'react-router-dom';
 import { LogoDarkWo } from '../../assets/images';
 import { 
@@ -8,31 +9,43 @@ import {
 } from './types';
 import RainbowConnectButton from '../../components/RainBowConnectButton';
 import { useAnimateNav } from '../../hooks';
-import 'twin.macro';
+import tw, { css } from 'twin.macro';
 
 const Navigation = () => {
   useAnimateNav();
+  const liElementStyle = css`
+   > li {
+    ${tw`box-border`}
+    a {
+      ${tw`block border-b-[2px] border-[transparent] hover:dark:border-oranjo`} 
+    }
+   }
+  ` 
 
   return (
-    <NavigationBar className="box-border fixed w-full top-0 font-primary">
-      <div tw="container dark:text-blanc flex w-full py-5 px-[20px] justify-center">
-        <BrandContainer>
-          <li tw="mr-5">
-            <Link to="/"><LogoDarkWo /></Link>
-          </li>
-          <Brand><Link to="/">Wega</Link><span className="ms-2"><sup>Play</sup></span></Brand>
-        </BrandContainer>
-        <NavigationLinksContainer tw="box-border">
-          <li><Link to="/play"><span>Play</span></Link></li>
-          <li><Link to="/swap"><span>Swap</span></Link></li>
-          <li><Link to="/wins"><span>Mint</span></Link></li>
-          <li>
-            <RainbowConnectButton />
-          </li>
+    <NavigationBar className="fixed w-full top-0 font-primary">
+      <div tw="container dark:text-blanc flex w-full py-[20px] px-[20px] justify-center items-end">
+        <NavigationLinksContainer tw="box-border flex w-full gap-x-[30px]">
+          <BrandContainer tw="mb-[4px]">
+            <div tw="mr-5">
+              <Link to="/"><LogoDarkWo /></Link>
+            </div>
+            <Brand><Link to="/">Wega</Link></Brand>
+          </BrandContainer>
+          <ul tw="block flex items-end" css={[liElementStyle]} >
+            <li><Link to="/play" tw="px-[8px]"><span>Play</span></Link></li>
+            <li><Link to="/swap" tw="px-[8px]"><span>Swap</span></Link></li>
+            <li><Link to="/wins" tw="px-[8px]"><span>Mint</span></Link></li>
+          </ul>
         </NavigationLinksContainer>
+        {/* this is the button */}
+        <div> 
+          <RainbowConnectButton />
+        </div>
       </div>
     </NavigationBar>
   )
 }
 
 export default Navigation;
+
