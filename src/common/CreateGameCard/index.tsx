@@ -37,6 +37,7 @@ import { toastSettings } from '../../utils';
 import Button from '../Button';
 import { ToggleWagerBadge } from '../ToggleWagerBadge';
 import { useFormReveal } from './animations';
+import { useNavigate } from 'react-router-dom';
 import { utils } from 'ethers';
 
 
@@ -57,6 +58,8 @@ const CreateGameCard = ({
   playerAddress,
   playerUuid,
   gameType,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  css, 
   ...rest 
 }: CreateGameCardInterface & React.Attributes & React.AllHTMLAttributes<HTMLDivElement> ) => {
   
@@ -64,7 +67,6 @@ const CreateGameCard = ({
   const detailsBlock = useRef<HTMLDivElement>(null)
   const [currentWagerType] = useState<AllPossibleWagerTypes>(wagerType);
   const [currentCurrencyType, setCurrentCurrencyType] = useState<AllPossibleCurrencyTypes>(currencyType);
-  
   const {revealed, triggerRevealAnimation} = useFormReveal(false, formRef, detailsBlock);
   
   const { 
@@ -99,21 +101,22 @@ const CreateGameCard = ({
   };
   
   // create game
+  const navigate = useNavigate();
   const { isLoading: isCreateWagerLoading,  createWager } = useCreateWagerMutation();
-  const [ createGame, { isLoading: isCreateGameLoading  } ] = useCreateGameMutation();
+  const [ createGame, { isLoading: isCreateGameLoading, status: createGameStatus, data: createGameResponse  } ] = useCreateGameMutation();
   const handleCreateGameClick = async ({ wager }: { wager: number }) => {
     try {
-      const data = await createWager({ tokenAddress, playerAddress, accountsCount: 2, wager }).unwrap();
+      const createWagerData = await createWager({ tokenAddress, playerAddress, accountsCount: 2, wager }).unwrap();
       await createGame({ 
         gameType, 
         players: [ { uuid: playerUuid } ], 
         wager: { 
           wagerType: wagerType.toUpperCase() as AllPossibleWagerTypes, 
-          wagerHash: data.wagerId as string, 
+          wagerHash: createWagerData.wagerId as string, 
           tokenAddress, 
           wagerAmount: utils.parseEther(String(wager)).toString(), 
           wagerCurrency: currencyType,
-          nonce: data.nonce, 
+          nonce: createWagerData.nonce, 
         } 
       }).unwrap();
       toast.success('Create game success', { ...toastSettings('success', 'top-center') as any });
@@ -128,13 +131,15 @@ const CreateGameCard = ({
     setValue("wager", wagerAmount);
   }
 
+  const navigateToGameUi = (url: string, t: number, opts: any) => setTimeout(() => navigate(url, { replace: true, ...opts }), t); 
 
   useEffect(() => {
     allowance(tokenAddress, playerAddress, getValues('wager'));
-  }, [watch('wager'), tokenAddress, isWagerApproved]);
+    if(createGameStatus === 'fulfilled' && createGameResponse) {
+      navigateToGameUi(`${gameType}/${createGameResponse.uuid}`, 1500, {})
+    }
+  }, [watch('wager'), tokenAddress, isWagerApproved, createGameStatus, createGameResponse]);
   
-
-
   return (
     <form 
       tw="w-full flex flex-row justify-center" 

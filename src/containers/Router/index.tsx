@@ -5,6 +5,7 @@ import Layout from "../Layout";
 import PlayPage  from '../PlayPage';
 import CreateGamePage  from '../CreateGamePage';
 import JoinGamePage  from '../JoinGamePage';
+import PlayGamePage  from '../PlayGamePage';
 
 const router = createBrowserRouter([
  {
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
      {
       path: 'join/:id',
       element: <JoinGamePage />
+     },
+     {
+      path: 'play/:id',
+      element: <PlayGamePage />
      }
     ]
    },

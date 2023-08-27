@@ -38,7 +38,6 @@ const Navigation = () => {
             <li><Link to="/wins" tw="px-[8px]"><span>Mint</span></Link></li>
           </ul>
         </NavigationLinksContainer>
-        {/* this is the button */}
         <div> 
           <RainbowConnectButton />
         </div>

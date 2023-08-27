@@ -22,7 +22,7 @@ const CreateGamePage = () => {
     </Helmet>
     <Section 
      direction='col' 
-     hdr={<SectionHeaderTitle tw='justify-center'><span>Choose your wager</span></SectionHeaderTitle>}
+     hdr={<SectionHeaderTitle tw='justify-center' ><span>Choose your wager</span></SectionHeaderTitle>}
     >
       <CreateGameCard 
         wagerType={WagerTypes[WagerTypesEnum.TOKEN]}  
@@ -33,7 +33,7 @@ const CreateGamePage = () => {
         playerUuid={user.uuid}
       />
     </Section>
-    <PlayableGamesSection gameIds={gameIds}  />
+    <PlayableGamesSection gameIds={gameIds} />
    </> ) : <ComponentLoader tw="min-w-[559px] min-h-[494px]" />
 } 
 
