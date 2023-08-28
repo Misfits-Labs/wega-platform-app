@@ -56,8 +56,8 @@ jobs:
           NPM_TOKEN:  ${{secrets.NPM_TOKEN}}
           VITE_RPC_PROVIDER_ALCHEMY:  ${{secrets.VITE_RPC_PROVIDER_ALCHEMY}}
           VITE_WALLET_CONNECT_ID:  ${{secrets.VITE_WALLET_CONNECT_ID}}
-          VITE_API_BACKEND_URL: ${{ vars.VITE_API_BACKEND_URL }}
-        run: |
+          VITE_BACKEND_API_URL: ${{ vars.VITE_BACKEND_API_URL }}
+        run: |  
           # cp .env.qa .env
           # TODO Temporary disable CI to test deployment
           CI=false yarn build
