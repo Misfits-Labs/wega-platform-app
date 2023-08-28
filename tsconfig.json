@@ -19,7 +19,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "jsxImportSource": "@emotion/react",
+    "types": ["vite/client"]
   },
   "include": ["src/**/*.tsx", "types"],
   "references": [{ "path": "./tsconfig.node.json" }],

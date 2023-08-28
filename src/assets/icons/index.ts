@@ -23,3 +23,5 @@ export { default as StarLoaderIcon } from './StarLoaderIcon';
 export { default as USDTIcon } from './USDTIcon';
 export { default as ArrowDownIcon } from './ArrowDownIcon';
 export { default as WegaLoaderIcon } from './WegaLoaderIcon';
+export { default as HelpCircleIcon } from './HelpCircleIcon';
+export { default as ClockIcon } from './ClockIcon';

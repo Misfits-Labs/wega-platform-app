@@ -9,7 +9,7 @@ const { chains, publicClient } = configureChains(
   [polygonMumbai, localhost],
   [alchemyProvider({ apiKey: import.meta.env.VITE_RPC_PROVIDER_ALCHEMY as string }), publicProvider()]
 );
-const projectId = import.meta.env.VITE_WALLET_CONNECT_ID as string; 
+const projectId = import.meta.env.VITE_WALLET_CONNECT_ID as string;
 const { wallets } = getDefaultWallets({
   appName: 'Wega - Play Together Own Together',
   projectId,

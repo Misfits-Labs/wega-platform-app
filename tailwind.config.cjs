@@ -46,6 +46,15 @@ export default {
       },
       boxShadow: {
         'wega-nav': '0rem -3.5rem 1.5rem 5rem var(#151515)',
+      },
+      animation: {
+        'rotate-orbs': 'rotate-orbs 10s linear 5s infinite',
+      },
+      keyframes: {
+        'rotate-orbs': {
+          'from': { 	transform: "rotate(0deg) translateX(100px) rotate(360deg)" },
+          'to':   {  transform: "rotate(360deg) translateX(100px) rotate(0deg)" }
+        }
       }
     },
     container: {

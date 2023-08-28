@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async'; 
 import Section from '../../common/Section';
-import { SectionHeaderTitle } from '../../common/Section/types';
+import { SectionHeaderTitle, SectionHeaderContainer } from '../../common/Section/types';
 import JoinGameCard from '../../common/JoinGameCard';
 import 'twin.macro';
 // import JoinableGamesSection from '../../components/JoinableGamesSection';
@@ -23,8 +23,11 @@ const JoinGamePage = () => {
     </Helmet>
     <Section 
      direction='col' 
-     hdr={<SectionHeaderTitle tw='justify-center'><span>Match wager</span></SectionHeaderTitle>}
-    >
+     hdr={
+      <SectionHeaderContainer tw='justify-center'>
+        <SectionHeaderTitle>Match wager</SectionHeaderTitle>
+      </SectionHeaderContainer>}
+      >
       <JoinGameCard 
         wagerType={game.wager.wagerType}  
         currencyType={game.wager.wagerCurrency}

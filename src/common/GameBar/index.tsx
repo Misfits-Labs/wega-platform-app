@@ -33,7 +33,13 @@ interface GameBarProps {
  gameBarType?: 'playable' | 'joinable';
 }
 
-function GameBar({ gameId , gameBarType, ...rest}: { gameId: number } & React.Attributes & Partial<React.AllHTMLAttributes<HTMLDivElement>> & GameBarProps) {
+function GameBar({ 
+  gameId , 
+  gameBarType, 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  css, 
+  ...rest
+}: { gameId: number } & React.Attributes & Partial<React.AllHTMLAttributes<HTMLDivElement>> & GameBarProps) {
   const game = useSelector(state => selectGameById(state, gameId));
 
   
@@ -52,7 +58,6 @@ function GameBar({ gameId , gameBarType, ...rest}: { gameId: number } & React.At
      <BadgeIcon><>{renderWagerBadge(game.wager.wagerType, game.wager.wagerCurrency)}</></BadgeIcon>
      <BadgeText>{game.wager.wagerCurrency}</BadgeText>
     </WagerTypeBadgeWrapper>
-
     {/* escrow link button */}
     
     {/* render for a joinable game */} 

@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async'; 
 import Section from '../../common/Section';
-import { SectionHeaderTitle } from '../../common/Section/types';
+import { SectionHeaderContainer, SectionHeaderTitle } from '../../common/Section/types';
 import CreateGameCard from '../../common/CreateGameCard';
 import 'twin.macro';
 import PlayableGamesSection from '../../components/PlayableGamesSection';
@@ -22,7 +22,11 @@ const CreateGamePage = () => {
     </Helmet>
     <Section 
      direction='col' 
-     hdr={<SectionHeaderTitle tw='justify-center' ><span>Choose your wager</span></SectionHeaderTitle>}
+     hdr={
+     <SectionHeaderContainer tw='justify-center'>
+       <SectionHeaderTitle>Choose your wager</SectionHeaderTitle>
+     </SectionHeaderContainer>
+    }
     >
       <CreateGameCard 
         wagerType={WagerTypes[WagerTypesEnum.TOKEN]}  
@@ -35,8 +39,6 @@ const CreateGamePage = () => {
     </Section>
     <PlayableGamesSection gameIds={gameIds} />
    </> ) : <ComponentLoader tw="min-w-[559px] min-h-[494px]" />
-} 
-
-
+}
 export default CreateGamePage;
 

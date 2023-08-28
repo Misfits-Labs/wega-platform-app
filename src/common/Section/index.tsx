@@ -28,9 +28,7 @@ const Section = ({
    const HeaderComp = () => hdr as React.ReactNode;
    return (
     <SectionContainer direction={!direction ? 'row' : direction } reverse={reverse} >
-     <SectionHeader className='mb-[unset]'>
-      <HeaderComp />
-     </SectionHeader>
+    <HeaderComp />
      { children }
     </SectionContainer>
    )

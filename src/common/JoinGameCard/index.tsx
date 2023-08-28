@@ -29,7 +29,7 @@ import { ArrowDownIcon, StarLoaderIcon } from '../../assets/icons';
 import tw from 'twin.macro';
 import { useForm } from 'react-hook-form';
 import { useBalance } from 'wagmi';
-import { useBlockchainApiHooks, useAppSelector } from '../../hooks';
+import { useBlockchainApiHooks, useAppSelector, useNavigateTo } from '../../hooks';
 import { selectWagerApproved } from '../../api/blockchain/blockchainSlice';
 import toast from 'react-hot-toast';
 import { toastSettings } from '../../utils';
@@ -65,6 +65,8 @@ const JoinGameCard = ({
   wagerAmount,
   escrowId,
   gameId,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  css,
   ...rest 
 }: CreateGameCardInterface & React.Attributes & React.AllHTMLAttributes<HTMLDivElement> ) => {
   
@@ -105,6 +107,7 @@ const JoinGameCard = ({
     try {
       await depositWager(escrowId,  wager).unwrap();
       await updateGame({ newPlayerUuid: playerUuid, gameUuid }).unwrap();
+      navigateToGameUi(`/play/${gameId}`, 1500, { replace: true });
       toast.success('Deposit success', { ...toastSettings('success', 'top-center') as any });
     } catch (e: any){
       console.log(e)
@@ -118,8 +121,8 @@ const JoinGameCard = ({
   const handleApproveWagerClick = ({ wager }: { wager: number }) => {
     approveERC20(tokenAddress, wager);
   };
-    
   
+  const navigateToGameUi = useNavigateTo()
   useEffect(() => {
     allowance(tokenAddress, playerAddress, wagerAmount);
   }, [tokenAddress, wagerAmount, isWagerApproved]);

@@ -29,7 +29,7 @@ import { ArrowDownIcon, StarLoaderIcon } from '../../assets/icons';
 import tw from 'twin.macro';
 import { useForm } from 'react-hook-form';
 import { useBalance } from 'wagmi';
-import { useBlockchainApiHooks, useAppSelector } from '../../hooks';
+import { useBlockchainApiHooks, useAppSelector, useNavigateTo } from '../../hooks';
 import { selectWagerApproved } from '../../api/blockchain/blockchainSlice';
 import { useCreateGameMutation } from '../../containers/App/api';
 import toast from 'react-hot-toast';
@@ -37,7 +37,6 @@ import { toastSettings } from '../../utils';
 import Button from '../Button';
 import { ToggleWagerBadge } from '../ToggleWagerBadge';
 import { useFormReveal } from './animations';
-import { useNavigate } from 'react-router-dom';
 import { utils } from 'ethers';
 
 
@@ -101,7 +100,6 @@ const CreateGameCard = ({
   };
   
   // create game
-  const navigate = useNavigate();
   const { isLoading: isCreateWagerLoading,  createWager } = useCreateWagerMutation();
   const [ createGame, { isLoading: isCreateGameLoading, status: createGameStatus, data: createGameResponse  } ] = useCreateGameMutation();
   const handleCreateGameClick = async ({ wager }: { wager: number }) => {
@@ -117,7 +115,7 @@ const CreateGameCard = ({
           wagerAmount: utils.parseEther(String(wager)).toString(), 
           wagerCurrency: currencyType,
           nonce: createWagerData.nonce, 
-        } 
+        }
       }).unwrap();
       toast.success('Create game success', { ...toastSettings('success', 'top-center') as any });
     } catch (e: any){
@@ -131,12 +129,11 @@ const CreateGameCard = ({
     setValue("wager", wagerAmount);
   }
 
-  const navigateToGameUi = (url: string, t: number, opts: any) => setTimeout(() => navigate(url, { replace: true, ...opts }), t); 
-
+  const navigateToGameUi = useNavigateTo()
   useEffect(() => {
     allowance(tokenAddress, playerAddress, getValues('wager'));
     if(createGameStatus === 'fulfilled' && createGameResponse) {
-      navigateToGameUi(`${gameType}/${createGameResponse.uuid}`, 1500, {})
+      navigateToGameUi(`/play/${createGameResponse.id}`, 1500, { replace: true });
     }
   }, [watch('wager'), tokenAddress, isWagerApproved, createGameStatus, createGameResponse]);
   
