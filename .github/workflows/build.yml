@@ -59,9 +59,11 @@ jobs:
           VITE_BACKEND_API_URL: ${{ vars.VITE_BACKEND_API_URL }}
         run: |  
           # cp .env.qa .env
+
           # TODO Temporary disable CI to test deployment
           CI=false yarn build
           QA_TAG=${SHORT_COMMIT}-qa
+
           echo "QA_TAG=$QA_TAG"
           echo "QA_TAG=$QA_TAG" >> $GITHUB_ENV
 
