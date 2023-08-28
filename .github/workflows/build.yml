@@ -58,9 +58,10 @@ jobs:
           VITE_WALLET_CONNECT_ID:  ${{secrets.VITE_WALLET_CONNECT_ID}}
         run: |
           # cp .env.qa .env
+          
           # TODO Temporary disable CI to test deployment
           CI=false yarn build
-
+          
           QA_TAG=${SHORT_COMMIT}-qa
           echo "QA_TAG=$QA_TAG"
           echo "QA_TAG=$QA_TAG" >> $GITHUB_ENV
