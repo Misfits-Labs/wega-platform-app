@@ -39,7 +39,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{env.NODEJS_VERSION}}
-          cache: 'yarn'
+          cache: 'npm'
         env:
           GSAP_TOKEN: ${{secrets.GSAP_TOKEN}}
 
@@ -47,8 +47,7 @@ jobs:
         env:
           GSAP_TOKEN: ${{secrets.GSAP_TOKEN}}
         run: |
-          yarn install --frozen-lockfile
-          yarn add gsap@npm:@gsap/shockingly
+          npm install --frozen-lockfile
 
       # Due to front-end nature of environment config, need specific image for each environment
       - name: Build image qa
@@ -58,8 +57,7 @@ jobs:
           VITE_RPC_PROVIDER_ALCHEMY:  ${{secrets.VITE_RPC_PROVIDER_ALCHEMY}}
           VITE_WALLET_CONNECT_ID:  ${{secrets.VITE_WALLET_CONNECT_ID}}
         run: |
-          #cp .env.qa .env
-
+          # cp .env.qa .env
           # TODO Temporary disable CI to test deployment
           CI=false yarn build
 
