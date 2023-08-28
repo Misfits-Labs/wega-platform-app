@@ -27,6 +27,7 @@ jobs:
           GSAP_TOKEN: ${{github.GSAP_TOKEN}}
           VITE_RPC_PROVIDER_ALCHEMY: ${{ github.VITE_RPC_PROVIDER_ALCHEMY }}
           VITE_WALLET_CONNECT_ID: ${{ github.VITE_WALLET_CONNECT_ID }}
+          VITE_API_BACKEND_URL: ${{ vars.VITE_API_BACKEND_URL }}
         run: |
           echo "REF=$REF"
           echo "REF=$REF" >> $GITHUB_ENV
@@ -57,11 +58,9 @@ jobs:
           VITE_RPC_PROVIDER_ALCHEMY:  ${{secrets.VITE_RPC_PROVIDER_ALCHEMY}}
           VITE_WALLET_CONNECT_ID:  ${{secrets.VITE_WALLET_CONNECT_ID}}
         run: |
-          
+          # cp .env.qa .env
           # TODO Temporary disable CI to test deployment
           CI=false yarn build
-          cp .env.qa .env
-          
           QA_TAG=${SHORT_COMMIT}-qa
           echo "QA_TAG=$QA_TAG"
           echo "QA_TAG=$QA_TAG" >> $GITHUB_ENV
