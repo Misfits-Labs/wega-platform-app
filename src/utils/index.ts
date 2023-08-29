@@ -1,6 +1,8 @@
 export {dateFromTs} from './date.ts'
 export {
- parseIntFromBigNumber
+ parseIntFromBigNumber, 
+ isGameCreator, 
+ miniWalletAddress,
 } from './ethers-helpers.ts'
 export { deployed } from './deployment.ts'
 export { toastSettings } from './toast.ts'

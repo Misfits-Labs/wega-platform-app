@@ -30,12 +30,11 @@ export const BADGE_TEXTS: any = {
 }
 
 interface GameBarProps {
- gameBarType?: 'playable' | 'joinable';
+  gameId: number;
 }
 
 function GameBar({ 
-  gameId , 
-  gameBarType, 
+  gameId, 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   css, 
   ...rest
@@ -55,19 +54,19 @@ function GameBar({
     
     <WagerTypeBadgeWrapper>
      <BadgeText>{utils.formatEther(game.wager.wagerAmount)}</BadgeText>
-     <BadgeIcon><>{renderWagerBadge(game.wager.wagerType, game.wager.wagerCurrency)}</></BadgeIcon>
+     <BadgeIcon>{renderWagerBadge(game.wager.wagerType, game.wager.wagerCurrency)}</BadgeIcon>
      <BadgeText>{game.wager.wagerCurrency}</BadgeText>
     </WagerTypeBadgeWrapper>
     {/* escrow link button */}
     
     {/* render for a joinable game */} 
     {  
-      (gameBarType == 'joinable' || game.players.length < 2) && <ButtonForJoinableGame gameType={game.gameType} gameId={game.id} />  
+      game.players.length === 1 && <ButtonForJoinableGame gameType={game.gameType} gameId={game.id} />
     }
 
     {/* playable game button */}
     {  
-      (gameBarType == 'playable' ||  game.players.length > 1) && <ButtonForWaitingGame gameType={game.gameType} gameId={game.id} />  
+      game.players.length === 2 && <ButtonForWaitingGame gameType={game.gameType} gameId={game.id} />  
     }
 
    </BarWrapper>

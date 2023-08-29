@@ -11,12 +11,13 @@ import { useSelector } from 'react-redux';
 import { useWegaStore } from '../../hooks';
 import { ComponentLoader } from '../../common/loaders'
 import { useParams } from 'react-router-dom';
+import MainContainer from '../../components/MainContainer'
 
 const CreateGamePage = () => {
   const gameIds = useSelector(state => selectAllGamesIds(state));
   const { user, network, wallet } = useWegaStore();
   const { gameType } = useParams();
-  return (network?.id && wallet && user.uuid && gameType) ? (<>
+  return (network?.id && wallet && user.uuid && gameType) ? (<MainContainer>
     <Helmet>
      <title>Create</title>
     </Helmet>
@@ -38,7 +39,7 @@ const CreateGamePage = () => {
       />
     </Section>
     <PlayableGamesSection gameIds={gameIds} />
-   </> ) : <ComponentLoader tw="min-w-[559px] min-h-[494px]" />
+   </MainContainer> ) : <ComponentLoader tw="min-w-[559px] min-h-[494px]" />
 }
 export default CreateGamePage;
 

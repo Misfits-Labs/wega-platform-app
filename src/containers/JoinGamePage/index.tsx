@@ -11,13 +11,14 @@ import { useSelector } from 'react-redux';
 import { useWegaStore } from '../../hooks';
 import { ComponentLoader } from '../../common/loaders'
 import { useParams } from 'react-router-dom';
+import MainContainer from '../../components/MainContainer';
 import { utils } from 'ethers';
 
 const JoinGamePage = () => {
  const { user, network, wallet } = useWegaStore();
  const { id } = useParams();
  const game = useSelector(state => selectGameById(state, Number(id)));
-  return (network?.id && wallet && user.uuid && game) ? (<>
+  return (network?.id && wallet && user.uuid && game) ? (<MainContainer>
     <Helmet>
      <title>Create</title>
     </Helmet>
@@ -42,9 +43,7 @@ const JoinGamePage = () => {
       />
     </Section>
     {/* <JoinableGamesSection gameIds={gameIds}  /> */}
-   </> ) : <ComponentLoader tw="min-w-[559px] min-h-[494px]" />
-} 
-
-
+   </MainContainer> ) : <ComponentLoader tw="min-w-[559px] min-h-[494px]" />
+}
 export default JoinGamePage;
 

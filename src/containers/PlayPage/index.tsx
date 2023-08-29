@@ -7,23 +7,24 @@ import {
   RaffleGameCard
 } from '../../components/GameCard';
 import 'twin.macro';
-import JoinableGamesSection from '../../components/JoinableGamesSection';
+import JoinableOrPlayableGamesSection from '../../components/JoinableOrPlayableGamesSection';
 import { useGetGamesQuery } from '../App/api';
-import { useWegaStore } from '../../hooks';
 import { ComponentLoader } from '../../common/loaders';
-import { filter } from 'lodash'
+import { isGameCreator } from '../../utils';
+import MainContainer from '../../components/MainContainer';
+import { useWegaStore } from '../../hooks' 
 
 const PlayPage = () => {
-  const { user } = useWegaStore();
+  const { user } = useWegaStore()
   const { joinableGameIds, isLoading, playableGameIds } = useGetGamesQuery(undefined, {
     selectFromResult: ({ data, isLoading, isSuccess  }) => ({
-      joinableGameIds: data ? isSuccess && Object.entries(data.entities).filter(([, game]: any) => (filter(game.players, { uuid: user?.uuid }).length < 1)).map(([id,]: any) => Number(id)) : [],
-      playableGameIds: data ? isSuccess && Object.entries(data.entities).filter(([, game]: any) => (filter(game.players, { uuid: user?.uuid }).length > 0)).map(([id,]: any) => Number(id)) : [],
+      joinableGameIds: data ? isSuccess && Object.entries(data.entities).filter(([, game]: any) => game.players.length === 1 && !isGameCreator(user.uuid, game.players)).map(([id,]: any) => Number(id)) : [],
+      playableGameIds: data ? isSuccess && Object.entries(data.entities).filter(([, game]: any) => game.players.length >= 2).map(([id,]: any) => Number(id)) : [],
       isLoading,
     })
   })
-      
-  return (<>
+
+  return (<MainContainer>
     <Helmet>
     <title>Play</title>
     </Helmet>
@@ -47,8 +48,8 @@ const PlayPage = () => {
         <RaffleGameCard />
       </div>
     </Section>
-    { !isLoading && joinableGameIds && playableGameIds  ? <JoinableGamesSection gameIds={[...joinableGameIds, ...playableGameIds]} /> : <ComponentLoader tw="w-full" /> }
-  </>)
+    { !isLoading && joinableGameIds && playableGameIds && user?.uuid ? <JoinableOrPlayableGamesSection gameIds={[...joinableGameIds, ...playableGameIds ]} /> : <ComponentLoader tw="w-full" /> }
+  </MainContainer>)
 } 
 
 export default PlayPage;

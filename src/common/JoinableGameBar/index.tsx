@@ -73,13 +73,11 @@ function JoinableGameBar({ gameId , ...rest}: { gameId: number } & React.Attribu
         <StarLoaderIcon className="dark:fill-blanc h-[16px] w-[16px] ms-[5px]" />
         </Button>
       </Link>      
-
     }
    </BarWrapper>
   )
 }
-{/* <Button buttonType="primary" content='Play' className="w-[75%]" onClick={()=> openConnectModal() } /> :
-<Link to="/coinflip/create" className="w-[75%]"><Button buttonType="primary" content='Play' className="w-[100%]" /></Link> */}
+
 export default JoinableGameBar;
 
 const BADGE_GAME_TYPE_COMPONENTS: any = {

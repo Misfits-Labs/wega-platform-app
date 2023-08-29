@@ -27,7 +27,7 @@ const Section = ({
   } else {
    const HeaderComp = () => hdr as React.ReactNode;
    return (
-    <SectionContainer direction={!direction ? 'row' : direction } reverse={reverse} >
+    <SectionContainer direction={!direction ? 'row' : direction } reverse={reverse} { ...rest}>
     <HeaderComp />
      { children }
     </SectionContainer>

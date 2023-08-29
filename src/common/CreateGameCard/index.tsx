@@ -133,9 +133,15 @@ const CreateGameCard = ({
   useEffect(() => {
     allowance(tokenAddress, playerAddress, getValues('wager'));
     if(createGameStatus === 'fulfilled' && createGameResponse) {
-      navigateToGameUi(`/play/${createGameResponse.id}`, 1500, { replace: true });
+      navigateToGameUi(`${gameType.toLowerCase()}/play/${createGameResponse.id}`, 1500, { replace: true });
     }
-  }, [watch('wager'), tokenAddress, isWagerApproved, createGameStatus, createGameResponse]);
+  }, [
+    watch('wager'), 
+    tokenAddress, 
+    isWagerApproved, 
+    createGameStatus, 
+    createGameResponse
+  ]);
   
   return (
     <form 

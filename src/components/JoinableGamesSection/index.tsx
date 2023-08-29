@@ -20,10 +20,8 @@ function JoinableGamesSection({ gameIds , ...rest }: JoinableGamesSectionProps){
     </JoinableGamesHeaderBar>
     {
       gameIds.map(
-      (dg, i) => (<GameBar gameId={dg} key={`joinable-game-bar${i}`} className="dark:bg-[#1C1C1C] py-2 px-3 rounded-[5px]" />))
+      (dg, i) => (<GameBar gameId={dg} key={`joinable-game-bar${i}`} className="dark:bg-[#1C1C1C] py-2 px-3 rounded-[5px]"/>))
     }
-    {/* <div className="flex flex-column justify-center items-center">
-    </div> */}
     </Section>
   )
 }

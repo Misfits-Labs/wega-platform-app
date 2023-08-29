@@ -107,7 +107,7 @@ const JoinGameCard = ({
     try {
       await depositWager(escrowId,  wager).unwrap();
       await updateGame({ newPlayerUuid: playerUuid, gameUuid }).unwrap();
-      navigateToGameUi(`/play/${gameId}`, 1500, { replace: true });
+      navigateToGameUi(`${gameType.toLowerCase()}/play/${gameId}`, 1500, { replace: true });
       toast.success('Deposit success', { ...toastSettings('success', 'top-center') as any });
     } catch (e: any){
       console.log(e)

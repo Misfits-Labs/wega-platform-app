@@ -25,3 +25,5 @@ export { default as ArrowDownIcon } from './ArrowDownIcon';
 export { default as WegaLoaderIcon } from './WegaLoaderIcon';
 export { default as HelpCircleIcon } from './HelpCircleIcon';
 export { default as ClockIcon } from './ClockIcon';
+export { default as SparkleIcon } from './SparkleIcon';
+export { default as CopyPasteIcon } from './CopyPasteIcon';
