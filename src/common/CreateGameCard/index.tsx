@@ -133,7 +133,7 @@ const CreateGameCard = ({
   useEffect(() => {
     allowance(tokenAddress, playerAddress, getValues('wager'));
     if(createGameStatus === 'fulfilled' && createGameResponse) {
-      navigateToGameUi(`${gameType.toLowerCase()}/play/${createGameResponse.id}`, 1500, { replace: true });
+      navigateToGameUi(`play/${createGameResponse.id}`, 1500, { replace: true });
     }
   }, [
     watch('wager'), 
