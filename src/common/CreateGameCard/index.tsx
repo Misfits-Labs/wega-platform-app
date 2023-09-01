@@ -119,6 +119,7 @@ const CreateGameCard = ({
       }).unwrap();
       toast.success('Create game success', { ...toastSettings('success', 'top-center') as any });
     } catch (e: any){
+      console.log(e);
       const message = e?.message ?? 'Create game error'
       toast.error(message, { ...toastSettings('error', 'bottom-center') as any });
     }
