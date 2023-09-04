@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useAppSelector, useAppDispatch } from './useAppDispatch';
 import type { RootState } from '../app/store';
-import { HexIshString } from '../models';
+import { HexishString, WegaTypesEnum } from '../models';
 import {
  selectAllowanceQueryData,
  selectAllowanceQueryStatus,
@@ -20,7 +20,13 @@ import {
  selectDepositOfQueryError,
  selectDepositWagerMutationData,
  selectDepositWagerMutationStatus,
- selectDepositWagerMutationError
+ selectDepositWagerMutationError,
+ selectGetGameResultsQueryData,
+ selectGetGameResultsQueryStatus,
+ selectGetGameResultsQueryError,
+ selectGetWinnersQueryData,
+ selectGetWinnersQueryStatus,
+ selectGetWinnersQueryError,
 } from '../api/blockchain/blockchainSlice';
 import {
  allowanceQuery,
@@ -28,7 +34,9 @@ import {
  hashWagerQuery,
  createWagerMutation,
  depositOfQuery,
- depositWagerMutation
+ depositWagerMutation,
+ getWinnersQuery,
+ getGameResultsQuery
 } from '../api/blockchain/thunks';
 
 
@@ -41,7 +49,7 @@ function useAllowanceQuery(){
   const [isLoading, setisloading] = useState<boolean>();
   const [isIdle, setIsIdle] = useState<boolean>();
   const [isSuccess, setIsSuccess] = useState<boolean>();  
-  const allowance = (tokenAddress: HexIshString, owner: HexIshString, wager: number) => dispatch(allowanceQuery({ tokenAddress, owner, wager }));
+  const allowance = (tokenAddress: HexishString, owner: HexishString, wager: number) => dispatch(allowanceQuery({ tokenAddress, owner, wager }));
   
   useEffect(() => {
     setIsError(status === 'rejected')
@@ -62,7 +70,7 @@ function useHashWagerQuery(){
   const [isLoading, setisloading] = useState<boolean>();
   const [isIdle, setIsIdle] = useState<boolean>();
   const [isSuccess, setIsSuccess] = useState<boolean>();  
-  const hashWager = (inpts:{ tokenAddress: HexIshString, playerAddress: HexIshString, accountsCount: number, wager: number }) => dispatch(hashWagerQuery({ ...inpts }));
+  const hashWager = (inpts:{ tokenAddress: HexishString, playerAddress: HexishString, accountsCount: number, wager: number }) => dispatch(hashWagerQuery({ ...inpts }));
   
   useEffect(() => {
     setIsError(status === 'rejected')
@@ -82,7 +90,7 @@ function useApproveERC20Mutation(){
   const [isLoading, setisloading] = useState<boolean>();
   const [isIdle, setIsIdle] = useState<boolean>();
   const [isSuccess, setIsSuccess] = useState<boolean>();
-  const approveERC20 = (tokenAddress: HexIshString, wager: number) => dispatch(approveERC20Mutation({ tokenAddress, wager }));
+  const approveERC20 = (tokenAddress: HexishString, wager: number) => dispatch(approveERC20Mutation({ tokenAddress, wager }));
   useEffect(() => {
     setIsError(status === 'rejected');
     setisloading(status === 'pending');
@@ -103,7 +111,13 @@ function useCreateWagerMutation(){
   const [isIdle, setIsIdle] = useState<boolean>();
   const [isSuccess, setIsSuccess] = useState<boolean>();
   
-  const createWager = (inpts: { tokenAddress: HexIshString, playerAddress: HexIshString, accountsCount: number, wager: number }) => dispatch(createWagerMutation({ ...inpts }));
+  const createWager = (inpts: { 
+    tokenAddress: HexishString, 
+    playerAddress: HexishString, 
+    accountsCount: number, 
+    wager: number,
+    gameType: WegaTypesEnum 
+  }) => dispatch(createWagerMutation({ ...inpts }));
   
   useEffect(() => {
     setIsError(status === 'rejected');
@@ -126,7 +140,7 @@ function useDepositWagerMutation(){
   const [isIdle, setIsIdle] = useState<boolean>();
   const [isSuccess, setIsSuccess] = useState<boolean>();
   
-  const depositWager = (escrowId: HexIshString, wager: number ) => dispatch(depositWagerMutation({ escrowId, wager }));
+  const depositWager = (escrowId: HexishString) => dispatch(depositWagerMutation({ escrowId }));
   
   useEffect(() => {
     setIsError(status === 'rejected');
@@ -147,7 +161,7 @@ function useDepositOfQuery(){
   const [isLoading, setisloading] = useState<boolean>();
   const [isIdle, setIsIdle] = useState<boolean>();
   const [isSuccess, setIsSuccess] = useState<boolean>();  
-  const depositOf = (escrowHash: HexIshString, account: HexIshString) => dispatch(depositOfQuery({ escrowHash, account }));
+  const depositOf = (escrowHash: HexishString, account: HexishString) => dispatch(depositOfQuery({ escrowHash, account }));
   
   useEffect(() => {
     setIsError(status === 'rejected')
@@ -158,6 +172,44 @@ function useDepositOfQuery(){
   return {depositOf, error, data, isLoading, isError, isIdle, isSuccess }
 }
 
+function useGetGameResultsQuery(){
+  const dispatch = useAppDispatch()
+  const data = useAppSelector((state: RootState) => selectGetGameResultsQueryData(state));
+  const status = useAppSelector((state: RootState) => selectGetGameResultsQueryStatus(state));
+  const error = useAppSelector((state: RootState) => selectGetGameResultsQueryError(state));
+  const [isError, setIsError] = useState<boolean>();
+  const [isLoading, setisloading] = useState<boolean>();
+  const [isIdle, setIsIdle] = useState<boolean>();
+  const [isSuccess, setIsSuccess] = useState<boolean>();  
+  const getGameResults = (escrowHash: HexishString, player: HexishString) => dispatch(getGameResultsQuery({ escrowHash, player }));
+  useEffect(() => {
+    setIsError(status === 'rejected')
+    setisloading(status === 'pending')
+    setIsIdle(status === 'idle')
+    setIsSuccess(status === 'fulfilled')
+  }, [status, data, error, dispatch]);
+  return { getGameResults, error, data, isLoading, isError, isIdle, isSuccess }
+}
+
+function useGetWinnersQuery() {
+  const dispatch = useAppDispatch()
+  const data = useAppSelector((state: RootState) => selectGetWinnersQueryData(state));
+  const status = useAppSelector((state: RootState) => selectGetWinnersQueryStatus(state));
+  const error = useAppSelector((state: RootState) => selectGetWinnersQueryError(state));
+  const [isError, setIsError] = useState<boolean>();
+  const [isLoading, setisloading] = useState<boolean>();
+  const [isIdle, setIsIdle] = useState<boolean>();
+  const [isSuccess, setIsSuccess] = useState<boolean>();  
+  const getWinners = (escrowHash: HexishString) => dispatch(getWinnersQuery({ escrowHash }));
+  useEffect(() => {
+    setIsError(status === 'rejected')
+    setisloading(status === 'pending')
+    setIsIdle(status === 'idle')
+    setIsSuccess(status === 'fulfilled')
+  }, [status, data, error, dispatch]);
+  return {getWinners, error, data, isLoading, isError, isIdle, isSuccess }
+}
+
 export const useBlockchainApiHooks = {
   useAllowanceQuery,
   useApproveERC20Mutation,
@@ -165,4 +217,6 @@ export const useBlockchainApiHooks = {
   useCreateWagerMutation,
   useDepositOfQuery,
   useDepositWagerMutation,
+  useGetGameResultsQuery,
+  useGetWinnersQuery,
 }

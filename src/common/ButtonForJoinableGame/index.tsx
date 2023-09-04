@@ -4,15 +4,17 @@ import {
 import Button from '../Button';
 import { useWegaStore } from '../../hooks';
 import{ StarLoaderIcon } from '../../assets/icons';
-import { AllPossibleWegaTypes } from '../../models';
+import { AllPossibleWegaTypes, Player } from '../../models';
 import { Link } from 'react-router-dom';
 
 interface ButtonForJoinableGameBar {
   gameType: AllPossibleWegaTypes;
   gameId: number;
+  requiredPlayerNum: number;
+  players: Player[];
 }
 
-export const ButtonForJoinableGame = ({ gameType, gameId }: ButtonForJoinableGameBar) => {
+export const ButtonForJoinableGame = ({ gameType, gameId, requiredPlayerNum, players }: ButtonForJoinableGameBar) => {
   const { wallet } = useWegaStore();
   const {openConnectModal} = useConnectModal();
   return ( !wallet && openConnectModal ?
@@ -23,12 +25,16 @@ export const ButtonForJoinableGame = ({ gameType, gameId }: ButtonForJoinableGam
       >
       Join
       <StarLoaderIcon className="dark:fill-blanc h-[16px] w-[16px] ms-[5px]" />
-    </Button> :
-    <Link to={`/${gameType.toLowerCase()}/join/${gameId}`}>
+    </Button> : requiredPlayerNum !== players.length ? <Link to={`/${gameType.toLowerCase()}/join/${gameId}`}>
       <Button buttonType="secondary" className="flex items-center">
         Join
       <StarLoaderIcon className="dark:fill-blanc h-[16px] w-[16px] ms-[5px]" />
       </Button>
-    </Link>  
+    </Link> : <Link to={`/${gameType.toLowerCase()}/play/${gameId}`}>
+      <Button buttonType="secondary" className="flex items-center">
+        Play
+      <StarLoaderIcon className="dark:fill-blanc h-[16px] w-[16px] ms-[5px]" />
+      </Button>
+    </Link>
   )
 }

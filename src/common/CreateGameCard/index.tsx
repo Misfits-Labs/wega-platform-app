@@ -14,8 +14,9 @@ import {
 import { 
   AllPossibleCurrencyTypes, 
   AllPossibleWagerTypes, 
-  HexIshString,
+  HexishString,
   AllPossibleWegaTypes,
+  WegaTypesEnum
 } from "../../models";
 import { 
   BadgeIcon, 
@@ -44,8 +45,8 @@ import { utils } from 'ethers';
 export interface CreateGameCardInterface {
   wagerType: AllPossibleWagerTypes;
   currencyType: AllPossibleCurrencyTypes;
-  tokenAddress: HexIshString;
-  playerAddress: HexIshString;
+  tokenAddress: HexishString;
+  playerAddress: HexishString;
   gameType: AllPossibleWegaTypes;
   playerUuid: string;
 }
@@ -104,10 +105,11 @@ const CreateGameCard = ({
   const [ createGame, { isLoading: isCreateGameLoading, status: createGameStatus, data: createGameResponse  } ] = useCreateGameMutation();
   const handleCreateGameClick = async ({ wager }: { wager: number }) => {
     try {
-      const createWagerData = await createWager({ tokenAddress, playerAddress, accountsCount: 2, wager }).unwrap();
+      const createWagerData = await createWager({ tokenAddress, playerAddress, accountsCount: 2, wager, gameType: WegaTypesEnum.DICE }).unwrap();
       await createGame({ 
         gameType, 
-        players: [ { uuid: playerUuid } ], 
+        players: [ { uuid: playerUuid } ],
+        creatorUuid: playerUuid,
         wager: { 
           wagerType: wagerType.toUpperCase() as AllPossibleWagerTypes, 
           wagerHash: createWagerData.wagerId as string, 
@@ -134,7 +136,7 @@ const CreateGameCard = ({
   useEffect(() => {
     allowance(tokenAddress, playerAddress, getValues('wager'));
     if(createGameStatus === 'fulfilled' && createGameResponse) {
-      navigateToGameUi(`play/${createGameResponse.id}`, 1500, { replace: true });
+      navigateToGameUi(`/${gameType}/play/${createGameResponse.id}`, 1500, { replace: true });
     }
   }, [
     watch('wager'), 

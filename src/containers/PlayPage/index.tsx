@@ -10,7 +10,6 @@ import 'twin.macro';
 import JoinableOrPlayableGamesSection from '../../components/JoinableOrPlayableGamesSection';
 import { useGetGamesQuery } from '../App/api';
 import { ComponentLoader } from '../../common/loaders';
-import { isGameCreator } from '../../utils';
 import MainContainer from '../../components/MainContainer';
 import { useWegaStore } from '../../hooks' 
 
@@ -18,8 +17,8 @@ const PlayPage = () => {
   const { user } = useWegaStore()
   const { joinableGameIds, isLoading, playableGameIds } = useGetGamesQuery(undefined, {
     selectFromResult: ({ data, isLoading, isSuccess  }) => ({
-      joinableGameIds: data ? isSuccess && Object.entries(data.entities).filter(([, game]: any) => game.players.length === 1 && !isGameCreator(user.uuid, game.players)).map(([id,]: any) => Number(id)) : [],
-      playableGameIds: data ? isSuccess && Object.entries(data.entities).filter(([, game]: any) => game.players.length >= 2).map(([id,]: any) => Number(id)) : [],
+      joinableGameIds: data ? isSuccess && Object.entries(data.entities).filter(([, game]: any) => game.creatorUuid !== user.uuid).map(([id,]: any) => Number(id)) : [],
+      playableGameIds: data ? isSuccess && Object.entries(data.entities).filter(([, game]: any) => game.creatorUuid === user.uuid).map(([id,]: any) => Number(id)) : [],
       isLoading,
     })
   })
@@ -48,7 +47,7 @@ const PlayPage = () => {
         <RaffleGameCard />
       </div>
     </Section>
-    { !isLoading && joinableGameIds && playableGameIds && user?.uuid ? <JoinableOrPlayableGamesSection gameIds={[...joinableGameIds, ...playableGameIds ]} /> : <ComponentLoader tw="w-full" /> }
+    { !isLoading && joinableGameIds && playableGameIds && user?.uuid ? <JoinableOrPlayableGamesSection gameIds={[...joinableGameIds, ...playableGameIds]} /> : <ComponentLoader tw="w-full" /> }
   </MainContainer>)
 } 
 

@@ -7,8 +7,8 @@ import {
  readContract, 
  waitForTransaction
  } from '@wagmi/core';
-import { tokenConfig, escrowConfig, erc20ABI } from "../../utils";
-import { HexIshString } from '../../models';
+import { tokenConfig, escrowConfig, erc20ABI, gameControllerConfig } from "../../utils";
+import { HexishString, WegaTypesEnum } from '../../models';
 
 
 interface IBlockchainAPI {
@@ -26,68 +26,72 @@ interface IBlockchainAPI {
   // add correct fn typing on class interface
 
 export class BlockchainAPI implements IBlockchainAPI {
- private chain = (getNetwork()).chain;
- private tokenConfig = {
-  address: tokenConfig.address[this.chain?.id as keyof typeof tokenConfig.address] as HexIshString,
-  abi: erc20ABI,
- };
- private escrowConfig = {
-  address: escrowConfig.address[this.chain?.id as keyof typeof escrowConfig.address] as HexIshString,
-  abi: escrowConfig.abi,
- }
+  private chain = (getNetwork()).chain;
+  private tokenConfig = {
+    address: tokenConfig.address[this.chain?.id as keyof typeof tokenConfig.address] as HexishString,
+    abi: erc20ABI,
+  };
+  private escrowConfig = {
+    address: escrowConfig.address[this.chain?.id as keyof typeof escrowConfig.address] as HexishString,
+    abi: escrowConfig.abi
+  }
+  private gameControllerConfig = {
+    address: gameControllerConfig.address[this.chain?.id as keyof typeof gameControllerConfig.address] as HexishString,
+    abi: gameControllerConfig.abi,
+  }
  
  constructor(){}
  
- async createWagerAndDeposit({ tokenAddress, playerAddress, accountsCount, wager }: {
-  tokenAddress: HexIshString
-  playerAddress: HexIshString
+ async createWagerAndDeposit({ tokenAddress, gameType, accountsCount, wager }: {
+  tokenAddress: HexishString
   accountsCount: number,
   wager: number,
+  gameType: WegaTypesEnum,
  }){
   const playerNum = BigNumber.from(accountsCount).toBigInt()
   const wagerAsBigint = utils.parseEther(String(wager)).toBigInt()
 
   const config = await prepareWriteContract({
-    ...this.escrowConfig,
-    functionName: 'createWagerAndDeposit',
-    args: [ tokenAddress, playerAddress, playerNum, wagerAsBigint ]
+    ...this.gameControllerConfig,
+    functionName: 'createGameAndDepositInitialWager',
+    args: [ tokenAddress, playerNum, wagerAsBigint,  gameType ]
   })
   return await this.handleWriteRequest(config);
  }
- async allowance(tokenAddress: HexIshString, owner: HexIshString){
+ async allowance(tokenAddress: HexishString, owner: HexishString){
   const allowance = await readContract({
     address: tokenAddress, 
     abi: this.tokenConfig.abi,
     functionName: 'allowance',
-    args: [ owner, escrowConfig.address[this.chain?.id as keyof typeof escrowConfig.address] as HexIshString ]
+    args: [ owner, escrowConfig.address[this.chain?.id as keyof typeof escrowConfig.address] as HexishString ]
   })
   return Number(utils.formatEther(allowance));
  }
 
- async approveERC20(tokenAddress: HexIshString, wager: number){
+ async approveERC20(tokenAddress: HexishString, wager: number){
   const wagerAsBigint = utils.parseEther(String(wager)).toBigInt();
   const config = await prepareWriteContract({
     address: tokenAddress,
     abi: this.tokenConfig.abi,
     functionName: 'approve',
-    args: [ escrowConfig.address[this.chain?.id as keyof typeof escrowConfig.address] as HexIshString, wagerAsBigint]
+    args: [ escrowConfig.address[this.chain?.id as keyof typeof escrowConfig.address] as HexishString, wagerAsBigint]
   })
   return await this.handleWriteRequest(config);
  }
 
- async getRequests(wagerId: string | HexIshString){
+ async getRequests(wagerId: string | HexishString){
   const requests = await readContract({
    address: this.escrowConfig.address,
    abi: this.escrowConfig.abi,
    functionName: 'getWagerRequest',
    args: [ 
-    wagerId as HexIshString,
+    wagerId as HexishString,
    ]
   })
   return requests;
  }
 
- async depositOf(escrowHash: HexIshString, account: HexIshString){
+ async depositOf(escrowHash: HexishString, account: HexishString){
   const deposit = await readContract({
    address: this.escrowConfig.address,
    abi: this.escrowConfig.abi,
@@ -100,23 +104,21 @@ export class BlockchainAPI implements IBlockchainAPI {
   return Number(utils.formatEther(deposit));
  }
 
- async deposit(escrowHash: HexIshString, wagerAmount: number){
-  const wagerAmountAsBigInt = utils.parseEther(String(wagerAmount)).toBigInt();
+ async deposit(escrowHash: HexishString){
   const depositConfig = await prepareWriteContract({
-   address: this.escrowConfig.address,
-   abi: this.escrowConfig.abi,
-   functionName: 'deposit',
+   address: this.gameControllerConfig.address,
+   abi: this.gameControllerConfig.abi,
+   functionName: 'depositOrPlay',
    args: [ 
     escrowHash,
-    wagerAmountAsBigInt,
    ]
   })
   return await this.handleWriteRequest(depositConfig);
  }
 
  async hash({ tokenAddress, playerAddress , accountsCount, wager }: 
-  { tokenAddress: HexIshString, 
-    playerAddress: HexIshString, 
+  { tokenAddress: HexishString, 
+    playerAddress: HexishString, 
     accountsCount: number, 
     wager: number 
   }) {
@@ -145,6 +147,29 @@ export class BlockchainAPI implements IBlockchainAPI {
    return { hash, nonce: Number(nonce.toString()) };
  }
  
+ async getGameResults(escrowHash: HexishString, player: HexishString) {
+  const results = await readContract({
+    address: this.gameControllerConfig.address,
+    abi: this.gameControllerConfig.abi,
+    functionName: 'gameResults',
+    args: [
+      escrowHash,
+      player,
+    ]
+  });
+  return results.map(v => Number(v.toString()));
+ }
+ 
+ async getWinners(escrowHash: HexishString) {
+  const winners = await readContract({
+    address: this.gameControllerConfig.address,
+    abi: this.gameControllerConfig.abi,
+    functionName: 'winners',
+    args: [ escrowHash ]
+  });
+  return winners as HexishString[];
+ }
+ 
  handleError(error: any, customMessage: string){
   if (error.message){
     if(error.message.split("\n\n") && error.message.split("\n\n").length > 0) {
@@ -161,7 +186,7 @@ export class BlockchainAPI implements IBlockchainAPI {
   return hash;
  } 
 
- async waitForMined(hash: HexIshString) {
+ async waitForMined(hash: HexishString) {
   return await waitForTransaction({ hash })
  }
 

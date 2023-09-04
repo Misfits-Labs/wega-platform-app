@@ -50,15 +50,16 @@ export const appApiSlice = createApi({
        return gamesAdapter.setAll(gamesInitialState, response.items)
       }
     }),
-    createGame: builder.mutation<Wega, Partial<Wega> & Pick<Wega, 'wager'> & Pick<Wega, 'gameType'> & Partial<Player>>({
-      query: ({ wager, players, gameType }: {
+    createGame: builder.mutation<Wega, Partial<Wega> & Pick<Wega, 'creatorUuid'> & Pick<Wega, 'wager'> & Pick<Wega, 'gameType'> & Partial<Player>>({
+      query: ({ wager, players, gameType, creatorUuid }: {
        wager: Wager,
        players: Player[],
        gameType: AllPossibleWegaTypes,
+       creatorUuid: string;
       }) => ({
         url: '/games',
         method: 'POST',
-        body: { wager, players, gameType }
+        body: { wager, players, gameType, creatorUuid }
       }),
       invalidatesTags: () => [ { type: 'Games', id: 'LIST' } ]
      }),

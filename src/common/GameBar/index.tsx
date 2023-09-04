@@ -21,8 +21,9 @@ import{ BarDiceIcon, BarCoinIcon, USDCIcon, USDTIcon} from '../../assets/icons';
 import { selectGameById } from '../../containers/App/api';
 import { useSelector } from 'react-redux' 
 import { utils } from 'ethers';
-import { ButtonForJoinableGame } from '../ButtonForJoinableGame'
-import { ButtonForWaitingGame } from '../ButtonForWaitingGame'
+import { ButtonForJoinableGame } from '../ButtonForJoinableGame';
+import { ButtonForWaitingGame } from '../ButtonForWaitingGame';
+import { useWegaStore } from '../../hooks'
 
 export const BADGE_TEXTS: any = {
  [WegaTypes[WegaTypesEnum.DICE]]: 'Dice',
@@ -34,15 +35,15 @@ interface GameBarProps {
 }
 
 function GameBar({ 
-  gameId, 
+  gameId,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   css, 
   ...rest
 }: { gameId: number } & React.Attributes & Partial<React.AllHTMLAttributes<HTMLDivElement>> & GameBarProps) {
   const game = useSelector(state => selectGameById(state, gameId));
-
+  const { user } = useWegaStore()
   
-  return game && (
+  return game && user?.uuid && (
    <BarWrapper {...rest}>
     {/* date */}
     <DateColumn>{dateFromTs(new Date(game.createdAt as string).getTime() * 1000)}</DateColumn>
@@ -60,13 +61,13 @@ function GameBar({
     {/* escrow link button */}
     
     {/* render for a joinable game */} 
-    {  
-      game.players.length === 1 && <ButtonForJoinableGame gameType={game.gameType} gameId={game.id} />
+    {
+      game.creatorUuid !== user.uuid && <ButtonForJoinableGame gameType={game.gameType} gameId={game.id} requiredPlayerNum={game.requiredPlayerNum} players={game.players} /> 
     }
 
     {/* playable game button */}
     {  
-      game.players.length === 2 && <ButtonForWaitingGame gameType={game.gameType} gameId={game.id} />  
+      game.creatorUuid === user.uuid && <ButtonForWaitingGame gameType={game.gameType} gameId={game.id} />  
     }
 
    </BarWrapper>

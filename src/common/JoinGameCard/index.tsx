@@ -14,7 +14,7 @@ import {
 import { 
   AllPossibleCurrencyTypes, 
   AllPossibleWagerTypes, 
-  HexIshString,
+  HexishString,
   AllPossibleWegaTypes,
 } from "../../models";
 import { 
@@ -36,21 +36,17 @@ import { toastSettings } from '../../utils';
 import Button from '../Button';
 import { useFormReveal } from '../CreateGameCard/animations';
 import { useUpdateGameMutation } from '../../containers/App/api';
-import { Link } from 'react-router-dom';
-
-
-
 
 export interface CreateGameCardInterface {
   wagerType: AllPossibleWagerTypes;
   currencyType: AllPossibleCurrencyTypes;
-  tokenAddress: HexIshString;
-  playerAddress: HexIshString;
+  tokenAddress: HexishString;
+  playerAddress: HexishString;
   gameType: AllPossibleWegaTypes;
   playerUuid: string;
   wagerAmount: number;
   gameUuid: string;
-  escrowId: HexIshString;
+  escrowId: HexishString;
   gameId: number;
 }
 
@@ -95,19 +91,19 @@ const JoinGameCard = ({
   // approval for allowance
   const { isLoading: isGetAllowanceLoading, allowance } = useAllowanceQuery();
   
-  // get token balance of user
+  // get token balance of userP
   const { data: userWagerBalance, isLoading: isWagerbalanceLoading } = useBalance({ 
     address: playerAddress,
     token: tokenAddress,
   })
   
-  const { isLoading: isDepositWagerLoading, isSuccess: isDepositWagerSuccess, depositWager } = useDepositWagerMutation();
-  const [ updateGame, { isLoading: isUpdateGameLoading, isSuccess: isUpdateGameSuccess  } ] = useUpdateGameMutation();
-  const handleDepositWagerClick = async ({ wager }: { wager: number }) => {
+  const { isLoading: isDepositWagerLoading, depositWager } = useDepositWagerMutation();
+  const [ updateGame, { isLoading: isUpdateGameLoading  } ] = useUpdateGameMutation();
+  const handleDepositWagerClick = async () => {
     try {
-      await depositWager(escrowId,  wager).unwrap();
+      await depositWager(escrowId).unwrap();
       await updateGame({ newPlayerUuid: playerUuid, gameUuid }).unwrap();
-      navigateToGameUi(`play/${gameId}`, 1500, { replace: true });
+      navigateToGameUi(`/${gameType.toLowerCase()}/play/${gameId}`, 1500, { replace: true });
       toast.success('Deposit success', { ...toastSettings('success', 'top-center') as any });
     } catch (e: any){
       console.log(e)
@@ -161,21 +157,14 @@ const JoinGameCard = ({
           {/* balance of users currency type */}
         </div>
         {/* <Button buttonType="primary"><>Approve</></Button> */}
-
         { 
-          !isWagerApproved ?
-          <Button type="submit" buttonType="primary" tw="flex">
+          isWagerApproved ? <Button type="submit" buttonType="primary" tw="flex">
+          {(isDepositWagerLoading || isUpdateGameLoading) ? "Loading..." : "Deposit" }
+          <StarLoaderIcon loading={(isDepositWagerLoading || isUpdateGameLoading)} color="#000000" tw="h-[16px] w-[16px] ms-[5px]" /> 
+          </Button> : <Button type="submit" buttonType="primary" tw="flex">
               { (isGetAllowanceLoading || isApproveERC20Loading) ? "Loading..." : "Approve" }
               <StarLoaderIcon loading={(isGetAllowanceLoading || isApproveERC20Loading)} color="#000000" tw="h-[16px] w-[16px] ms-[5px]" />
-          </Button> : !isDepositWagerSuccess && !isUpdateGameSuccess ? <Button type="submit" buttonType="primary" tw="flex">
-          {(isDepositWagerLoading || isUpdateGameLoading) ? "Loading..." : "Deposit" }
-          <StarLoaderIcon color="#000000" tw="h-[16px] w-[16px] ms-[5px]" /> 
-          </Button> : <Link to={`/${gameType.toLowerCase()}/play/${gameId}`}>
-            <Button buttonType="primary" tw="flex">
-              Play
-            <StarLoaderIcon className="dark:fill-pretu h-[16px] w-[16px] ms-[5px]" />
-            </Button>
-          </Link>
+          </Button>
         }
         {/* details */}
         {/* wager  */}

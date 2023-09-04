@@ -1,4 +1,4 @@
-import { HexIshString } from "./blockchain";
+import { HexishString } from "./blockchain";
 export interface Wallet {
  ensName: string;
  ensAvatar: string;
@@ -10,5 +10,5 @@ export interface Wallet {
  isConnected: boolean;
  usdBalance: string;
  hasPendingTransactions: boolean;
- address: HexIshString;
+ address: HexishString;
 }

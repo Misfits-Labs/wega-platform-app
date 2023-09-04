@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
-import { HexIshString } from '../../models';
+import { HexishString } from '../../models';
 import {
  allowanceQuery,
  hashWagerQuery,
@@ -8,6 +8,8 @@ import {
  createWagerMutation,
  depositOfQuery,
  depositWagerMutation,
+ getWinnersQuery,
+ getGameResultsQuery
 } from './thunks';
 
 type RequestState = 'pending' | 'fulfilled' | 'rejected' | 'idle';
@@ -20,7 +22,7 @@ interface BlockchainState {
   error: any;
  };
  hash: {
-  data: HexIshString | undefined;
+  data: HexishString | undefined;
   status: RequestState; 
   error: any;
  },
@@ -41,6 +43,16 @@ interface BlockchainState {
  }
  depositWager: {
   data: number | undefined;
+  status: RequestState;
+  error: any;
+ },
+ getWinners: {
+  data: HexishString[] | undefined;
+  status: RequestState;
+  error: any;
+ }
+ getGameResults: {
+  data: number[] | undefined;
   status: RequestState;
   error: any;
  }
@@ -74,6 +86,16 @@ export const initialBlockchainState: BlockchainState = {
   error: undefined,
  },
  depositWager: { // refers to the hash from mutation
+  data: undefined,
+  status: 'idle',
+  error: undefined,
+ },
+ getWinners: {
+  data: undefined,
+  status: 'idle',
+  error: undefined,
+ },
+ getGameResults: {
   data: undefined,
   status: 'idle',
   error: undefined,
@@ -133,6 +155,7 @@ const blockchainSlice = createSlice({
    state.createWager.status = action.meta.requestStatus;
    state.createWager.data = action.payload;
   });
+  
   // get user deposits
   builder.addCase(depositOfQuery.pending, (state, action) => { state.depositOf.status = action.meta.requestStatus });
   builder.addCase(depositOfQuery.rejected, (state, action) => { 
@@ -143,8 +166,11 @@ const blockchainSlice = createSlice({
    state.depositOf.status = action.meta.requestStatus;
    state.depositOf.data = action.payload;
   });
+  
   // deposit wager
-  builder.addCase(depositWagerMutation.pending, (state, action) => { state.depositWager.status = action.meta.requestStatus });
+  builder.addCase(depositWagerMutation.pending, (state, action) => { 
+   state.depositWager.status = action.meta.requestStatus
+  });
   builder.addCase(depositWagerMutation.rejected, (state, action) => { 
    state.depositWager.status = action.meta.requestStatus;
    state.depositWager.error = action.payload; 
@@ -152,6 +178,28 @@ const blockchainSlice = createSlice({
   builder.addCase(depositWagerMutation.fulfilled, (state, action) => { 
    state.depositWager.status = action.meta.requestStatus;
    state.depositWager.data = action.payload;
+  });
+  
+  // query winners
+  builder.addCase(getWinnersQuery.pending, (state, action) => { state.getWinners.status = action.meta.requestStatus });
+  builder.addCase(getWinnersQuery.rejected, (state, action) => { 
+   state.getWinners.status = action.meta.requestStatus;
+   state.getWinners.error = action.payload; 
+  });
+  builder.addCase(getWinnersQuery.fulfilled, (state, action) => { 
+   state.getWinners.status = action.meta.requestStatus;
+   state.getWinners.data = action.payload;
+  });
+
+  // query gameResults
+  builder.addCase(getGameResultsQuery.pending, (state, action) => { state.getGameResults.status = action.meta.requestStatus });
+  builder.addCase(getGameResultsQuery.rejected, (state, action) => { 
+   state.getGameResults.status = action.meta.requestStatus;
+   state.getGameResults.error = action.payload; 
+  });
+  builder.addCase(getGameResultsQuery.fulfilled, (state, action) => { 
+   state.getGameResults.status = action.meta.requestStatus;
+   state.getGameResults.data = action.payload;
   });
  }
 });
@@ -188,6 +236,16 @@ export const selectDepositWagerMutationError = (state: RootState) => state.block
 export const selectDepositOfQueryData = (state: RootState) => state.blockchain.depositOf.data;
 export const selectDepositOfQueryStatus = (state: RootState) => state.blockchain.depositOf.status;
 export const selectDepositOfQueryError = (state: RootState) => state.blockchain.depositOf.error;
+
+// getGameResults query 
+export const selectGetGameResultsQueryData = (state: RootState) => state.blockchain.getGameResults.data;
+export const selectGetGameResultsQueryStatus = (state: RootState) => state.blockchain.getGameResults.status;
+export const selectGetGameResultsQueryError = (state: RootState) => state.blockchain.getGameResults.error;
+
+// getWinners query 
+export const selectGetWinnersQueryData = (state: RootState) => state.blockchain.getWinners.data;
+export const selectGetWinnersQueryStatus = (state: RootState) => state.blockchain.getWinners.status;
+export const selectGetWinnersQueryError = (state: RootState) => state.blockchain.getWinners.error;
 
 // is wager approved
 export const selectWagerApproved = (state: RootState) => state.blockchain.wagerApproved;

@@ -10,4 +10,5 @@ export {
  erc20ABI,
  wegaErc20DummyConfig as tokenConfig,
  wegaErc20EscrowConfig as escrowConfig, 
+ wegaGameControllerConfig as gameControllerConfig,
 } from './abis.ts'

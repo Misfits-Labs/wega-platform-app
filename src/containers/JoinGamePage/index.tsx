@@ -4,7 +4,7 @@ import { SectionHeaderTitle, SectionHeaderContainer } from '../../common/Section
 import JoinGameCard from '../../common/JoinGameCard';
 import 'twin.macro';
 // import JoinableGamesSection from '../../components/JoinableGamesSection';
-import {  AllPossibleWegaTypes, HexIshString  } from '../../models';
+import {  AllPossibleWegaTypes, HexishString  } from '../../models';
 import { SupportedWagerTokenAddresses } from '../../models/constants';
 import { selectGameById } from '../App/api';
 import { useSelector } from 'react-redux';
@@ -12,6 +12,7 @@ import { useWegaStore } from '../../hooks';
 import { ComponentLoader } from '../../common/loaders'
 import { useParams } from 'react-router-dom';
 import MainContainer from '../../components/MainContainer';
+import { BADGE_TEXTS } from "../../common/JoinableGameBar";
 import { utils } from 'ethers';
 
 const JoinGamePage = () => {
@@ -20,7 +21,7 @@ const JoinGamePage = () => {
  const game = useSelector(state => selectGameById(state, Number(id)));
   return (network?.id && wallet && user.uuid && game) ? (<MainContainer>
     <Helmet>
-     <title>Create</title>
+     <title>Join - {BADGE_TEXTS[game.gameType]} </title>
     </Helmet>
     <Section 
      direction='col' 
@@ -38,7 +39,7 @@ const JoinGamePage = () => {
         playerUuid={user.uuid}
         wagerAmount={Number(utils.formatEther(game.wager.wagerAmount))}
         gameUuid={game.uuid}
-        escrowId={game.wager.wagerHash as HexIshString}
+        escrowId={game.wager.wagerHash as HexishString}
         gameId={game.id}
       />
     </Section>

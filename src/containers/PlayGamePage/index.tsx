@@ -11,7 +11,7 @@ import { ComponentLoader } from "../../common/loaders"
 import { PlayGameSection } from "../../components/PlayGameSection"
 import { FloatingOrbs } from "../../common/FloatingOrbs"
 import { AllPossibleWegaTypes } from "../../models";
-import MainContainer from '../../components/MainContainer'
+import MainContainer from '../../components/MainContainer';
 import "twin.macro"
 
 const PlayGamePage = () => {

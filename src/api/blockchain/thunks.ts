@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { BlockchainAPI } from './blokchainApi';
-import { HexIshString  } from '../../models';
+import { HexishString, WegaTypesEnum  } from '../../models';
 import toast from 'react-hot-toast';
 import { toastSettings } from '../../utils';
 import { waitForTransaction } from '@wagmi/core';
@@ -9,7 +9,7 @@ import { waitForTransaction } from '@wagmi/core';
  * @note - All blockchain mutation thunks should just return a hash that can be accessed by the hook and can be waited for on the front-end 
 */
 
-export const allowanceQuery = createAsyncThunk<number, { tokenAddress: HexIshString, owner: HexIshString, wager: number }>('token/allowance',
+export const allowanceQuery = createAsyncThunk<number, { tokenAddress: HexishString, owner: HexishString, wager: number }>('token/allowance',
 async ({ tokenAddress, owner, wager }, { rejectWithValue, dispatch }) => {
    const api = new BlockchainAPI();
    try {
@@ -25,7 +25,7 @@ async ({ tokenAddress, owner, wager }, { rejectWithValue, dispatch }) => {
  }
 )
 
-export const approveERC20Mutation = createAsyncThunk<HexIshString, { tokenAddress: HexIshString, wager: number }>('token/approve',
+export const approveERC20Mutation = createAsyncThunk<HexishString, { tokenAddress: HexishString, wager: number }>('token/approve',
  async ({ tokenAddress, wager }, { rejectWithValue, dispatch }) => {
    const api = new BlockchainAPI();
    try {
@@ -44,7 +44,7 @@ export const approveERC20Mutation = createAsyncThunk<HexIshString, { tokenAddres
  }
 )
 
-export const hashWagerQuery = createAsyncThunk<HexIshString, { tokenAddress: HexIshString, playerAddress: HexIshString, accountsCount: number,  wager: number }>('escrow/hash',
+export const hashWagerQuery = createAsyncThunk<HexishString, { tokenAddress: HexishString, playerAddress: HexishString, accountsCount: number,  wager: number }>('escrow/hash',
  async (inpts, { rejectWithValue }) => {
    const api = new BlockchainAPI();
    try {
@@ -59,7 +59,7 @@ export const hashWagerQuery = createAsyncThunk<HexIshString, { tokenAddress: Hex
 )
 
 
-export const createWagerMutation = createAsyncThunk<any, { tokenAddress: HexIshString, playerAddress: HexIshString, accountsCount: number, wager: number }>('escrow/createWager',
+export const createWagerMutation = createAsyncThunk<any, { tokenAddress: HexishString, gameType: WegaTypesEnum, playerAddress: HexishString, accountsCount: number, wager: number }>('escrow/createWager',
  async (inpts, { rejectWithValue }) => {
   const api = new BlockchainAPI();
    try {
@@ -78,7 +78,7 @@ export const createWagerMutation = createAsyncThunk<any, { tokenAddress: HexIshS
  }
 )
 
-export const depositOfQuery = createAsyncThunk<number, { escrowHash: HexIshString, account: HexIshString }>('escrow/depositOf',
+export const depositOfQuery = createAsyncThunk<number, { escrowHash: HexishString, account: HexishString }>('escrow/depositOf',
 async (inpts, { rejectWithValue }) => {
   const api = new BlockchainAPI();
   try {
@@ -90,12 +90,34 @@ async (inpts, { rejectWithValue }) => {
   }
 })
 
+export const getWinnersQuery = createAsyncThunk<HexishString[], { escrowHash: HexishString }>('gameController/winners', async (inpts, { rejectWithValue }) => {
+  const api = new BlockchainAPI();
+  try {
+    return await api.getWinners(inpts.escrowHash);
+  } catch (error: any) {
+    const message = api.handleError(error, 'Query get game winners error');
+    toast.error(message, { ...{ ...toastSettings('error', 'bottom-center') } as any })
+    return rejectWithValue(message);
+  }
+})
 
-export const depositWagerMutation = createAsyncThunk<any, { escrowId: HexIshString, wager: number }>('escrow/depositWager',
+export const getGameResultsQuery = createAsyncThunk<number[], { escrowHash: HexishString, player: HexishString }> ('gameController/gameResults',
+async (inpts, { rejectWithValue }) => {
+  const api = new BlockchainAPI();
+  try {
+    return await api.getGameResults(inpts.escrowHash, inpts.player);
+  } catch (error: any) {
+    const message = api.handleError(error, 'Query get game results error');
+    toast.error(message, { ...{ ...toastSettings('error', 'bottom-center') } as any })
+    return rejectWithValue(message);
+  }
+})
+
+export const depositWagerMutation = createAsyncThunk<any, { escrowId: HexishString }>('escrow/depositWager',
  async (inpts, { rejectWithValue }) => {
   const api = new BlockchainAPI();
    try {
-      const hash = await api.deposit(inpts.escrowId, inpts.wager);
+      const hash = await api.deposit(inpts.escrowId);
       const receipt = await waitForTransaction({ hash });
     if(receipt) {
       toast.success('Deposit wager success', { ...{ ...toastSettings('success', 'top-center') } as any });

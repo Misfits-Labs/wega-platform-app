@@ -1,4 +1,5 @@
-import { AllPossibleWegaTypes } from "../../models"
+import { AllPossibleWegaTypes, HexishString } from "../../models"
+import { useEffect } from 'react';
 import { selectGameById } from '../../containers/App/api';
 import { useSelector } from 'react-redux';
 import 'twin.macro';
@@ -8,7 +9,7 @@ import { PlayGameContainer } from './types';
 import { PlayGamePlayerCard } from "../PlayGamePlayerCard";
 import { Dice } from "../Dice";
 import Button from "../../common/Button";
-import { useWegaStore } from "../../hooks";
+import { useWegaStore, useBlockchainApiHooks } from "../../hooks";
 
 interface PlayGameSectionProps {
  gameType?: AllPossibleWegaTypes;
@@ -17,9 +18,31 @@ interface PlayGameSectionProps {
 export const PlayGameSection: React.FC<PlayGameSectionProps>= ({
  gameId,
 }: PlayGameSectionProps) => {
-  const { user } = useWegaStore();
+  const { user, wallet } = useWegaStore();
   const game = useSelector(state => selectGameById(state, gameId));
- 
+  const { useGetGameResultsQuery, useGetWinnersQuery } = useBlockchainApiHooks;
+  const { getGameResults, data: gameResults } = useGetGameResultsQuery();
+  const { getWinners, data: winners } = useGetWinnersQuery();
+  
+  useEffect(() => {
+    // if() {
+    //  alert()
+    // }
+    if(game && game.wager && wallet && wallet.address && !gameResults){
+      getGameResults(game.wager.wagerHash as HexishString, wallet.address);
+    }
+
+    if(game && game.wager && wallet && wallet.address && !winners){
+      getWinners(game.wager.wagerHash as HexishString);
+    }
+    if(gameResults){
+      console.log('gameResults: ', gameResults)
+    } 
+    if(winners){
+      console.log('winners: ', winners)
+    }
+  }, [gameResults, winners, wallet]);
+  
  return user && game && (<>
    <PlayGameContainer>
     {/* orbs */}

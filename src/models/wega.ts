@@ -14,6 +14,7 @@ export type AllPossibleWegaTypes = typeof WegaTypes[keyof typeof WegaTypes];
 
 export type Wega = {
  id: number;
+ creatorUuid: string;
  uuid: string;
  gameType: AllPossibleWegaTypes;
  createdAt:  string;
@@ -21,4 +22,5 @@ export type Wega = {
  wager: Wager;
  expiredAt: string | number;
  players: Player[];
+ requiredPlayerNum: number;
 }

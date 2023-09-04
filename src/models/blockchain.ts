@@ -1,1 +1,1 @@
-export type HexIshString = string & `0x${string}`;
+export type HexishString = string & `0x${string}`;
