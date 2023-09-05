@@ -8,8 +8,9 @@ import { NormalText } from '../../common/CreateGameCard/types';
 import { PlayGameContainer } from './types';
 import { PlayGamePlayerCard } from "../PlayGamePlayerCard";
 import { Dice } from "../Dice";
+import { useList } from 'react-use';
 import Button from "../../common/Button";
-import { useWegaStore, useBlockchainApiHooks } from "../../hooks";
+import { useWegaStore, useBlockchainApiHooks, useNavigateTo} from "../../hooks";
 
 interface PlayGameSectionProps {
  gameType?: AllPossibleWegaTypes;
@@ -20,28 +21,32 @@ export const PlayGameSection: React.FC<PlayGameSectionProps>= ({
 }: PlayGameSectionProps) => {
   const { user, wallet } = useWegaStore();
   const game = useSelector(state => selectGameById(state, gameId));
+  const [connectedPlayers,{ filter: filterPlayers }] =  useList(() => game ? game.players : []);
   const { useGetGameResultsQuery, useGetWinnersQuery } = useBlockchainApiHooks;
   const { getGameResults, data: gameResults } = useGetGameResultsQuery();
   const { getWinners, data: winners } = useGetWinnersQuery();
+  const navigateTo = useNavigateTo(); 
   
+    
   useEffect(() => {
-    // if() {
-    //  alert()
-    // }
-    if(game && game.wager && wallet && wallet.address && !gameResults){
-      getGameResults(game.wager.wagerHash as HexishString, wallet.address);
+    // navigates the user back to home page if not the correct address
+    if (wallet) filterPlayers(player => player.walletAddress === wallet.address);
+    if(wallet && connectedPlayers.length === 0){
+      navigateTo('/', 10, {replace: true})
     }
-
-    if(game && game.wager && wallet && wallet.address && !winners){
-      getWinners(game.wager.wagerHash as HexishString);
+    // get game results
+    if(wallet && game) {
+      getGameResults(game?.wager.wagerHash as HexishString, wallet.address as HexishString);
+      getWinners(game?.wager.wagerHash as HexishString);
     }
+    
     if(gameResults){
       console.log('gameResults: ', gameResults)
     } 
     if(winners){
       console.log('winners: ', winners)
     }
-  }, [gameResults, winners, wallet]);
+  }, [gameResults, winners, wallet, game]);
   
  return user && game && (<>
    <PlayGameContainer>
