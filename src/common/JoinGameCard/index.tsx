@@ -160,10 +160,10 @@ const JoinGameCard = ({
         { 
           isWagerApproved ? <Button type="submit" buttonType="primary" tw="flex">
           {(isDepositWagerLoading || isUpdateGameLoading) ? "Loading..." : "Deposit" }
-          <StarLoaderIcon loading={(isDepositWagerLoading || isUpdateGameLoading)} color="#000000" tw="h-[16px] w-[16px] ms-[5px]" /> 
+          <StarLoaderIcon loading={(isDepositWagerLoading || isUpdateGameLoading)} color="#151515" tw="h-[16px] w-[16px] ms-[5px]" /> 
           </Button> : <Button type="submit" buttonType="primary" tw="flex">
               { (isGetAllowanceLoading || isApproveERC20Loading) ? "Loading..." : "Approve" }
-              <StarLoaderIcon loading={(isGetAllowanceLoading || isApproveERC20Loading)} color="#000000" tw="h-[16px] w-[16px] ms-[5px]" />
+              <StarLoaderIcon loading={(isGetAllowanceLoading || isApproveERC20Loading)} color="#151515" tw="h-[16px] w-[16px] ms-[5px]" />
           </Button>
         }
         {/* details */}

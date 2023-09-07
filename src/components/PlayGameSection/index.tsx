@@ -1,54 +1,40 @@
-import { AllPossibleWegaTypes, HexishString } from "../../models"
+import { Wega, HexishString } from "../../models"
 import { useEffect } from 'react';
-import { selectGameById } from '../../containers/App/api';
-import { useSelector } from 'react-redux';
 import 'twin.macro';
 import { HelpCircleIcon, ClockIcon, SparkleIcon } from '../../assets/icons';
 import { NormalText } from '../../common/CreateGameCard/types';
 import { PlayGameContainer } from './types';
 import { PlayGamePlayerCard } from "../PlayGamePlayerCard";
 import { Dice } from "../Dice";
-import { useList } from 'react-use';
 import Button from "../../common/Button";
-import { useWegaStore, useBlockchainApiHooks, useNavigateTo} from "../../hooks";
+import { useWegaStore, useBlockchainApiHooks, useFirebaseData } from "../../hooks";
 
 interface PlayGameSectionProps {
- gameType?: AllPossibleWegaTypes;
- gameId: number;
+ game: Wega;
 }
 export const PlayGameSection: React.FC<PlayGameSectionProps>= ({
- gameId,
+ game,
 }: PlayGameSectionProps) => {
   const { user, wallet } = useWegaStore();
-  const game = useSelector(state => selectGameById(state, gameId));
-  const [connectedPlayers,{ filter: filterPlayers }] =  useList(() => game ? game.players : []);
   const { useGetGameResultsQuery, useGetWinnersQuery } = useBlockchainApiHooks;
+  const { isGamePlayable, players, currentTurn } = useFirebaseData(game.uuid as string);
   const { getGameResults, data: gameResults } = useGetGameResultsQuery();
   const { getWinners, data: winners } = useGetWinnersQuery();
-  const navigateTo = useNavigateTo(); 
-  
-    
+
   useEffect(() => {
-    // navigates the user back to home page if not the correct address
-    if (wallet) filterPlayers(player => player.walletAddress === wallet.address);
-    if(wallet && connectedPlayers.length === 0){
-      navigateTo('/', 10, {replace: true})
-    }
-    // get game results
-    if(wallet && game) {
-      getGameResults(game?.wager.wagerHash as HexishString, wallet.address as HexishString);
-      getWinners(game?.wager.wagerHash as HexishString);
-    }
     
-    if(gameResults){
-      console.log('gameResults: ', gameResults)
-    } 
-    if(winners){
-      console.log('winners: ', winners)
-    }
-  }, [gameResults, winners, wallet, game]);
+    // navigates the user back to home page if not the correct address
+    
+    // if(wallet && connectedPlayers.length === 0){
+    //   navigateTo('/', 0, {replace: true})
+    // }
+    // get game results
+    if(game.wager.wagerHash && wallet && wallet.address) getGameResults(game.wager.wagerHash as HexishString, wallet.address as HexishString);
+    getWinners(game.wager.wagerHash as HexishString);
+    console.log(players)
+  }, [game, players , wallet, wallet?.address ]);
   
- return user && game && (<>
+ return user && players && players.length > 0 && (<>
    <PlayGameContainer>
     {/* orbs */}
     {/* timer icon row */}
@@ -61,10 +47,9 @@ export const PlayGameSection: React.FC<PlayGameSectionProps>= ({
     <div tw="flex gap-x-[25px] items-center justify-center">
       {/* player card */}
       <PlayGamePlayerCard
-        status={'connected'} 
-        player={user} 
-        players={game.players}
-        wager={game.wager} 
+        status={'connected'}
+        player={user}
+        wager={game.wager}
       />
       {
         /* dice render
@@ -76,9 +61,10 @@ export const PlayGameSection: React.FC<PlayGameSectionProps>= ({
       <Dice />
       {/* searching for opponent box */}
       <PlayGamePlayerCard
-        status={'connecting'} 
-        player={user} 
-        players={game.players}
+        status={isGamePlayable ? 'connected' : 'connecting'} 
+        opponent={players.filter(player => {
+          return player.uuid !== user.uuid 
+        })[0]}
         wager={game.wager}
       />
    </div>

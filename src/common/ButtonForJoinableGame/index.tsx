@@ -2,21 +2,20 @@ import {
   useConnectModal,
 } from '@rainbow-me/rainbowkit';
 import Button from '../Button';
-import { useWegaStore } from '../../hooks';
 import{ StarLoaderIcon } from '../../assets/icons';
-import { AllPossibleWegaTypes, Player } from '../../models';
+import { AllPossibleWegaTypes} from '../../models';
 import { Link } from 'react-router-dom';
+import { useFirebaseData, useWegaStore } from '../../hooks';
 
 interface ButtonForJoinableGameBar {
   gameType: AllPossibleWegaTypes;
   gameId: number;
-  requiredPlayerNum: number;
-  players: Player[];
+  gameUuid: string;
 }
-
-export const ButtonForJoinableGame = ({ gameType, gameId, requiredPlayerNum, players }: ButtonForJoinableGameBar) => {
+export const ButtonForJoinableGame = ({ gameType, gameId, gameUuid }: ButtonForJoinableGameBar) => {
   const { wallet } = useWegaStore();
-  const {openConnectModal} = useConnectModal();
+  const { openConnectModal } = useConnectModal();
+  const { isGamePlayable } = useFirebaseData(gameUuid);
   return ( !wallet && openConnectModal ?
     <Button 
         buttonType="secondary"  
@@ -25,7 +24,7 @@ export const ButtonForJoinableGame = ({ gameType, gameId, requiredPlayerNum, pla
       >
       Join
       <StarLoaderIcon className="dark:fill-blanc h-[16px] w-[16px] ms-[5px]" />
-    </Button> : requiredPlayerNum !== players.length ? <Link to={`/${gameType.toLowerCase()}/join/${gameId}`}>
+    </Button> : !isGamePlayable ? <Link to={`/${gameType.toLowerCase()}/join/${gameId}`} >
       <Button buttonType="secondary" className="flex items-center">
         Join
       <StarLoaderIcon className="dark:fill-blanc h-[16px] w-[16px] ms-[5px]" />

@@ -5,21 +5,24 @@ import {
  SectionHeaderSubtitle,
  SectionHeaderContainer
 } from "../../common/Section/types"
+import { useSelector } from 'react-redux';
 import { BADGE_TEXTS } from "../../common/GameBar"
 import { useParams } from "react-router-dom"
 import { ComponentLoader } from "../../common/loaders"
 import { PlayGameSection } from "../../components/PlayGameSection"
 import { FloatingOrbs } from "../../common/FloatingOrbs"
-import { AllPossibleWegaTypes } from "../../models";
 import MainContainer from '../../components/MainContainer';
+import { selectGameById } from '../../containers/App/api';
+
 import "twin.macro"
 
 const PlayGamePage = () => {
- const { gameType, id: gameId } = useParams()
+ const { id: gameId } = useParams();
+ const game = useSelector(state => selectGameById(state, Number(gameId as string)));
 
- return gameType && gameId ? (<div tw="min-w-[100vw] min-h-[100vh] relative">
+ return game ? (<div tw="min-w-[100vw] min-h-[100vh] relative">
   <Helmet>
-   <title>Play - {BADGE_TEXTS[gameType?.toUpperCase()]}</title>
+   <title>Play - {BADGE_TEXTS[game.gameType.toUpperCase()]}</title>
   </Helmet>
   <FloatingOrbs />
   <MainContainer>
@@ -27,7 +30,7 @@ const PlayGamePage = () => {
     direction="col"
     hdr={
      <SectionHeaderContainer tw="flex-col items-center">
-      <SectionHeaderTitle>{BADGE_TEXTS[gameType?.toUpperCase()]}</SectionHeaderTitle>
+      <SectionHeaderTitle>{BADGE_TEXTS[game.gameType.toUpperCase()]}</SectionHeaderTitle>
       <SectionHeaderSubtitle tw="dark:text-shinishi">
        The player with the highest number after each round, wins.
       </SectionHeaderSubtitle>
@@ -35,8 +38,7 @@ const PlayGamePage = () => {
     }
    >
     <PlayGameSection
-     gameType={gameType.toUpperCase() as AllPossibleWegaTypes}
-     gameId={parseInt(gameId)}
+     game={game}
     />
    </Section>
   </MainContainer>

@@ -1,8 +1,8 @@
-import { User, Player } from "../../models";
+import { User, Player, HexishString } from "../../models";
 import WalletAvatar from "../../common/WalletAvatar";
 import { PlayerCardContainer, PlayerAvatarWrapper } from './types';
 import { NormalText } from '../../common/CreateGameCard/types';
-import { isGameCreator, miniWalletAddress } from '../../utils'
+import { miniWalletAddress } from '../../utils'
 import { WagerTypeBadgeWrapper, BadgeText} from "../../common/GameBar/types";
 import { BadgeIcon, renderWagerBadge } from "../../common/GameBar";
 import { WaitForPlayerConnectCard } from '../../components/WaitForPlayerConnectCard';
@@ -11,26 +11,24 @@ import 'twin.macro';
 
 export interface PlayGamePlayerCardProps {
  status: 'connecting' | 'connected' | 'idle' | 'rolling';
- player: User;
- players: Player[];
  wager: any;
+ player?: User;
+ opponent?: Player;
 }
-
-export const PlayGamePlayerCard = ({ players, player, wager, status }: PlayGamePlayerCardProps) => {
-  const isCreator = isGameCreator(player.uuid ,players);
+export const PlayGamePlayerCard = ({ status, wager, player, opponent }: PlayGamePlayerCardProps) => {
   return status !== 'connecting' ? (
     <PlayerCardContainer>
-      {
-        player.wallet && 
+      { 
+        (player || opponent) &&
         <PlayerAvatarWrapper tw="flex items-center gap-x-[15px]">
           <WalletAvatar 
-            address={player.wallet.address} 
-            ensImage={player.wallet.ensAvatar || undefined }
+            address={player && player.wallet ? player.wallet.address : opponent?.walletAddress} 
+            ensImage={undefined}
             size={10} 
           />
           <NormalText>{
-            isCreator ? miniWalletAddress(player.wallet?.address).concat('(you') : miniWalletAddress(player.wallet?.address) 
-          }(you)
+            player && player.wallet ? miniWalletAddress(player.wallet.address).concat('(you)') : miniWalletAddress(opponent?.walletAddress as HexishString) 
+          }
           </NormalText>
         </PlayerAvatarWrapper>
       }

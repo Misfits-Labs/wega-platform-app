@@ -60,14 +60,17 @@ function GameBar({
     </WagerTypeBadgeWrapper>
     {/* escrow link button */}
     
-    {/* render for a joinable game */} 
+    {/* render for a joinable game */}
+     {/* 
+      // when the player list a
+      */}
     {
-      game.creatorUuid !== user.uuid && <ButtonForJoinableGame gameType={game.gameType} gameId={game.id} requiredPlayerNum={game.requiredPlayerNum} players={game.players} /> 
+      game.creatorUuid !== user.uuid && <ButtonForJoinableGame gameType={game.gameType} gameId={game.id} gameUuid={game.uuid} /> 
     }
 
     {/* playable game button */}
     {  
-      game.creatorUuid === user.uuid && <ButtonForWaitingGame gameType={game.gameType} gameId={game.id} />  
+      game.creatorUuid === user.uuid && <ButtonForWaitingGame gameType={game.gameType} gameId={game.id} gameUuid={game.uuid} />  
     }
 
    </BarWrapper>

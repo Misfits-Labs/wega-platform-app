@@ -148,6 +148,7 @@ export class BlockchainAPI implements IBlockchainAPI {
  }
  
  async getGameResults(escrowHash: HexishString, player: HexishString) {
+
   const results = await readContract({
     address: this.gameControllerConfig.address,
     abi: this.gameControllerConfig.abi,
