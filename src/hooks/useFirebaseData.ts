@@ -6,7 +6,7 @@ import { Player } from '../models';
 
 export function useFirebaseData(gameUuid: string) {
   const [isGamePlayable, setIsGamePlayable] = useGetSet<boolean>(false);
-  const [currentGameTurn, setCurrentGameTurn] = useGetSet<number>(0);
+  const [gameInfo, setGameInfo] = useGetSet<{ currentRound: number, rollerIndex: number, currentTurn: number }| undefined>(undefined);
   const [playersInGame, setPlayersInGame] = useGetSet<Player[]>([]);
   const startListeningFirebase = () => {
     const databaseRef = ref(database);
@@ -17,19 +17,19 @@ export function useFirebaseData(gameUuid: string) {
         setIsGamePlayable(true);
       } if (players){
         setPlayersInGame(players);
-        setCurrentGameTurn(currentTurn);
+        setGameInfo(Object.assign({}, { currentRound: (Math.floor((currentTurn - 1) / requiredPlayerNum)), rollerIndex: (currentTurn % requiredPlayerNum), currentTurn }));
       }
     });
   };
 
   useEffect(() => {
     startListeningFirebase();
-  }, [currentGameTurn, isGamePlayable, gameUuid, playersInGame]);
+  }, [isGamePlayable, gameUuid, playersInGame, setGameInfo]);
 
   return { 
     isGamePlayable: isGamePlayable(), 
-    currentTurn: currentGameTurn(), 
     players: playersInGame(),
+    gameInfo: gameInfo(),
   }
 }
 

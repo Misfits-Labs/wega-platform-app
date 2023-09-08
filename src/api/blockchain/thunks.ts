@@ -101,11 +101,14 @@ export const getWinnersQuery = createAsyncThunk<HexishString[], { escrowHash: He
   }
 })
 
-export const getGameResultsQuery = createAsyncThunk<number[], { escrowHash: HexishString, player: HexishString }> ('gameController/gameResults',
-async (inpts, { rejectWithValue }) => {
+export const getGameResultsQuery = createAsyncThunk<number[][], { escrowHash: HexishString, players: HexishString[] }> ('gameController/gameResults', async (inpts, { rejectWithValue }) => {
   const api = new BlockchainAPI();
   try {
-    return await api.getGameResults(inpts.escrowHash, inpts.player);
+    return await Promise.all(inpts.players.map(async (playerAddress: string) => {
+      const res = await api.getGameResults(inpts.escrowHash, playerAddress as HexishString);
+      return res;
+    }
+    ));
   } catch (error: any) {
     const message = api.handleError(error, 'Query get game results error');
     toast.error(message, { ...{ ...toastSettings('error', 'bottom-center') } as any })

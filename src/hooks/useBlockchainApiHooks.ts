@@ -181,7 +181,7 @@ function useGetGameResultsQuery(){
   const [isLoading, setisloading] = useState<boolean>();
   const [isIdle, setIsIdle] = useState<boolean>();
   const [isSuccess, setIsSuccess] = useState<boolean>();  
-  const getGameResults = (escrowHash: HexishString, player: HexishString) => dispatch(getGameResultsQuery({ escrowHash, player }));
+  const getGameResults = (escrowHash: HexishString, players: HexishString[]) => dispatch(getGameResultsQuery({ escrowHash, players }));
   useEffect(() => {
     setIsError(status === 'rejected')
     setisloading(status === 'pending')

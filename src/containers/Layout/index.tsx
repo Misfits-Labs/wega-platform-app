@@ -9,6 +9,7 @@ import {
 import 'twin.macro';
 import Navigation from '../Navigation'
 import { Toaster } from 'react-hot-toast';
+import { GlobalModal } from '../../common/modals';
 
 const Layout = () => {
  const navigation = useNavigation();
@@ -34,7 +35,9 @@ const Layout = () => {
        Navigating...
      </div>
      <Navigation />
+     <GlobalModal>
       <Outlet />
+     </GlobalModal>
      <footer tw="container flex justify-center">This is the footer</footer>
      <ScrollRestoration getKey={getKey} />
      <Toaster />

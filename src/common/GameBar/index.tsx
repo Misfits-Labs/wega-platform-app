@@ -61,9 +61,7 @@ function GameBar({
     {/* escrow link button */}
     
     {/* render for a joinable game */}
-     {/* 
-      // when the player list a
-      */}
+
     {
       game.creatorUuid !== user.uuid && <ButtonForJoinableGame gameType={game.gameType} gameId={game.id} gameUuid={game.uuid} /> 
     }

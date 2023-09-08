@@ -1,4 +1,5 @@
 import { styled } from "twin.macro";
+import { WegaTypesEnum, WegaTypes } from "../../models";
 
 export const PlayGameContainer = styled.div`
  display: flex;
@@ -27,3 +28,8 @@ export const PlayGameContainer = styled.div`
   z-index: -5;
  }
 `
+
+export const MinimumGameRounds: any = {
+ [WegaTypes[WegaTypesEnum.DICE]]: 3,
+ [WegaTypes[WegaTypesEnum.COINFLIP]]: 2,
+} 

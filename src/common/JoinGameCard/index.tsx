@@ -35,7 +35,7 @@ import toast from 'react-hot-toast';
 import { toastSettings } from '../../utils';
 import Button from '../Button';
 import { useFormReveal } from '../CreateGameCard/animations';
-import { useUpdateGameMutation } from '../../containers/App/api';
+import { useJoinGameMutation } from '../../containers/App/api';
 
 export interface CreateGameCardInterface {
   wagerType: AllPossibleWagerTypes;
@@ -71,7 +71,6 @@ const JoinGameCard = ({
   const [currentWagerType] = useState<AllPossibleWagerTypes>(wagerType);
   const [currentCurrencyType] = useState<AllPossibleCurrencyTypes>(currencyType);
   const isWagerApproved = useAppSelector(state => selectWagerApproved(state));
-  
   const {revealed, triggerRevealAnimation} = useFormReveal(false, formRef, detailsBlock);
   
   const { 
@@ -98,11 +97,11 @@ const JoinGameCard = ({
   })
   
   const { isLoading: isDepositWagerLoading, depositWager } = useDepositWagerMutation();
-  const [ updateGame, { isLoading: isUpdateGameLoading  } ] = useUpdateGameMutation();
+  const [ joinGame, { isLoading: isJoinGameLoading  } ] = useJoinGameMutation();
   const handleDepositWagerClick = async () => {
     try {
       await depositWager(escrowId).unwrap();
-      await updateGame({ newPlayerUuid: playerUuid, gameUuid }).unwrap();
+      await joinGame({ newPlayerUuid: playerUuid, gameUuid }).unwrap();
       navigateToGameUi(`/${gameType.toLowerCase()}/play/${gameId}`, 1500, { replace: true });
       toast.success('Deposit success', { ...toastSettings('success', 'top-center') as any });
     } catch (e: any){
@@ -159,8 +158,8 @@ const JoinGameCard = ({
         {/* <Button buttonType="primary"><>Approve</></Button> */}
         { 
           isWagerApproved ? <Button type="submit" buttonType="primary" tw="flex">
-          {(isDepositWagerLoading || isUpdateGameLoading) ? "Loading..." : "Deposit" }
-          <StarLoaderIcon loading={(isDepositWagerLoading || isUpdateGameLoading)} color="#151515" tw="h-[16px] w-[16px] ms-[5px]" /> 
+          {(isDepositWagerLoading || isJoinGameLoading) ? "Loading..." : "Deposit" }
+          <StarLoaderIcon loading={(isDepositWagerLoading || isJoinGameLoading)} color="#151515" tw="h-[16px] w-[16px] ms-[5px]" /> 
           </Button> : <Button type="submit" buttonType="primary" tw="flex">
               { (isGetAllowanceLoading || isApproveERC20Loading) ? "Loading..." : "Approve" }
               <StarLoaderIcon loading={(isGetAllowanceLoading || isApproveERC20Loading)} color="#151515" tw="h-[16px] w-[16px] ms-[5px]" />

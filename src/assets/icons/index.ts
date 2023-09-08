@@ -27,3 +27,5 @@ export { default as HelpCircleIcon } from './HelpCircleIcon';
 export { default as ClockIcon } from './ClockIcon';
 export { default as SparkleIcon } from './SparkleIcon';
 export { default as CopyPasteIcon } from './CopyPasteIcon';
+export { default as CrownIcon } from './CrownIcon';
+export { default as RestartIcon } from './RestartIcon';

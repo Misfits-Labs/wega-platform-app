@@ -32,12 +32,23 @@ export const appApiSlice = createApi({
         return response.uuid 
       },
     }),
-    updateGame: builder.mutation<any, { gameUuid: string, newPlayerUuid: string }>({
+    joinGame: builder.mutation<any, { gameUuid: string, newPlayerUuid: string }>({
       query: ({gameUuid , newPlayerUuid }) => ({
         url: `/games/${gameUuid}/join`,
         method: 'PATCH',
         body: { newPlayerUuid, uuid: gameUuid }
       }),
+      invalidatesTags: () => [ { type: 'Games', id: 'LIST' } ]
+    }),
+    updateGame: builder.mutation<any, Partial<Wega>>({
+      query: ({ uuid, ...updates }) => {
+        return ({
+          url: `/games/${uuid}`,
+          method: 'PATCH',
+          body: { uuid, ...updates }
+        })
+      }
+      ,
       invalidatesTags: () => [ { type: 'Games', id: 'LIST' } ]
     }),
     getGames: builder.query<any, void>({
@@ -70,6 +81,7 @@ export const {
   useGetGamesQuery,
   useCreateGameMutation,
   useCreatePlayerMutation,
+  useJoinGameMutation,
   useUpdateGameMutation,
  } = appApiSlice;
  

@@ -18,3 +18,6 @@ export const DiceWrapper = styled.div`
  border-radius: 5.205px;
  ${tw`border border-pretu border-[5px]`} 
 `
+// eslint-disable-next-line no-unused-vars
+export enum DiceSides { MINUS_ONE, ONE, TWO, THREE, FOUR, FIVE, SIX } 
+

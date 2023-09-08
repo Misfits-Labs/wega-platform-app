@@ -35,7 +35,7 @@ export const ButtonForWaitingGame = ({ gameType, gameId, gameUuid }: ButtonForWa
     ) : (  
     <Button buttonType="secondary" className="flex items-center">
       Searching...
-    <StarLoaderIcon loading={true} className="dark:fill-blanc h-[16px] w-[16px] ms-[5px]" />
+      <StarLoaderIcon loading={true} className="dark:fill-blanc h-[16px] w-[16px] ms-[5px]" />
     </Button>
     )
 )

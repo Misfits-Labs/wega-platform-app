@@ -23,4 +23,5 @@ export type Wega = {
  expiredAt: string | number;
  players: Player[];
  requiredPlayerNum: number;
+ currentTurn: number;
 }

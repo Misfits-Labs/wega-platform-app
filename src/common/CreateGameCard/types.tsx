@@ -40,6 +40,13 @@ export const LargeText = styled.span`
  font-weight: 500;
  line-height: 32px;
 `
+export const ExtraLargeText = styled.span`
+ font-family: League Spartan;
+ font-size: 38px;
+ font-style: normal;
+ font-weight: 600;
+ line-height: 35px;
+`
 
 export const MediumText = styled.span`
 leading-trim: both;

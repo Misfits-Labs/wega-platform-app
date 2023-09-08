@@ -52,7 +52,7 @@ interface BlockchainState {
   error: any;
  }
  getGameResults: {
-  data: number[] | undefined;
+  data: any | undefined;
   status: RequestState;
   error: any;
  }

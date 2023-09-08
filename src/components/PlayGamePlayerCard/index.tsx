@@ -14,8 +14,9 @@ export interface PlayGamePlayerCardProps {
  wager: any;
  player?: User;
  opponent?: Player;
+ isRolling: boolean;
 }
-export const PlayGamePlayerCard = ({ status, wager, player, opponent }: PlayGamePlayerCardProps) => {
+export const PlayGamePlayerCard = ({ status, wager, player, opponent, isRolling }: PlayGamePlayerCardProps) => {
   return status !== 'connecting' ? (
     <PlayerCardContainer>
       { 
@@ -40,6 +41,14 @@ export const PlayGamePlayerCard = ({ status, wager, player, opponent }: PlayGame
           <BadgeText>{wager.wagerCurrency}</BadgeText>
         </WagerTypeBadgeWrapper>
       </div>
+      {
+        isRolling &&
+        <div>
+          <NormalText> 
+            Press roll to start...
+          </NormalText>
+        </div>
+      }
     </PlayerCardContainer>
   ) : <WaitForPlayerConnectCard />
 }
