@@ -34,6 +34,7 @@ jobs:
           VITE_FIREBASE_STORAGE_BUCKET: ${{ github.VITE_FIREBASE_STORAGE_BUCKET }} 
           VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ github.VITE_FIREBASE_MESSAGING_SENDER_ID }} 
           VITE_FIREBASE_APP_ID: ${{ github.VITE_FIREBASE_APP_ID }} 
+          
         run: |
           echo "REF=$REF"
           echo "REF=$REF" >> $GITHUB_ENV

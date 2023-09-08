@@ -52,3 +52,4 @@ export const ButtonForClaiming = ({ gameId  }: ButtonForClaimingProps) => {
     </Button> 
  ) : <></>
 }
+// sdfasdf
