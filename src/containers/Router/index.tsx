@@ -6,6 +6,7 @@ import PlayPage  from '../PlayPage';
 import CreateGamePage  from '../CreateGamePage';
 import JoinGamePage  from '../JoinGamePage';
 import PlayGamePage  from '../PlayGamePage';
+import WinsPage from '../WinsPage';
 
 const router = createHashRouter([
  {
@@ -43,7 +44,7 @@ const router = createHashRouter([
    },
    {
     path: 'wins',
-    element: <div>This is the homepage of wins</div>
+    element: <WinsPage />
    }
   ]
  }

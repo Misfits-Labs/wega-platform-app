@@ -27,6 +27,9 @@ import {
  selectGetWinnersQueryData,
  selectGetWinnersQueryStatus,
  selectGetWinnersQueryError,
+ selectClaimMutationData,
+ selectClaimMutationStatus,
+ selectClaimMutationError,
 } from '../api/blockchain/blockchainSlice';
 import {
  allowanceQuery,
@@ -36,7 +39,8 @@ import {
  depositOfQuery,
  depositWagerMutation,
  getWinnersQuery,
- getGameResultsQuery
+ getGameResultsQuery,
+ claimMutation,
 } from '../api/blockchain/thunks';
 
 
@@ -129,6 +133,29 @@ function useCreateWagerMutation(){
   return { createWager, error, data, isLoading, isError, isIdle, isSuccess }; 
 }
 
+function useClaimMutation(){
+  const dispatch = useAppDispatch()
+  const data = useAppSelector((state: RootState) => selectClaimMutationData(state));
+  const status = useAppSelector((state: RootState) => selectClaimMutationStatus(state));
+  const error = useAppSelector((state: RootState) => selectClaimMutationError(state));
+
+  const [isError, setIsError] = useState<boolean>();
+  const [isLoading, setisloading] = useState<boolean>();
+  const [isIdle, setIsIdle] = useState<boolean>();
+  const [isSuccess, setIsSuccess] = useState<boolean>();
+  
+  const claim = (escrowHash: HexishString ) => dispatch(claimMutation({ escrowHash }));
+  
+  useEffect(() => {
+    setIsError(status === 'rejected');
+    setisloading(status === 'pending');
+    setIsIdle(status === 'idle');
+    setIsSuccess(status === 'fulfilled');
+  }, [status, data, error, dispatch]);
+
+  return { claim, error, data, isLoading, isError, isIdle, isSuccess }; 
+}
+
 function useDepositWagerMutation(){
   const dispatch = useAppDispatch()
   const data = useAppSelector((state: RootState) => selectDepositWagerMutationData(state));
@@ -219,4 +246,5 @@ export const useBlockchainApiHooks = {
   useDepositWagerMutation,
   useGetGameResultsQuery,
   useGetWinnersQuery,
+  useClaimMutation,
 }

@@ -116,6 +116,18 @@ export class BlockchainAPI implements IBlockchainAPI {
   return await this.handleWriteRequest(depositConfig);
  }
 
+ async claim(escrowHash: HexishString){
+  const claimConfig = await prepareWriteContract({
+   address: this.escrowConfig.address,
+   abi: this.escrowConfig.abi,
+   functionName: 'withdraw',
+   args: [ 
+    escrowHash,
+   ]
+  })
+  return await this.handleWriteRequest(claimConfig);
+ }
+
  async hash({ tokenAddress, playerAddress , accountsCount, wager }: 
   { tokenAddress: HexishString, 
     playerAddress: HexishString, 

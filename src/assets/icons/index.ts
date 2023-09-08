@@ -29,3 +29,4 @@ export { default as SparkleIcon } from './SparkleIcon';
 export { default as CopyPasteIcon } from './CopyPasteIcon';
 export { default as CrownIcon } from './CrownIcon';
 export { default as RestartIcon } from './RestartIcon';
+export { default as DownloadIcon } from './DownloadIcon';

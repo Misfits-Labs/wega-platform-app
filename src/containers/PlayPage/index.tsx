@@ -24,32 +24,34 @@ const PlayPage = () => {
   })
 
   return (
-    <MainContainer>
+    <>
       <Helmet>
       <title>Play</title>
       </Helmet>
-      <Section 
-      direction='col' 
-      hdr={ <WordCarousel 
-        pre="Play, wager and win" 
-        className='dark:text-oranjo'
-        fontSize={51}
-        words={[
-        "Crypto",
-        "NFTs",
-        "Points",
-        "Fractions"
-        ]} 
-        /> }
-      >
-        <div tw="container mx-auto p-0 flex flex-row justify-center items-center gap-[32px]">
-          <DiceGameCard />
-          <CoinFlipGameCard />
-          <RaffleGameCard />
-        </div>
-      </Section>
-      { !isLoading && joinableGameIds && playableGameIds && user?.uuid ? <JoinableOrPlayableGamesSection gameIds={[...joinableGameIds, ...playableGameIds]} /> : <ComponentLoader tw="w-full" /> }
-    </MainContainer>
+      <MainContainer>
+        <Section 
+        direction='col' 
+        hdr={ <WordCarousel 
+          pre="Play, wager and win" 
+          className='dark:text-oranjo'
+          fontSize={51}
+          words={[
+          "Crypto",
+          "NFTs",
+          "Points",
+          "Fractions"
+          ]} 
+          /> }
+        >
+          <div tw="container mx-auto p-0 flex flex-row justify-center items-center gap-[32px]">
+            <DiceGameCard />
+            <CoinFlipGameCard />
+            <RaffleGameCard />
+          </div>
+        </Section>
+        { !isLoading && joinableGameIds && playableGameIds && user?.uuid ? <JoinableOrPlayableGamesSection gameIds={[...joinableGameIds, ...playableGameIds]} /> : <ComponentLoader tw="w-full" /> }
+      </MainContainer>
+    </>
   )
 } 
 

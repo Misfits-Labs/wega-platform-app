@@ -9,7 +9,8 @@ import {
  depositOfQuery,
  depositWagerMutation,
  getWinnersQuery,
- getGameResultsQuery
+ getGameResultsQuery,
+ claimMutation,
 } from './thunks';
 
 type RequestState = 'pending' | 'fulfilled' | 'rejected' | 'idle';
@@ -55,6 +56,11 @@ interface BlockchainState {
   data: any | undefined;
   status: RequestState;
   error: any;
+ },
+ claim: {
+  data: any | undefined;
+  status: RequestState;
+  error: any;
  }
 }
 
@@ -96,6 +102,11 @@ export const initialBlockchainState: BlockchainState = {
   error: undefined,
  },
  getGameResults: {
+  data: undefined,
+  status: 'idle',
+  error: undefined,
+ },
+ claim: {
   data: undefined,
   status: 'idle',
   error: undefined,
@@ -201,6 +212,17 @@ const blockchainSlice = createSlice({
    state.getGameResults.status = action.meta.requestStatus;
    state.getGameResults.data = action.payload;
   });
+
+  // claim rewar 
+  builder.addCase(claimMutation.pending, (state, action) => { state.claim.status = action.meta.requestStatus });
+  builder.addCase(claimMutation.rejected, (state, action) => { 
+   state.claim.status = action.meta.requestStatus;
+   state.claim.error = action.payload; 
+  });
+  builder.addCase(claimMutation.fulfilled, (state, action) => { 
+   state.claim.status = action.meta.requestStatus;
+   state.claim.data = action.payload;
+  });
  }
 });
 
@@ -231,6 +253,11 @@ export const selectCreateWagerMutationError = (state: RootState) => state.blockc
 export const selectDepositWagerMutationData = (state: RootState) => state.blockchain.depositWager.data;
 export const selectDepositWagerMutationStatus = (state: RootState) => state.blockchain.depositWager.status;
 export const selectDepositWagerMutationError = (state: RootState) => state.blockchain.depositWager.error;
+
+// claim wager mutation 
+export const selectClaimMutationData = (state: RootState) => state.blockchain.claim.data;
+export const selectClaimMutationStatus = (state: RootState) => state.blockchain.claim.status;
+export const selectClaimMutationError = (state: RootState) => state.blockchain.claim.error;
 
 // depositOf query 
 export const selectDepositOfQueryData = (state: RootState) => state.blockchain.depositOf.data;

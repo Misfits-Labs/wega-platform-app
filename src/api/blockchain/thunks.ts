@@ -134,3 +134,21 @@ export const depositWagerMutation = createAsyncThunk<any, { escrowId: HexishStri
    }
  }
 )
+export const claimMutation = createAsyncThunk<any, { escrowHash: HexishString }>('escrow/withdraw',
+ async (inpts, { rejectWithValue }) => {
+  const api = new BlockchainAPI();
+   try {
+      const hash = await api.deposit(inpts.escrowHash);
+      const receipt = await waitForTransaction({ hash });
+    if(receipt) {
+      toast.success('Claim success', { ...{ ...toastSettings('success', 'top-center') } as any });
+    }
+    return hash; // return wager id and nonce since it is required for creating a game
+  } catch (error: any) {
+    console.log(error);
+    const message = api.handleError(error, 'Claim error');
+    toast.error(message, { ...{ ...toastSettings('error', 'bottom-center') } as any })
+    return rejectWithValue(message);
+   }
+ }
+)

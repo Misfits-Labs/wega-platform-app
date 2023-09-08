@@ -6,6 +6,7 @@ export {
 } from './ethers-helpers.ts'
 export { deployed } from './deployment.ts'
 export { toastSettings } from './toast.ts'
+export { parseBarCount } from './misc.ts'
 export {
  erc20ABI,
  wegaErc20DummyConfig as tokenConfig,
