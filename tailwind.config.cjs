@@ -45,7 +45,7 @@ export default {
         '90': '0.9'
       },
       boxShadow: {
-        'wega-nav': '0rem -3.5rem 1.5rem 5rem var(#151515)',
+        'wega-nav': '0rem -3.5rem 1.5rem 5rem #151515',
       },
       animation: {
         'rotate-orbs': 'rotate-orbs 10s linear 5s infinite',

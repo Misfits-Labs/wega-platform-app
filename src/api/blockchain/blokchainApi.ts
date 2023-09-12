@@ -8,7 +8,7 @@ import {
  waitForTransaction
  } from '@wagmi/core';
 import { tokenConfig, escrowConfig, erc20ABI, gameControllerConfig } from "../../utils";
-import { HexishString, WegaTypesEnum } from '../../models';
+import { HexishString, AllPossibleWegaTypes } from '../../models';
 
 
 interface IBlockchainAPI {
@@ -42,19 +42,17 @@ export class BlockchainAPI implements IBlockchainAPI {
  
  constructor(){}
  
- async createWagerAndDeposit({ tokenAddress, gameType, accountsCount, wager }: {
+ async createWagerAndDeposit({ tokenAddress, gameType, wager }: {
   tokenAddress: HexishString
   accountsCount: number,
   wager: number,
-  gameType: WegaTypesEnum,
+  gameType: AllPossibleWegaTypes,
  }){
-  const playerNum = BigNumber.from(accountsCount).toBigInt()
   const wagerAsBigint = utils.parseEther(String(wager)).toBigInt()
-
   const config = await prepareWriteContract({
     ...this.gameControllerConfig,
-    functionName: 'createGameAndDepositInitialWager',
-    args: [ tokenAddress, playerNum, wagerAsBigint,  gameType ]
+    functionName: 'createGame',
+    args: [gameType, tokenAddress, wagerAsBigint]
   })
   return await this.handleWriteRequest(config);
  }
@@ -104,14 +102,12 @@ export class BlockchainAPI implements IBlockchainAPI {
   return Number(utils.formatEther(deposit));
  }
 
- async deposit(escrowHash: HexishString){
+ async deposit(escrowHash: HexishString, playerChoices?: number[]){ 
   const depositConfig = await prepareWriteContract({
    address: this.gameControllerConfig.address,
    abi: this.gameControllerConfig.abi,
    functionName: 'depositOrPlay',
-   args: [ 
-    escrowHash,
-   ]
+   args: playerChoices ? [escrowHash, playerChoices.map(choice => BigNumber.from(choice).toBigInt())] : [escrowHash],
   })
   return await this.handleWriteRequest(depositConfig);
  }
@@ -159,13 +155,13 @@ export class BlockchainAPI implements IBlockchainAPI {
    return { hash, nonce: Number(nonce.toString()) };
  }
  
- async getGameResults(escrowHash: HexishString, player: HexishString) {
-
+ async getGameResults(gameType: AllPossibleWegaTypes, escrowHash: HexishString, player: HexishString) {
   const results = await readContract({
     address: this.gameControllerConfig.address,
     abi: this.gameControllerConfig.abi,
     functionName: 'gameResults',
     args: [
+      gameType.toUpperCase(),
       escrowHash,
       player,
     ]
@@ -173,12 +169,15 @@ export class BlockchainAPI implements IBlockchainAPI {
   return results.map(v => Number(v.toString()));
  }
  
- async getWinners(escrowHash: HexishString) {
+ async getWinners(gameType: AllPossibleWegaTypes, escrowHash: HexishString) {
   const winners = await readContract({
     address: this.gameControllerConfig.address,
     abi: this.gameControllerConfig.abi,
     functionName: 'winners',
-    args: [ escrowHash ]
+    args: [
+      gameType.toUpperCase(),
+      escrowHash
+    ]
   });
   return winners as HexishString[];
  }

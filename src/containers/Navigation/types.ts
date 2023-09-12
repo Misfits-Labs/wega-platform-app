@@ -1,4 +1,5 @@
-import tw, { styled } from 'twin.macro'
+import tw, { styled } from 'twin.macro';
+import { rgba } from 'polished';
 
 
 export const BrandContainer = styled.div`
@@ -68,6 +69,7 @@ export const NavigationBar = styled.nav`
       opacity: 0.85;
     }
   }
+
   &.nav-hide {
     transform: translateY(-100%);
   }
@@ -79,10 +81,9 @@ export const NavigationBar = styled.nav`
     right: 0;
     width: 100%;
     height: 100%;
-    z-index: -2;
-    ${tw`dark:bg-pretu/90`}
-    filter: blur(1.5rem);
+    z-index: 998;
     opacity: 0;
+    background: ${rgba('#151515', 0.90)};
     transition: opacity 500ms ease-out 60ms;
   }
 
@@ -91,14 +92,13 @@ export const NavigationBar = styled.nav`
     position: absolute;
     top: 0;
     right: 0;
-    z-index: -3;
+    z-index: 997;
     width: 100%;
     height: 100%;
-    backdrop-filter: blur(5.5rem) opacity(0.75);
     opacity: 0;
-    ${tw`dark:shadow-wega-nav`}
-    transition: all 500ms ease-out 60ms;
-    ${tw`dark:bg-pretu/90`}
+    ${tw`shadow-wega-nav`}
+    backdrop-filter: blur(5.5rem) opacity(0.85);
+    transition: opacity 500ms ease-out 60ms;
   }
 `
 

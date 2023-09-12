@@ -80,7 +80,7 @@ const WrongNetworkButton: React.FC<WrongNetworkButtonProps> = ({ isConnected,  o
   useEffect(() => {
     dispatch(setNetworkUnsupported(true));
   }, [isConnected]);
-  return <Button buttonType="primary" content={"Wrong network"} onClick={openChainModal} />
+  return <Button tw="w-[max-content]" buttonType="primary" content={"Wrong network"} onClick={openChainModal} />
 } 
 
 interface WalletInformationCompProps {

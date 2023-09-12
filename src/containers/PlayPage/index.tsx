@@ -31,6 +31,7 @@ const PlayPage = () => {
       <MainContainer>
         <Section 
         direction='col' 
+        tw="h-[300vh]"
         hdr={ <WordCarousel 
           pre="Play, wager and win" 
           className='dark:text-oranjo'

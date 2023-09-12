@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { BlockchainAPI } from './blokchainApi';
-import { HexishString, WegaTypesEnum  } from '../../models';
+import { AllPossibleWegaTypes, HexishString, WegaTypesEnum  } from '../../models';
 import toast from 'react-hot-toast';
 import { toastSettings } from '../../utils';
 import { waitForTransaction } from '@wagmi/core';
@@ -90,10 +90,10 @@ async (inpts, { rejectWithValue }) => {
   }
 })
 
-export const getWinnersQuery = createAsyncThunk<HexishString[], { escrowHash: HexishString }>('gameController/winners', async (inpts, { rejectWithValue }) => {
+export const getWinnersQuery = createAsyncThunk<HexishString[], {escrowHash: HexishString, gameType: AllPossibleWegaTypes}>('gameController/winners', async (inpts, { rejectWithValue }) => {
   const api = new BlockchainAPI();
   try {
-    return await api.getWinners(inpts.escrowHash);
+    return await api.getWinners(inpts.gameType, inpts.escrowHash);
   } catch (error: any) {
     const message = api.handleError(error, 'Query get game winners error');
     toast.error(message, { ...{ ...toastSettings('error', 'bottom-center') } as any })
@@ -101,11 +101,11 @@ export const getWinnersQuery = createAsyncThunk<HexishString[], { escrowHash: He
   }
 })
 
-export const getGameResultsQuery = createAsyncThunk<number[][], { escrowHash: HexishString, players: HexishString[] }> ('gameController/gameResults', async (inpts, { rejectWithValue }) => {
+export const getGameResultsQuery = createAsyncThunk<number[][], { escrowHash: HexishString, players: HexishString[], gameType: AllPossibleWegaTypes }> ('gameController/gameResults', async (inpts, { rejectWithValue }) => {
   const api = new BlockchainAPI();
   try {
     return await Promise.all(inpts.players.map(async (playerAddress: string) => {
-      const res = await api.getGameResults(inpts.escrowHash, playerAddress as HexishString);
+      const res = await api.getGameResults(inpts.gameType, inpts.escrowHash, playerAddress as HexishString);
       return res;
     }
     ));
