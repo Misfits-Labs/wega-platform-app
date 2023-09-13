@@ -6,10 +6,11 @@ import {
   type useMatches, 
   ScrollRestoration 
 } from 'react-router-dom';
-import 'twin.macro';
 import Navigation from '../Navigation'
+import Footer from '../Footer';
 import { Toaster } from 'react-hot-toast';
 import { GlobalModal } from '../../common/modals';
+import 'twin.macro';
 
 const Layout = () => {
  const navigation = useNavigation();
@@ -38,7 +39,7 @@ const Layout = () => {
      <GlobalModal>
       <Outlet />
      </GlobalModal>
-     <footer tw="container flex justify-center">This is the footer</footer>
+     <Footer />
      <ScrollRestoration getKey={getKey} />
      <Toaster />
     </>
