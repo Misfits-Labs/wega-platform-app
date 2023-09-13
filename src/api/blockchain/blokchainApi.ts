@@ -44,7 +44,6 @@ export class BlockchainAPI implements IBlockchainAPI {
  
  async createWagerAndDeposit({ tokenAddress, gameType, wager }: {
   tokenAddress: HexishString
-  accountsCount: number,
   wager: number,
   gameType: AllPossibleWegaTypes,
  }){
@@ -102,7 +101,7 @@ export class BlockchainAPI implements IBlockchainAPI {
   return Number(utils.formatEther(deposit));
  }
 
- async deposit(escrowHash: HexishString, playerChoices?: number[]){ 
+ async deposit(escrowHash: HexishString, playerChoices?: number[]){
   const depositConfig = await prepareWriteContract({
    address: this.gameControllerConfig.address,
    abi: this.gameControllerConfig.abi,

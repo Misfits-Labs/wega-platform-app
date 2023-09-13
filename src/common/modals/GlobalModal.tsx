@@ -2,15 +2,18 @@ import React, { useState, createContext, useContext } from 'react'
 import { ModalContainer  } from './types';
 import { GameWinnerDeclarationModal  } from './GameWinnerDeclarationModal';
 import { GameLoserDeclarationModal  } from './GameLoserDeclarationModal';
+import { ClaimModal } from './ClaimModal';
 
 export const MODAL_TYPES = {
   WINNER_DECLARATION_WINNER_MODAL: 'WINNER_DECLARATION_WINNER_MODAL',
   WINNER_DECLARATION_LOSER_MODAL: 'WINNER_DECLARATION_LOSER_MODAL',
+  CLAIM_MODAL: 'CLAIM_MODAL',
  }
  
 const MODAL_COMPONENTS: any = {
   [MODAL_TYPES.WINNER_DECLARATION_WINNER_MODAL]: GameWinnerDeclarationModal,
   [MODAL_TYPES.WINNER_DECLARATION_LOSER_MODAL]: GameLoserDeclarationModal,
+  [MODAL_TYPES.CLAIM_MODAL]: ClaimModal,
 }
  
 type ContextType = {
@@ -112,7 +115,6 @@ const GlobalModal: React.FC<GlobalModalProps> = ({ children }) => {
     }
     return <ModalComponent {...modalProps} />
   }
-  console.log(store.modalType)
   return (
     <GlobalModalContext.Provider value={{ 
         store, 

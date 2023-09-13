@@ -30,6 +30,6 @@ export const PlayGameContainer = styled.div`
 `
 
 export const MinimumGameRounds: any = {
- [WegaTypes[WegaTypesEnum.DICE]]: 3,
- [WegaTypes[WegaTypesEnum.COINFLIP]]: 2,
+ [WegaTypes[WegaTypesEnum.DICE]]: 1,
+ [WegaTypes[WegaTypesEnum.COINFLIP]]: 1,
 } 

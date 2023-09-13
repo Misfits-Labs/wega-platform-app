@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { BlockchainAPI } from './blokchainApi';
-import { AllPossibleWegaTypes, HexishString, WegaTypesEnum  } from '../../models';
+import { AllPossibleWegaTypes, HexishString  } from '../../models';
 import toast from 'react-hot-toast';
 import { toastSettings } from '../../utils';
 import { waitForTransaction } from '@wagmi/core';
@@ -58,8 +58,13 @@ export const hashWagerQuery = createAsyncThunk<HexishString, { tokenAddress: Hex
  }
 )
 
-
-export const createWagerMutation = createAsyncThunk<any, { tokenAddress: HexishString, gameType: WegaTypesEnum, playerAddress: HexishString, accountsCount: number, wager: number }>('escrow/createWager',
+export const createWagerMutation = createAsyncThunk<any, { 
+  tokenAddress: HexishString, 
+  gameType: AllPossibleWegaTypes, 
+  playerAddress: HexishString, 
+  accountsCount: number, 
+  wager: number 
+}>('escrow/createWager',
  async (inpts, { rejectWithValue }) => {
   const api = new BlockchainAPI();
    try {
@@ -69,7 +74,7 @@ export const createWagerMutation = createAsyncThunk<any, { tokenAddress: HexishS
       if(receipt) {
       toast.success('Create wager success', { ...{ ...toastSettings('success', 'top-center') } as any });
     }
-    return { wagerId, nonce }; // return wager id and nonce since it is required for creating a game
+    return { wagerId, nonce }; 
   } catch (error: any) {
     const message = api.handleError(error, 'Create wager error');
     toast.error(message, { ...{ ...toastSettings('error', 'bottom-center') } as any })
@@ -84,6 +89,7 @@ async (inpts, { rejectWithValue }) => {
   try {
     return  await api.depositOf(inpts.escrowHash, inpts.account);
   } catch (error: any) {
+    console.log(error);
     const message = api.handleError(error, 'Query user deposit error');
     toast.error(message, { ...{ ...toastSettings('error', 'bottom-center') } as any })
     return rejectWithValue(message);
@@ -96,7 +102,7 @@ export const getWinnersQuery = createAsyncThunk<HexishString[], {escrowHash: Hex
     return await api.getWinners(inpts.gameType, inpts.escrowHash);
   } catch (error: any) {
     const message = api.handleError(error, 'Query get game winners error');
-    toast.error(message, { ...{ ...toastSettings('error', 'bottom-center') } as any })
+    // toast.error(message, { ...{ ...toastSettings('error', 'bottom-center') } as any })
     return rejectWithValue(message);
   }
 })
@@ -105,11 +111,12 @@ export const getGameResultsQuery = createAsyncThunk<number[][], { escrowHash: He
   const api = new BlockchainAPI();
   try {
     return await Promise.all(inpts.players.map(async (playerAddress: string) => {
-      const res = await api.getGameResults(inpts.gameType, inpts.escrowHash, playerAddress as HexishString);
+      const res = await api.getGameResults(inpts.gameType, inpts.escrowHash, playerAddress.toLowerCase() as HexishString);
       return res;
     }
     ));
   } catch (error: any) {
+    console.log(error);
     const message = api.handleError(error, 'Query get game results error');
     toast.error(message, { ...{ ...toastSettings('error', 'bottom-center') } as any })
     return rejectWithValue(message);
@@ -138,7 +145,7 @@ export const claimMutation = createAsyncThunk<any, { escrowHash: HexishString }>
  async (inpts, { rejectWithValue }) => {
   const api = new BlockchainAPI();
    try {
-      const hash = await api.deposit(inpts.escrowHash);
+      const hash = await api.claim(inpts.escrowHash);
       const receipt = await waitForTransaction({ hash });
     if(receipt) {
       toast.success('Claim success', { ...{ ...toastSettings('success', 'top-center') } as any });

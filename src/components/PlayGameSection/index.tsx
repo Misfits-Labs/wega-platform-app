@@ -1,5 +1,5 @@
-import { Wega, HexishString, Player } from "../../models"
-import { useEffect } from 'react';
+import { Wega, HexishString } from "../../models"
+import { useEffect, useState } from 'react';
 import 'twin.macro';
 import { HelpCircleIcon, ClockIcon, SparkleIcon } from '../../assets/icons';
 import { NormalText } from '../../common/CreateGameCard/types';
@@ -9,8 +9,8 @@ import { Dice } from "../Dice";
 import Button from "../../common/Button";
 import { useWegaStore, useBlockchainApiHooks, useFirebaseData } from "../../hooks";
 import { useUpdateGameMutation } from "../../containers/App/api";
-import { miniWalletAddress } from "../../utils";
 import { useGlobalModalContext, MODAL_TYPES } from "../../common/modals";
+import { ComponentLoader } from "../../common/loaders";
 
 interface PlayGameSectionProps {
  game: Wega;
@@ -27,6 +27,16 @@ export const PlayGameSection: React.FC<PlayGameSectionProps>= ({
   const { getWinners, data: winners } = useGetWinnersQuery();
   const maxTurns = MinimumGameRounds[game.gameType] * game.requiredPlayerNum;
   const { showModal, hideModal } = useGlobalModalContext();
+  const [shouldCurrentPlayerRoll, setShouldCurrentPlayerRoll] = useState<boolean>(false);
+  
+  const getShouldPlayerRoll = (players: any, gameInfo: any, wallet: any) => {
+    const currentRoller = players[gameInfo.rollerIndex].walletAddress;
+    if(currentRoller.toLowerCase() === wallet.address.toLowerCase()){
+      setShouldCurrentPlayerRoll(true);
+    } else {
+      setShouldCurrentPlayerRoll(false);
+    }
+  }
 
   const handleOnRollClick = async (gameUuid: string, turn: number) => {
     // should trigger the animation here
@@ -36,22 +46,15 @@ export const PlayGameSection: React.FC<PlayGameSectionProps>= ({
       console.log(e)
     }
   }
-  const concludeRound = (gameResults: (number)[][], currentRound: number, players: Player[]) => {
-    let winner: HexishString | string;
-    if(gameResults[0][currentRound] > gameResults[1][currentRound]){
-      winner = `Winner round ${currentRound} is ${miniWalletAddress(players[0].walletAddress as HexishString)}`;
-    } else if (gameResults[0][currentRound] < gameResults[1][currentRound]) {
-      winner = `Winner round ${currentRound} is ${miniWalletAddress(players[1].walletAddress as HexishString)}`;
-    } else {
-      winner = 'Draw';
-    }
-    return winner;
-  }
+  
   useEffect(() => {
-    getGameResults(game.wager.wagerHash as HexishString, players.map(player => player.walletAddress as HexishString));
-    getWinners(game.wager.wagerHash as HexishString);
+    getGameResults(
+      game.gameType, 
+      game.wager.wagerHash as HexishString, 
+      players.map(player => player.walletAddress as HexishString)
+    );
+    getWinners(game.gameType, game.wager.wagerHash as HexishString);
     if(wallet && winners && winners.length && gameInfo && game && gameInfo.currentTurn === maxTurns) {
-      console.log(gameInfo && game && gameInfo.currentTurn === maxTurns)
       if(winners.length > 1) {
         showModal(MODAL_TYPES.WINNER_DECLARATION_WINNER_MODAL, { 
           wagerCurrency: game.wager.wagerCurrency, 
@@ -77,9 +80,10 @@ export const PlayGameSection: React.FC<PlayGameSectionProps>= ({
         }
       }
     }
-  }, [game.wager.wagerHash, players.length , wallet?.address, gameInfo, gameResults?.length]);
+    if(wallet && gameInfo && players) getShouldPlayerRoll(players, gameInfo, wallet);
+  }, [game.wager.wagerHash, players.length , wallet?.address, gameInfo?.currentTurn, gameResults?.length]);
   
- return user && players && players.length > 0 && gameResults && gameResults.length && gameInfo && (<>
+ return user && players && players.length > 0 && gameResults && gameResults.length && gameInfo ? ( <>
    <PlayGameContainer>
     {/* orbs */}
     {/* timer icon row */}
@@ -96,27 +100,34 @@ export const PlayGameSection: React.FC<PlayGameSectionProps>= ({
         player={user}
         wager={game.wager}
         isRolling={gameInfo.rollerIndex === 0}
+        isGameOver={gameInfo.currentTurn === maxTurns}
       />
-      <Dice gameResults={gameResults} currentRound={gameInfo.currentRound} rollerIndex={gameInfo.rollerIndex} currentTurn={gameInfo.currentTurn} />
+      <Dice 
+        gameResults={gameResults} 
+        currentRound={gameInfo.currentRound} 
+        rollerIndex={gameInfo.rollerIndex} 
+        currentTurn={gameInfo.currentTurn} 
+        isGamePlayable={isGamePlayable} 
+      />
       {/* searching for opponent box */}
       <PlayGamePlayerCard
         status={isGamePlayable ? 'connected' : 'connecting'} 
         opponent={players.filter(player => player.uuid !== user.uuid)[0]}
         wager={game.wager}
         isRolling={gameInfo.rollerIndex !== 0}
+        isGameOver={gameInfo.currentTurn === maxTurns}
       />
    </div>
     {
-      <Button onClick={() => handleOnRollClick(game.uuid, game.currentTurn + 1)} buttonType="primary" tw="w-[25%] flex justify-center items-center" disabled={gameInfo.currentTurn === maxTurns}>
-        <SparkleIcon tw="h-[16px] w-[16px] me-[5px]"/> Roll
+      <Button onClick={() => handleOnRollClick(game.uuid, game.currentTurn + 1)} 
+        buttonType="primary" 
+        disabled={gameInfo.currentTurn === maxTurns ? true : shouldCurrentPlayerRoll ? false : true}
+        tw="w-[25%] flex justify-center items-center" 
+        >
+        <SparkleIcon tw="h-[16px] w-[16px] me-[5px]"/>Roll
       </Button>
     }
-    {
-      gameInfo.currentTurn % game.requiredPlayerNum === 0 && 
-      <NormalText tw="dark:text-blanc">{concludeRound(gameResults, gameInfo.currentRound, players)}</NormalText>
-    }
-   {/* roll box */}
+
   </PlayGameContainer>
- </> )
- 
+ </>) : <ComponentLoader />
 }

@@ -85,11 +85,9 @@ export const {
   useUpdateGameMutation,
  } = appApiSlice;
  
- 
 const gamesAdapter = createEntityAdapter<Wega>({
-  sortComparer: (a, b) => b.createdAt.localeCompare(a.createdAt)
+  sortComparer: (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime() // sorts from most recent to later
 });
-
 
 // games  
 export const gamesInitialState = gamesAdapter.getInitialState();

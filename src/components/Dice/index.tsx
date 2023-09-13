@@ -12,16 +12,22 @@ export const Dice: React.FC<{
   gameResults: (number)[][], 
   currentRound: number, 
   rollerIndex: number,
-  currentTurn: number }> = ({ gameResults, currentRound, rollerIndex, currentTurn }: { gameResults: (number)[][], currentRound: number, rollerIndex: number, currentTurn: number }) => {
-  const renderDice = () => {
-    let Component;
-    if(currentTurn === 0) {
-      Component = DICE_SIDES[currentTurn];
-    } else {
-      Component = DICE_SIDES[gameResults[rollerIndex === 0 ? 1 : 0][currentRound]];
+  currentTurn: number,
+  isGamePlayable: boolean }> = ({ gameResults, currentRound, rollerIndex, isGamePlayable, currentTurn }: { 
+    gameResults: (number)[][], currentRound: number, rollerIndex: number, currentTurn: number, isGamePlayable: boolean }) => {
+    const renderDice = () => {
+      let Component;
+      if(!isGamePlayable && gameResults[0].length === 0) {
+        Component = DICE_SIDES[DiceSides.MINUS_ONE];
+      } else {
+        if(currentTurn == 0) {
+          Component = DICE_SIDES[0];
+        } else {
+          Component = DICE_SIDES[gameResults[rollerIndex === 0 ? 1 : 0][currentRound]];
+        }
+      }
+      return <Component />
     }
-    return <Component />
-  }
 
   return (
     <DiceContainer>

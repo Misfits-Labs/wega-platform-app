@@ -11,14 +11,22 @@ import JoinableOrPlayableGamesSection from '../../components/JoinableOrPlayableG
 import { useGetGamesQuery } from '../App/api';
 import { ComponentLoader } from '../../common/loaders';
 import MainContainer from '../../components/MainContainer';
-import { useWegaStore } from '../../hooks' 
+import { useWegaStore } from '../../hooks';
+import { MinimumGameRounds } from '../../components/PlayGameSection/types'
 
 const PlayPage = () => {
   const { user } = useWegaStore();
+  
   const { joinableGameIds, isLoading, playableGameIds } = useGetGamesQuery(undefined, {
     selectFromResult: ({ data, isLoading, isSuccess  }) => ({
-      joinableGameIds: data ? isSuccess && Object.entries(data.entities).filter(([, game]: any) => game.creatorUuid !== user.uuid).map(([id,]: any) => Number(id)) : [],
-      playableGameIds: data ? isSuccess && Object.entries(data.entities).filter(([, game]: any) => game.creatorUuid === user.uuid).map(([id,]: any) => Number(id)) : [],
+      joinableGameIds: data ? 
+        isSuccess && Object.entries(data.entities)
+          .filter(([, game]: any) => game.creatorUuid !== user.uuid && (game.currentTurn !== (MinimumGameRounds[game.gameType] * game.requiredPlayers)))
+          .map(([id,]: any) => Number(id)) : [],
+      playableGameIds: data ? 
+        isSuccess && Object.entries(data.entities)
+        .filter(([, game]: any) => game.creatorUuid === user.uuid && (game.currentTurn !== (MinimumGameRounds[game.gameType] * game.requiredPlayers)))
+        .map(([id,]: any) => Number(id)) : [],
       isLoading,
     })
   })

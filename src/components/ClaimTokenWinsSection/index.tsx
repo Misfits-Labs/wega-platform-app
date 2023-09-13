@@ -5,9 +5,8 @@ interface ClaimTokenWinsSectionProps extends React.Attributes {
  gameIds: number[]
 }
 
-// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-function ClaimTokenWinsSection({ gameIds , ...rest }: ClaimTokenWinsSectionProps){
-  
+function ClaimTokenWinsSection({ gameIds , ...rest }: ClaimTokenWinsSectionProps) {
+    
   return (
     <Section hdr="Tokens won" direction="col" className="gap-2" { ...rest } >
       {

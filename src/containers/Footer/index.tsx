@@ -7,7 +7,7 @@ import 'twin.macro';
 
 const Footer = () => {
   return (
-    <footer tw="fixed w-full bottom-0">
+    <footer tw="mt-5 w-full dark:bg-pretu">
       <div tw="container dark:text-blanc flex w-full py-[56px] font-primary items-end gap-x-[10px] justify-between">
        <BrandContainer tw="mb-[4px]">
          <div tw="mr-[15px]">

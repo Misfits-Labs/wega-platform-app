@@ -1,55 +1,41 @@
-import { useEffect } from 'react';
-import {
- useConnectModal,
-} from '@rainbow-me/rainbowkit';
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 import Button from '../Button';
 import{ DownloadIcon } from '../../assets/icons';
-import { useWegaStore, useBlockchainApiHooks } from '../../hooks';
-import { useSelector } from 'react-redux';
-import { useGetSet } from 'react-use';
-import { selectGameById } from '../../containers/App/api';
-import { HexishString } from '../../models';
+import { useWegaStore } from '../../hooks';
+import { useGlobalModalContext, MODAL_TYPES } from "../../common/modals";
+import { Wega } from '../../models';
 import 'twin.macro'
 
 interface ButtonForClaimingProps {
- gameId: number;
+ game: Wega;
 }
-export const ButtonForClaiming = ({ gameId  }: ButtonForClaimingProps) => {
-  const game = useSelector(state => selectGameById(state, gameId));
+
+export const ButtonForClaiming = ({ game  }: ButtonForClaimingProps) => {
   const { wallet } = useWegaStore()
   const { openConnectModal } = useConnectModal();
-  const [isPlayerWinner, setIsPlayerWinner] = useGetSet<boolean>(false);
-  const { useGetWinnersQuery, useClaimMutation } = useBlockchainApiHooks;
-  const { getWinners, data: winners } = useGetWinnersQuery();
-  const { claim, isLoading: isClaimingLoading } = useClaimMutation(); 
-  
-  const handleClaim = async (escrowHash: HexishString) => {
-    claim(escrowHash);
+
+  const { showModal, hideModal } = useGlobalModalContext();
+
+  const handleClaim = async (wallet: any) => {
+    showModal(MODAL_TYPES.CLAIM_MODAL, { 
+      game,
+      wallet,
+      hide: hideModal,
+    }, true); 
   }
 
-  useEffect(() => {
-    if(game && game?.wager) {
-      getWinners(game.wager.wagerHash as HexishString);
-    }
-    if(winners && winners.length > 0 && wallet && wallet?.address) {
-      setIsPlayerWinner(winners.some((winner: any) => winner.toLowerCase() === wallet?.address))
-    }
-    console.log(winners);
-  }, [winners?.length, game, wallet, wallet?.address, winners]);
-
- return wallet && game && winners && isPlayerWinner() ? (!wallet && openConnectModal ?
+ return (!wallet && openConnectModal ?
    <Button 
-       buttonType="secondary"  
+       buttonType="primary"  
        className="flex items-center"
        onClick={openConnectModal}
      >
      Claim
      <DownloadIcon tw="h-[16px] w-[16px] ms-[5px]" />
    </Button> :  
-     <Button buttonType="secondary" className="flex items-center" onClick={() => handleClaim(game.wager.wagerHash as HexishString)} >
-       { isClaimingLoading ? "Loading..." : "Claim" }
-     <DownloadIcon tw="h-[16px] w-[16px] ms-[5px]" />
+     <Button buttonType="primary" className="flex items-center" onClick={() => handleClaim(wallet)} >
+       Claim
+     <DownloadIcon tw="h-[16px] w-[16px] ms-[5px] dark:stroke-blanc" />
     </Button> 
- ) : <></>
+ )
 }
-// sdfasdf

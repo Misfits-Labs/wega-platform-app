@@ -87,12 +87,14 @@ const BADGE_WAGER_TYPE_COMPONENTS: any = {
  [WagerTypes[WagerTypesEnum.TOKEN]]: USDCIcon, // Tdo - refactor
 }
 
-const BADGE_CURRENCY_TYPE_COMPONENTS: any = {
+export const BADGE_CURRENCY_TYPE_COMPONENTS: any = {
  [CurrencyTypes[CurrencyTypesEnum.USDT]]: USDTIcon, 
- [CurrencyTypes[CurrencyTypesEnum.USDC]]: USDCIcon, // Tdo - refactor
+ [CurrencyTypes[CurrencyTypesEnum.USDC]]: USDCIcon,
 }
 
-export const BadgeIcon = (props: { children: React.ReactElement | React.ReactNode }) => <div className="w-[24px] h-[24px]">{props.children}</div> 
+export const BadgeIcon = (
+  props: { children: React.ReactElement | React.ReactNode, size?: string; }
+) => props?.size ? <div className={`w-[${props.size}] h-[${props.size}]`}>{props.children}</div> : <div className="w-[24px] h-[24px]">{props.children}</div> 
 
 export const renderGameTypeBadge = (gameType: AllPossibleWegaTypes) => {
  const BadgeComponent = BADGE_GAME_TYPE_COMPONENTS[gameType];

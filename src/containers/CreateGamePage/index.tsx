@@ -2,7 +2,6 @@ import { Helmet } from 'react-helmet-async';
 import Section from '../../common/Section';
 import { SectionHeaderContainer, SectionHeaderTitle } from '../../common/Section/types';
 import CreateGameCard from '../../common/CreateGameCard';
-import 'twin.macro';
 import PlayableGamesSection from '../../components/PlayableGamesSection';
 import {  WagerTypes, WagerTypesEnum, CurrencyTypes, CurrencyTypesEnum, AllPossibleWegaTypes  } from '../../models';
 import { SupportedWagerTokenAddresses } from '../../models/constants';
@@ -12,6 +11,7 @@ import { useWegaStore } from '../../hooks';
 import { ComponentLoader } from '../../common/loaders'
 import { useParams } from 'react-router-dom';
 import MainContainer from '../../components/MainContainer'
+import 'twin.macro';
 
 const CreateGamePage = () => {
   const gameIds = useSelector(state => selectAllGamesIds(state));
@@ -21,15 +21,16 @@ const CreateGamePage = () => {
     <Helmet>
      <title>Create</title>
     </Helmet>
-    <Section 
-     direction='col' 
-     hdr={
+    <Section
+    tw="min-h-[100vh]"
+    direction='col'
+    hdr={
      <SectionHeaderContainer tw='justify-center'>
        <SectionHeaderTitle>Choose your wager</SectionHeaderTitle>
      </SectionHeaderContainer>
     }
     >
-      <CreateGameCard 
+      <CreateGameCard
         wagerType={WagerTypes[WagerTypesEnum.TOKEN]}  
         currencyType={CurrencyTypes[CurrencyTypesEnum.USDC]}
         tokenAddress={SupportedWagerTokenAddresses(network?.id as number)[CurrencyTypes[CurrencyTypesEnum.USDC]]}

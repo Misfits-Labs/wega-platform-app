@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { utils } from 'ethers';
 import { 
  GameTypeBadgeWrapper, 
@@ -15,14 +16,15 @@ import {
  CurrencyTypes,
  CurrencyTypesEnum,
  AllPossibleCurrencyTypes,
- AllPossibleWagerTypes 
+ AllPossibleWagerTypes,
+ HexishString,
 } from '../../models';
 import { dateFromTs, parseBarCount } from '../../utils';
 import { Count } from './types'
 import{ BarDiceIcon, BarCoinIcon, USDCIcon, USDTIcon} from '../../assets/icons';
 import { selectGameById } from '../../containers/App/api';
 import { useSelector } from 'react-redux' 
-import { useWegaStore } from '../../hooks'
+import { useWegaStore, useBlockchainApiHooks } from '../../hooks'
 import { ButtonForClaiming } from '../ButtonForClaiming';
 export const BADGE_TEXTS: any = {
  [WegaTypes[WegaTypesEnum.DICE]]: 'Dice',
@@ -42,8 +44,15 @@ function ClaimBar({
   ...rest
 }: { gameId: number, count: number  } & React.Attributes & Partial<React.AllHTMLAttributes<HTMLDivElement>> & ClaimBarProps) {
   const game = useSelector(state => selectGameById(state, gameId));
-  const { user } = useWegaStore();
-  return game && user?.uuid && (
+  const { user, wallet } = useWegaStore();
+  const { useGetWinnersQuery } = useBlockchainApiHooks;
+  const { getWinners, data: winners } = useGetWinnersQuery();
+  
+  useEffect(() => {
+   if(game && !winners && game.wager && game.gameType && game.wager.wagerHash ) getWinners(game.gameType, game.wager.wagerHash as HexishString);
+  }, [winners, game?.wager, game?.gameType, game?.wager?.wagerHash])
+
+  return game && wallet?.address && user?.uuid && winners && (winners.includes(wallet.address) || winners.includes(wallet.address)) ? (
    <BarWrapper {...rest}>
     <Count>{parseBarCount(count)}</Count>
     {/* date */}
@@ -62,11 +71,9 @@ function ClaimBar({
     {/* escrow link button */}
     
     {/* render for a joinable game */}
-    <>
-     <ButtonForClaiming  gameId={game.id} /> 
-    </>
+    <ButtonForClaiming  game={game} /> 
    </BarWrapper>
-  )
+  ) : <></>
 }
 
 export default ClaimBar;

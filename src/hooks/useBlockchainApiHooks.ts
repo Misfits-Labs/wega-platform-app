@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useAppSelector, useAppDispatch } from './useAppDispatch';
 import type { RootState } from '../app/store';
-import { HexishString, WegaTypesEnum } from '../models';
+import { AllPossibleWegaTypes, HexishString } from '../models';
 import {
  selectAllowanceQueryData,
  selectAllowanceQueryStatus,
@@ -116,11 +116,11 @@ function useCreateWagerMutation(){
   const [isSuccess, setIsSuccess] = useState<boolean>();
   
   const createWager = (inpts: { 
-    tokenAddress: HexishString, 
-    playerAddress: HexishString, 
-    accountsCount: number, 
-    wager: number,
-    gameType: WegaTypesEnum 
+    tokenAddress: HexishString; 
+    playerAddress: HexishString; 
+    accountsCount: number; 
+    wager: number;
+    gameType: AllPossibleWegaTypes;
   }) => dispatch(createWagerMutation({ ...inpts }));
   
   useEffect(() => {
@@ -208,7 +208,7 @@ function useGetGameResultsQuery(){
   const [isLoading, setisloading] = useState<boolean>();
   const [isIdle, setIsIdle] = useState<boolean>();
   const [isSuccess, setIsSuccess] = useState<boolean>();  
-  const getGameResults = (escrowHash: HexishString, players: HexishString[]) => dispatch(getGameResultsQuery({ escrowHash, players }));
+  const getGameResults = (gameType: AllPossibleWegaTypes,escrowHash: HexishString, players: HexishString[]) => dispatch(getGameResultsQuery({ escrowHash, players, gameType }));
   useEffect(() => {
     setIsError(status === 'rejected')
     setisloading(status === 'pending')
@@ -227,7 +227,7 @@ function useGetWinnersQuery() {
   const [isLoading, setisloading] = useState<boolean>();
   const [isIdle, setIsIdle] = useState<boolean>();
   const [isSuccess, setIsSuccess] = useState<boolean>();  
-  const getWinners = (escrowHash: HexishString) => dispatch(getWinnersQuery({ escrowHash }));
+  const getWinners = (gameType: AllPossibleWegaTypes, escrowHash: HexishString) => dispatch(getWinnersQuery({ escrowHash, gameType }));
   useEffect(() => {
     setIsError(status === 'rejected')
     setisloading(status === 'pending')
