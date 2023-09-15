@@ -61,7 +61,7 @@ export const appApiSlice = createApi({
       }
     }),
     createGame: builder.mutation<Wega, Partial<Wega> & Pick<Wega, 'creatorUuid'> & Pick<Wega, 'wager'> & Pick<Wega, 'gameType'> & Partial<Player>>({
-      query: ({ wager, players, gameType, creatorUuid }: {
+      query: ({ wager, players, gameType, creatorUuid, gameAttributes }: {
        wager: Wager,
        players: Player[],
        gameType: AllPossibleWegaTypes,
@@ -69,7 +69,7 @@ export const appApiSlice = createApi({
       }) => ({
         url: '/games',
         method: 'POST',
-        body: { wager, players, gameType, creatorUuid }
+        body: { wager, players, gameType, creatorUuid, gameAttributes }
       }),
       invalidatesTags: () => [ { type: 'Games', id: 'LIST' } ]
      }),

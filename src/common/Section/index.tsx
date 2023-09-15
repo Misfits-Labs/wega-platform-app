@@ -9,7 +9,7 @@ import 'twin.macro';
 export interface CustomHeaderProps<T = void | HTMLDivElement> extends React.Attributes, React.AllHTMLAttributes<T> {}
 
 export interface SectionProps extends React.Attributes, React.AllHTMLAttributes<HTMLDivElement> {
- hdr: CustomHeaderProps;
+ hdr: CustomHeaderProps | string;
 }
 const Section: React.FC<SectionProps & Partial<SectionContainerProps>> = ({ 
  direction, 

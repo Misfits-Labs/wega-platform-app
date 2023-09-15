@@ -1,7 +1,7 @@
 import { utils } from 'ethers';
 import tw, { styled } from 'twin.macro';
 import { WinnerDeclarationContainer } from './types';
-import { NormalText, SmallText } from '../CreateGameCard/types';
+import { NormalText, SmallText } from '../../components/CreateGameCard/types';
 import { ArrowDownIconV2, DownloadIcon } from '../../assets/icons';
 import { BadgeIcon, renderWagerBadge } from "../GameBar";
 import { HexishString, Wega } from '../../models';

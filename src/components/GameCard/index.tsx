@@ -19,6 +19,7 @@ import {
 } from '@rainbow-me/rainbowkit';
 import { useWegaStore } from '../../hooks';
 import { Link } from "react-router-dom";
+import { WegaTypes, WegaTypesEnum } from '../../models';
 
 export const DiceGameCard = () => {
   const iconRef = useRef<SVGSVGElement>(null);
@@ -79,7 +80,7 @@ export const DiceGameCard = () => {
       {
         (!wallet && openConnectModal) ?
         <Button buttonType="primary" content='Play' className="w-[75%]" onClick={()=> openConnectModal() } />
-        : <Link to="/dice/create" className="w-[75%]"><Button buttonType="primary" content='Play' className="w-[100%]"/></Link>
+        : <Link to="/dice/create" className="w-[75%]" state={ { gameType: WegaTypes[WegaTypesEnum.DICE] }}><Button buttonType="primary" content='Play' className="w-[100%]"/></Link>
       }
       </GameCardBody>
     </GameCardContainer>
@@ -144,7 +145,7 @@ export const CoinFlipGameCard = () => {
      {
       (!wallet && openConnectModal) ?
         <Button buttonType="primary" content='Play' className="w-[75%]" onClick={()=> openConnectModal() } /> :
-        <Link to="/coinflip/create" className="w-[75%]"><Button buttonType="primary" content='Play' className="w-[100%]" /></Link>
+        <Link to="/coinflip/create" className="w-[75%]" state={ { gameType: WegaTypes[WegaTypesEnum.COINFLIP] } } ><Button buttonType="primary" content='Play' className="w-[100%]" /></Link>
      }
     </GameCardBody>
    </GameCardContainer>

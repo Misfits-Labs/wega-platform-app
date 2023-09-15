@@ -1,5 +1,5 @@
 import { DiceContainer, DiceWrapper, DiceSides } from './types';
-import { LargeText } from '../../common/CreateGameCard/types';
+import { LargeText } from '../CreateGameCard/types';
 import DiceOneComponent from './images/DiceOne';
 import DiceTwoComponent from './images/DiceTwo';
 import DiceThreeComponent from './images/DiceThree';

@@ -31,3 +31,5 @@ export { default as CrownIcon } from './CrownIcon';
 export { default as RestartIcon } from './RestartIcon';
 export { default as DownloadIcon } from './DownloadIcon';
 export { default as ArrowDownIconV2 } from './ArrowDownIconV2';
+export { default as CoinSideHeadsIcon } from './CoinSideHeadsIcon';
+export { default as CoinSideTailsIcon } from './CoinSideTailsIcon';

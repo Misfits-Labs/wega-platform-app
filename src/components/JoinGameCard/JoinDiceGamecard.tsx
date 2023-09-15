@@ -10,7 +10,7 @@ import {
 } from "../CreateGameCard/types";
 import { 
   GameTypeBadgeWrapper,
- } from '../JoinableGameBar/types';
+ } from '../../common/JoinableGameBar/types';
 import { 
   AllPossibleCurrencyTypes, 
   AllPossibleWagerTypes, 
@@ -22,7 +22,7 @@ import {
   renderWagerBadge,
   renderGameTypeBadge,
   BADGE_TEXTS
-} from "../JoinableGameBar";
+} from "../../common/JoinableGameBar";
 import { joiResolver } from '@hookform/resolvers/joi';
 import { ErrorMessage } from '@hookform/error-message';
 import { ArrowDownIcon, StarLoaderIcon } from '../../assets/icons';
@@ -33,24 +33,14 @@ import { useBlockchainApiHooks, useAppSelector, useNavigateTo } from '../../hook
 import { selectWagerApproved } from '../../api/blockchain/blockchainSlice';
 import toast from 'react-hot-toast';
 import { toastSettings } from '../../utils';
-import Button from '../Button';
+import Button from '../../common/Button';
 import { useFormReveal } from '../CreateGameCard/animations';
 import { useJoinGameMutation } from '../../containers/App/api';
+import { JoinGameCardProps } from './'
 
-export interface CreateGameCardInterface {
-  wagerType: AllPossibleWagerTypes;
-  currencyType: AllPossibleCurrencyTypes;
-  tokenAddress: HexishString;
-  playerAddress: HexishString;
-  gameType: AllPossibleWegaTypes;
-  playerUuid: string;
-  wagerAmount: number;
-  gameUuid: string;
-  escrowId: HexishString;
-  gameId: number;
-}
+export interface JoinDiceGameCardProps extends JoinGameCardProps, React.Attributes, React.AllHTMLAttributes<HTMLDivElement> {};
 
-const JoinGameCard = ({ 
+const JoinGameDiceCard: React.FC<JoinDiceGameCardProps> = ({ 
   wagerType, 
   currencyType,
   tokenAddress,
@@ -64,7 +54,7 @@ const JoinGameCard = ({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   css,
   ...rest 
-}: CreateGameCardInterface & React.Attributes & React.AllHTMLAttributes<HTMLDivElement> ) => {
+}: JoinDiceGameCardProps) => {
   
   const formRef = useRef<HTMLFormElement>(null);
   const detailsBlock = useRef<HTMLDivElement>(null)
@@ -196,7 +186,7 @@ const JoinGameCard = ({
     </form>
   )
 }
-export default JoinGameCard;
+export default JoinGameDiceCard;
 
 export const createGameSchema = (fieldName: string, minAmount: number) => {
   return Joi.object({

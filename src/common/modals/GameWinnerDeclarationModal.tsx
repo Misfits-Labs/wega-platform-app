@@ -1,5 +1,5 @@
 import { WinnerDeclarationContainer } from './types';
-import { ExtraLargeText, NormalText } from '../CreateGameCard/types';
+import { ExtraLargeText, NormalText } from '../../components/CreateGameCard/types';
 import { CrownIcon, StarLoaderIcon, RestartIcon } from '../../assets/icons';
 import { WagerTypeBadgeWrapper, BadgeText} from "../GameBar/types";
 import { BadgeIcon, renderWagerBadge } from "../GameBar";

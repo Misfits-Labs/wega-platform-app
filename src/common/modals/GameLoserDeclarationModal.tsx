@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { WinnerDeclarationContainer } from './types';
-import { ExtraLargeText, NormalText, LargeText } from '../CreateGameCard/types';
+import { ExtraLargeText, NormalText, LargeText } from '../../components/CreateGameCard/types';
 import { StarLoaderIcon, RestartIcon } from '../../assets/icons';
 import Button from '../Button';
 import { AllPossibleWegaTypes} from '../../models';

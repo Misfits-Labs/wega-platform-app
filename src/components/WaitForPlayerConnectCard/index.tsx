@@ -1,6 +1,6 @@
 import { PlayerCardContainer } from '../PlayGamePlayerCard/types';
 import { ComponentLoader } from '../../common/loaders';
-import { NormalText } from '../../common/CreateGameCard/types';
+import { NormalText } from '../CreateGameCard/types';
 import Button from '../../common/Button'; 
 import { CopyPasteIcon } from '../../assets/icons';
 import { CopyToClipboard } from 'react-copy-to-clipboard';

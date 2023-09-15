@@ -1,7 +1,7 @@
 import { User, Player, HexishString } from "../../models";
 import WalletAvatar from "../../common/WalletAvatar";
 import { PlayerCardContainer, PlayerAvatarWrapper } from './types';
-import { NormalText } from '../../common/CreateGameCard/types';
+import { NormalText } from '../CreateGameCard/types';
 import { miniWalletAddress } from '../../utils'
 import { WagerTypeBadgeWrapper, BadgeText} from "../../common/GameBar/types";
 import { BadgeIcon, renderWagerBadge } from "../../common/GameBar";

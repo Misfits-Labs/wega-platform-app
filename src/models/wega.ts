@@ -24,4 +24,5 @@ export type Wega = {
  players: Player[];
  requiredPlayerNum: number;
  currentTurn: number;
+ gameAttributes?: ({  key: string; value: string;})[]
 }

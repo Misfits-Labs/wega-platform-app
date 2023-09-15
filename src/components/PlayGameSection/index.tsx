@@ -2,7 +2,7 @@ import { Wega, HexishString } from "../../models"
 import { useEffect, useState } from 'react';
 import 'twin.macro';
 import { HelpCircleIcon, ClockIcon, SparkleIcon } from '../../assets/icons';
-import { NormalText } from '../../common/CreateGameCard/types';
+import { NormalText } from '../CreateGameCard/types';
 import { PlayGameContainer, MinimumGameRounds } from './types';
 import { PlayGamePlayerCard } from "../PlayGamePlayerCard";
 import { Dice } from "../Dice";

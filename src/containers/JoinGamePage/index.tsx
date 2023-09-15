@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async'; 
 import Section from '../../common/Section';
 import { SectionHeaderTitle, SectionHeaderContainer } from '../../common/Section/types';
-import JoinGameCard from '../../common/JoinGameCard';
+import JoinGameCard from '../../components/JoinGameCard';
 // import JoinableGamesSection from '../../components/JoinableGamesSection';
 import {  AllPossibleWegaTypes, HexishString  } from '../../models';
 import { SupportedWagerTokenAddresses } from '../../models/constants';
@@ -19,7 +19,7 @@ const JoinGamePage = () => {
  const { user, network, wallet } = useWegaStore();
  const { id } = useParams();
  const game = useSelector(state => selectGameById(state, Number(id)));
-  return (network?.id && wallet && user.uuid && game) ? (
+ return (network?.id && wallet && user.uuid && game && (game.gameType === "COINFLIP" ? game.gameAttributes : true)) ? (
     <>
     <Helmet>
      <title>Join - {BADGE_TEXTS[game.gameType]} </title>
@@ -43,9 +43,9 @@ const JoinGamePage = () => {
           gameUuid={game.uuid}
           escrowId={game.wager.wagerHash as HexishString}
           gameId={game.id}
+          gameAttributes={game.gameAttributes}
         />
       </Section>
-      {/* <JoinableGamesSection gameIds={gameIds}  /> */}
     </MainContainer>
     </>) : <ComponentLoader tw="min-w-[559px] min-h-[494px]" />
 }

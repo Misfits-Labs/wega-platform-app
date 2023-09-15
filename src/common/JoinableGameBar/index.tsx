@@ -79,7 +79,9 @@ function JoinableGameBar({ gameId , ...rest}: { gameId: number } & React.Attribu
 }
 
 export default JoinableGameBar;
-
+// TODO 
+  // export this to a common component
+  
 const BADGE_GAME_TYPE_COMPONENTS: any = {
  [WegaTypes[WegaTypesEnum.DICE]]: BarDiceIcon, 
  [WegaTypes[WegaTypesEnum.COINFLIP]]: BarCoinIcon, 

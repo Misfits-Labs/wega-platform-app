@@ -1,6 +1,6 @@
 import { BrandContainer, Brand } from '../Navigation/types';
 import { Link } from 'react-router-dom';
-import { NormalText } from '../../common/CreateGameCard/types';
+import { NormalText } from '../../components/CreateGameCard/types';
 import { LogoDarkWo } from '../../assets/images';
 import 'twin.macro';
 

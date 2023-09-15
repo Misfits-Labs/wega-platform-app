@@ -10,7 +10,7 @@ import {
 } from "./types";
 import { 
   GameTypeBadgeWrapper,
- } from '../JoinableGameBar/types';
+ } from '../../common/JoinableGameBar/types';
 import { 
   AllPossibleCurrencyTypes, 
   AllPossibleWagerTypes, 
@@ -22,7 +22,7 @@ import {
   renderWagerBadge,
   renderGameTypeBadge,
   BADGE_TEXTS
-} from "../JoinableGameBar";
+} from "../../common/JoinableGameBar";
 import { joiResolver } from '@hookform/resolvers/joi';
 import { ErrorMessage } from '@hookform/error-message';
 import { ArrowDownIcon, StarLoaderIcon } from '../../assets/icons';
@@ -34,8 +34,8 @@ import { selectWagerApproved } from '../../api/blockchain/blockchainSlice';
 import { useCreateGameMutation } from '../../containers/App/api';
 import toast from 'react-hot-toast';
 import { toastSettings } from '../../utils';
-import Button from '../Button';
-import { ToggleWagerBadge } from '../ToggleWagerBadge';
+import Button from '../../common/Button';
+import { ToggleWagerBadge } from '../../common/ToggleWagerBadge';
 import { useFormReveal } from './animations';
 import { utils } from 'ethers';
 

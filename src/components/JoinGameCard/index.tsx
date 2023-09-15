@@ -4,41 +4,50 @@ import {
   HexishString,
   AllPossibleWegaTypes,
   WegaTypesEnum,
-  WegaTypes
+  WegaTypes,
 } from "../../models";
-import { CreateDiceGameCard } from './CreateDiceGameCard';
+import JoinDiceGameCard from './JoinDiceGamecard';
+import JoinCoinFlipGameCard from './JoinCoinFlipGameCard';
 
-export interface CreateGameCardInterface extends React.Attributes, React.AllHTMLAttributes<HTMLDivElement> {
+export interface JoinGameCardProps extends React.Attributes, React.AllHTMLAttributes<HTMLDivElement> {
   wagerType: AllPossibleWagerTypes;
   currencyType: AllPossibleCurrencyTypes;
   tokenAddress: HexishString;
   playerAddress: HexishString;
   gameType: AllPossibleWegaTypes;
   playerUuid: string;
+  wagerAmount: number;
+  gameUuid: string;
+  escrowId: HexishString;
+  gameId: number;
+  gameAttributes?: ({ key: string, value: string })[];
 }
 
-const CREATE_GAME_CARD_COMPONENTS: any = {
-  [WegaTypes[WegaTypesEnum.DICE]]: CreateDiceGameCard
-} 
+const JOIN_GAME_CARD_COMPONENTS: any = {
+  [WegaTypes[WegaTypesEnum.DICE]]: JoinDiceGameCard,
+  [WegaTypes[WegaTypesEnum.COINFLIP]]: JoinCoinFlipGameCard,
+}
 
-const CreateGameCard = ({ 
+const JoinGameCard = ({ 
   wagerType, 
   currencyType,
   tokenAddress,
   playerAddress,
+  gameUuid,
   playerUuid,
   gameType,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  css, 
+  wagerAmount,
+  escrowId,
+  gameId, 
   children,
   ...rest 
-}: CreateGameCardInterface) => {
+}: JoinGameCardProps ) => {
   const renderCard = () => {
     let Comp;
     if(!gameType) {
       return null;
     } else {
-      Comp = CREATE_GAME_CARD_COMPONENTS[gameType.toUpperCase()];
+      Comp = JOIN_GAME_CARD_COMPONENTS[gameType.toUpperCase()];
       if(children) {
         return <Comp { ...{ 
           wagerType, 
@@ -47,7 +56,11 @@ const CreateGameCard = ({
           playerAddress,
           playerUuid,
           gameType,
-          ...rest 
+          gameUuid,
+          wagerAmount,
+          escrowId,
+          gameId,
+          ...rest,
         } }>{children}</Comp> 
       } else {
         return <Comp { ...{ 
@@ -57,6 +70,9 @@ const CreateGameCard = ({
             playerAddress,
             playerUuid,
             gameType,
+            wagerAmount,
+            escrowId,
+            gameId, 
             ...rest 
             } 
           }
@@ -66,5 +82,4 @@ const CreateGameCard = ({
   }
   return renderCard();
 }
-export default CreateGameCard;
-
+export default JoinGameCard;
