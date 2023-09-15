@@ -41,7 +41,8 @@ export const PlayGameSection: React.FC<PlayGameSectionProps>= ({
   const handleOnRollClick = async (gameUuid: string, turn: number) => {
     // should trigger the animation here
     try {
-      await updateGame({ uuid: gameUuid, currentTurn: turn }).unwrap();
+      if(turn == maxTurns) return await updateGame({ uuid: gameUuid, currentTurn: turn, state: "PLAYED" }).unwrap();
+      return await updateGame({ uuid: gameUuid, currentTurn: turn }).unwrap();
     } catch (e) {
       console.log(e)
     }
@@ -81,7 +82,13 @@ export const PlayGameSection: React.FC<PlayGameSectionProps>= ({
       }
     }
     if(wallet && gameInfo && players) getShouldPlayerRoll(players, gameInfo, wallet);
-  }, [game.wager.wagerHash, players.length , wallet?.address, gameInfo?.currentTurn, gameResults?.length]);
+  }, [
+    game.wager.wagerHash, 
+    players.length , 
+    wallet?.address, 
+    gameInfo?.currentTurn, 
+    gameResults?.length
+  ]);
   
  return user && players && players.length > 0 && gameResults && gameResults.length && gameInfo ? ( <>
    <PlayGameContainer>

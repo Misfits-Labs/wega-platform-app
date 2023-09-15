@@ -41,7 +41,7 @@ export const ClaimModal = ({ hide, game, wallet
     {/* mid section */}
     <div tw="flex flex-col gap-y-[16px] justify-center items-center w-full">
      {/* top */}
-     <div tw="flex flex-col gap-y-[8px]">
+     <div tw="flex flex-col gap-y-[8px] min-w-[150px]">
       <NormalText tw="text-shinishi">Amount</NormalText>
       <div tw="flex flex-row gap-x-[11px]">
        <BadgeIcon size="44px">{renderWagerBadge(game.wager.wagerType, game.wager.wagerCurrency)}</BadgeIcon>
@@ -57,7 +57,7 @@ export const ClaimModal = ({ hide, game, wallet
      </div>
 
      {/* bottom */}
-     <div tw="flex flex-col gap-y-[8px]">
+     <div tw="flex flex-col gap-y-[8px] min-w-[150px]">
       <NormalText tw="text-shinishi">Destination</NormalText>
       <div tw="flex flex-row gap-x-[11px]">
        <ClaimModalAvatarWrapper>
@@ -104,7 +104,7 @@ export const ClaimModal = ({ hide, game, wallet
      <NormalText tw="dark:text-shinishi">What you should receive after fees</NormalText>
      <NormalText>{utils.formatEther(game.wager.wagerAmount)} {game.wager.wagerCurrency}</NormalText>
     </div>
-    <Button buttonType="primary" className="flex items-center justify-center w-full" onClick={() => handleClaimClick()}>
+    <Button buttonType="primary" className="flex items-center justify-center w-full" onClick={() => handleClaimClick()} >
      { isClaimingLoading ? "Loading..." : "Claim" }
      <DownloadIcon tw="h-[16px] w-[16px] ms-[5px] dark:stroke-blanc" />
     </Button> 

@@ -9,10 +9,8 @@ export const DateColumn = styled.span`
 `
 
 export const BarWrapper = styled.div`
- display: flex;
- justify-content: space-between;
  align-items: center;
- align-self: stretch; 
+ align-self: stretch;
 `
 
 export const GameTypeBadgeWrapper = styled.div`
@@ -20,7 +18,6 @@ export const GameTypeBadgeWrapper = styled.div`
  background: #2E2E2E;
  display: flex;
  padding: 5px 10px;
- justify-content: center;
  align-items: center;
  gap: 10px;
  `
@@ -38,6 +35,7 @@ export const GameTypeBadgeWrapper = styled.div`
  display: flex;
  padding: 5px 10px;
  align-items: center;
+ justify-content: start;
  gap: 0px 10px;
  border-radius: 10px;
  background: #4B4B4B;
@@ -54,16 +52,24 @@ export const JoinableGamesHeaderBar = styled.div`
  justify-content: space-between;
  gap: 10px;
  border-radius: 10px;
- ${tw`px-2`} 
+ ${tw`px-2`}
+`
 
- 
- & > span {
-  font-family: League Spartan;
-  font-size: 21px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 19px;
-  width: 100%;
-  ${tw`text-shinishi`} 
- }
+type BadgeIconContainerProps = {
+ size?: string;
+}
+
+export const BadgeIconContainer = styled.div<BadgeIconContainerProps>(({ size }) => size ? [
+ `width: ${size};
+  height: ${size};
+ `
+] : [ tw`w-[24px] h-[24px]`]) 
+
+export const BarHeaderColumn = styled.span`
+ font-family: League Spartan;
+ font-size: 21px;
+ font-style: normal;
+ font-weight: 400;
+ line-height: 19px;
+ ${tw`text-shinishi`}
 `

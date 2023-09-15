@@ -25,7 +25,7 @@ const PlayGamePage = () => {
    <title>Play - {BADGE_TEXTS[game.gameType.toUpperCase()]}</title>
   </Helmet>
   <FloatingOrbs />
-  <MainContainer>
+  <MainContainer tw="min-h-[100vh]">
    <Section
     direction="col"
     hdr={

@@ -47,8 +47,7 @@ export const appApiSlice = createApi({
           method: 'PATCH',
           body: { uuid, ...updates }
         })
-      }
-      ,
+      },
       invalidatesTags: () => [ { type: 'Games', id: 'LIST' } ]
     }),
     getGames: builder.query<any, void>({

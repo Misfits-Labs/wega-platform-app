@@ -30,8 +30,8 @@ const WinsPage = () => {
       <Helmet>
       <title>Claim</title>
       </Helmet>
-      <MainContainer>
-       <Section 
+      <MainContainer tw="min-h-[100vh]">
+       <Section
         direction='col' 
         hdr={
          <SectionHeaderContainer tw="flex-col items-center">

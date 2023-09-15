@@ -26,6 +26,8 @@ import { selectGameById } from '../../containers/App/api';
 import { useSelector } from 'react-redux' 
 import { useWegaStore, useBlockchainApiHooks } from '../../hooks'
 import { ButtonForClaiming } from '../ButtonForClaiming';
+import 'twin.macro';
+
 export const BADGE_TEXTS: any = {
  [WegaTypes[WegaTypesEnum.DICE]]: 'Dice',
  [WegaTypes[WegaTypesEnum.COINFLIP]]: 'Coin flip'
@@ -53,7 +55,7 @@ function ClaimBar({
   }, [winners, game?.wager, game?.gameType, game?.wager?.wagerHash])
 
   return game && wallet?.address && user?.uuid && winners && (winners.includes(wallet.address) || winners.includes(wallet.address)) ? (
-   <BarWrapper {...rest}>
+   <BarWrapper tw="flex justify-between gap-[25px]" {...rest}>
     <Count>{parseBarCount(count)}</Count>
     {/* date */}
     <DateColumn>{dateFromTs(new Date(game.createdAt as string).getTime() * 1000)}</DateColumn>
@@ -64,14 +66,14 @@ function ClaimBar({
     </GameTypeBadgeWrapper>
     
     <WagerTypeBadgeWrapper>
-     <BadgeText>{utils.formatEther(game.wager.wagerAmount)}</BadgeText>
-     <BadgeIcon>{renderWagerBadge(game.wager.wagerType, game.wager.wagerCurrency)}</BadgeIcon>
-     <BadgeText>{game.wager.wagerCurrency}</BadgeText>
+      <BadgeText>{utils.formatEther(game.wager.wagerAmount)}</BadgeText>
+      <BadgeIcon>{renderWagerBadge(game.wager.wagerType, game.wager.wagerCurrency)}</BadgeIcon>
+      <BadgeText>{game.wager.wagerCurrency}</BadgeText>
     </WagerTypeBadgeWrapper>
     {/* escrow link button */}
     
     {/* render for a joinable game */}
-    <ButtonForClaiming  game={game} /> 
+      <ButtonForClaiming  game={game} />
    </BarWrapper>
   ) : <></>
 }

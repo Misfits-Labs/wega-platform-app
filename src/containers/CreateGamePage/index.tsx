@@ -3,26 +3,40 @@ import Section from '../../common/Section';
 import { SectionHeaderContainer, SectionHeaderTitle } from '../../common/Section/types';
 import CreateGameCard from '../../common/CreateGameCard';
 import PlayableGamesSection from '../../components/PlayableGamesSection';
-import {  WagerTypes, WagerTypesEnum, CurrencyTypes, CurrencyTypesEnum, AllPossibleWegaTypes  } from '../../models';
+import { WagerTypes, WagerTypesEnum, CurrencyTypes, CurrencyTypesEnum, AllPossibleWegaTypes } from '../../models';
 import { SupportedWagerTokenAddresses } from '../../models/constants';
-import { selectAllGamesIds } from '../App/api';
-import { useSelector } from 'react-redux';
+import { useGetGamesQuery } from '../App/api';
 import { useWegaStore } from '../../hooks';
 import { ComponentLoader } from '../../common/loaders'
 import { useParams } from 'react-router-dom';
-import MainContainer from '../../components/MainContainer'
+import MainContainer from '../../components/MainContainer';
+import { MinimumGameRounds } from '../../components/PlayGameSection/types'
 import 'twin.macro';
 
 const CreateGamePage = () => {
-  const gameIds = useSelector(state => selectAllGamesIds(state));
-  const { user, network, wallet } = useWegaStore();
   const { gameType } = useParams();
-  return (network?.id && wallet && user.uuid && gameType) ? (<MainContainer>
+  const { user, network, wallet } = useWegaStore();
+  const { isLoading, playableGameIds } = useGetGamesQuery(undefined, {
+    selectFromResult: ({ data, isLoading, isSuccess  }) => ({ 
+      playableGameIds: data ? isSuccess && Object.entries(data.entities).filter(([, game]: any) => game.creatorUuid === user.uuid && (game.currentTurn !== (MinimumGameRounds[game.gameType] * game.requiredPlayerNum ))).map(([id,]: any) => Number(id)) : [],
+      isLoading,
+      })
+    }
+  );
+
+  return (
+    !isLoading &&
+    network?.id && 
+    wallet && 
+    user.uuid && 
+    gameType
+  ) ? (
+  <MainContainer tw="min-h-[100vh]">
     <Helmet>
-     <title>Create</title>
+      <title>Create</title>
     </Helmet>
     <Section
-    tw="min-h-[100vh]"
+    tw="min-h-[max-content]"
     direction='col'
     hdr={
      <SectionHeaderContainer tw='justify-center'>
@@ -39,8 +53,9 @@ const CreateGamePage = () => {
         playerUuid={user.uuid}
       />
     </Section>
-    <PlayableGamesSection gameIds={gameIds} />
-   </MainContainer> ) : <ComponentLoader tw="min-w-[559px] min-h-[494px]" />
+    <PlayableGamesSection gameIds={playableGameIds as number[]} />
+  </MainContainer>
+  ) : <ComponentLoader tw="min-w-[559px] min-h-[494px]" />
 }
 export default CreateGamePage;
 

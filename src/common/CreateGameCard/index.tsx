@@ -8,7 +8,7 @@ import {
 } from "../../models";
 import { CreateDiceGameCard } from './CreateDiceGameCard';
 
-export interface CreateGameCardInterface {
+export interface CreateGameCardInterface extends React.Attributes, React.AllHTMLAttributes<HTMLDivElement> {
   wagerType: AllPossibleWagerTypes;
   currencyType: AllPossibleCurrencyTypes;
   tokenAddress: HexishString;
@@ -30,23 +30,38 @@ const CreateGameCard = ({
   gameType,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   css, 
+  children,
   ...rest 
-}: CreateGameCardInterface & React.Attributes & React.AllHTMLAttributes<HTMLDivElement>) => {
+}: CreateGameCardInterface) => {
   const renderCard = () => {
     let Comp;
     if(!gameType) {
       return null;
     } else {
       Comp = CREATE_GAME_CARD_COMPONENTS[gameType.toUpperCase()];
-      return <Comp { ...{ 
-        wagerType, 
-        currencyType,
-        tokenAddress,
-        playerAddress,
-        playerUuid,
-        gameType,
-        ...rest 
-    } }/> 
+      if(children) {
+        return <Comp { ...{ 
+          wagerType, 
+          currencyType,
+          tokenAddress,
+          playerAddress,
+          playerUuid,
+          gameType,
+          ...rest 
+        } }>{children}</Comp> 
+      } else {
+        return <Comp { ...{ 
+            wagerType, 
+            currencyType,
+            tokenAddress,
+            playerAddress,
+            playerUuid,
+            gameType,
+            ...rest 
+            } 
+          }
+        /> 
+      }
     }
   }
   return renderCard();

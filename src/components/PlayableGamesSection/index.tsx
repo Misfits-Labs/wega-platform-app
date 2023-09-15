@@ -1,10 +1,9 @@
 import Section from '../../common/Section';
 import GameBar  from '../../common/GameBar'
 import { JoinableGamesHeaderBar } from '../../common/JoinableGameBar/types';
-// import {  constants } from 'ethers'
 
 interface PlayableGamesSectionProps extends React.Attributes {
- gameIds: any[]
+ gameIds: number[]
 }
 
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
@@ -26,7 +25,3 @@ function PlayableGamesSection({ gameIds , ...rest }: PlayableGamesSectionProps){
   )
 }
 export default PlayableGamesSection;
-
-// Playable matches that are playable meaning
- // their are 2 players in the match
- // one of players is you

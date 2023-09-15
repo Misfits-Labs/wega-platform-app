@@ -6,7 +6,7 @@ interface ClaimTokenWinsSectionProps extends React.Attributes {
 }
 
 function ClaimTokenWinsSection({ gameIds , ...rest }: ClaimTokenWinsSectionProps) {
-    
+  // filter out the games of which the user is not the winner
   return (
     <Section hdr="Tokens won" direction="col" className="gap-2" { ...rest } >
       {

@@ -12,6 +12,7 @@ const CustomStyles = createGlobalStyle({
   ...tw`dark:bg-pretu dark:text-blanc`,
  },
 })
+
 const GlobalStyles = () => (
   <>
     <BaseStyles />

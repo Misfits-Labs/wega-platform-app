@@ -33,7 +33,7 @@ export const ButtonForClaiming = ({ game  }: ButtonForClaimingProps) => {
      Claim
      <DownloadIcon tw="h-[16px] w-[16px] ms-[5px]" />
    </Button> :  
-     <Button buttonType="primary" className="flex items-center" onClick={() => handleClaim(wallet)} >
+     <Button buttonType="primary" className="flex items-center w-[max-content]" onClick={() => handleClaim(wallet)} >
        Claim
      <DownloadIcon tw="h-[16px] w-[16px] ms-[5px] dark:stroke-blanc" />
     </Button> 

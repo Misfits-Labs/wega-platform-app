@@ -3,7 +3,8 @@ import {
  DateColumn, 
  BarWrapper, 
  BadgeText,
- WagerTypeBadgeWrapper
+ WagerTypeBadgeWrapper,
+ BadgeIconContainer
 } from './types';
 import { 
  AllPossibleWegaTypes, 
@@ -24,6 +25,7 @@ import { utils } from 'ethers';
 import { ButtonForJoinableGame } from '../ButtonForJoinableGame';
 import { ButtonForWaitingGame } from '../ButtonForWaitingGame';
 import { useWegaStore } from '../../hooks'
+import 'twin.macro';
 
 export const BADGE_TEXTS: any = {
  [WegaTypes[WegaTypesEnum.DICE]]: 'Dice',
@@ -42,13 +44,13 @@ function GameBar({
 }: { gameId: number } & React.Attributes & Partial<React.AllHTMLAttributes<HTMLDivElement>> & GameBarProps) {
   const game = useSelector(state => selectGameById(state, gameId));
   const { user } = useWegaStore()
-  
+
   return game && user?.uuid && (
-   <BarWrapper {...rest}>
+   <BarWrapper tw="grid grid-cols-4" {...rest}>
     {/* date */}
-    <DateColumn>{dateFromTs(new Date(game.createdAt as string).getTime() * 1000)}</DateColumn>
+    <DateColumn tw="max-w-[max-content]">{dateFromTs(new Date(game.createdAt as string).getTime() * 1000)}</DateColumn>
     
-    <GameTypeBadgeWrapper>
+    <GameTypeBadgeWrapper tw="w-[fit-content]">
      {renderGameTypeBadge(game.gameType)}
      <BadgeText>{BADGE_TEXTS[game.gameType]}</BadgeText>
     </GameTypeBadgeWrapper>
@@ -61,16 +63,18 @@ function GameBar({
     {/* escrow link button */}
     
     {/* render for a joinable game */}
-
     {
-      game.creatorUuid !== user.uuid && <ButtonForJoinableGame gameType={game.gameType} gameId={game.id} gameUuid={game.uuid} /> 
+      game.creatorUuid !== user.uuid && <div tw="flex justify-end">
+        <ButtonForJoinableGame gameType={game.gameType} gameId={game.id} gameUuid={game.uuid} />
+      </div>
     }
 
     {/* playable game button */}
     {  
-      game.creatorUuid === user.uuid && <ButtonForWaitingGame gameType={game.gameType} gameId={game.id} gameUuid={game.uuid} />  
+      game.creatorUuid === user.uuid && <div tw="flex justify-end">
+        <ButtonForWaitingGame gameType={game.gameType} gameId={game.id} gameUuid={game.uuid} />  
+      </div>
     }
-
    </BarWrapper>
   )
 }
@@ -94,7 +98,7 @@ export const BADGE_CURRENCY_TYPE_COMPONENTS: any = {
 
 export const BadgeIcon = (
   props: { children: React.ReactElement | React.ReactNode, size?: string; }
-) => props?.size ? <div className={`w-[${props.size}] h-[${props.size}]`}>{props.children}</div> : <div className="w-[24px] h-[24px]">{props.children}</div> 
+) => <BadgeIconContainer size={props.size} >{props.children}</BadgeIconContainer> 
 
 export const renderGameTypeBadge = (gameType: AllPossibleWegaTypes) => {
  const BadgeComponent = BADGE_GAME_TYPE_COMPONENTS[gameType];

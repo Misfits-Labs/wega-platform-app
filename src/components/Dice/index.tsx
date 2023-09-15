@@ -38,7 +38,7 @@ export const Dice: React.FC<{
   )
 }
 
-const DiceQuestionMark = () => <LargeText tw="text-pretu">?</LargeText> 
+const DiceQuestionMark = () => <LargeText tw="text-blanc">?</LargeText> 
 
 const DICE_SIDES: any = {
   [DiceSides.MINUS_ONE]: DiceQuestionMark, 

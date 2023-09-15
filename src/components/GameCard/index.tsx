@@ -207,7 +207,7 @@ export const CoinFlipGameCard = () => {
      </GameCardDescription>
      <Button 
       buttonType="primary" 
-      disabled={true} 
+      disabled={true}
       content='Coming soon' 
       className="w-[75%] dark:bg-gradient-to-r from-oranjo-blanc to-oranjo"/>
     </GameCardBody>

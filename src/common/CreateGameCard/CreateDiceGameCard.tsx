@@ -108,12 +108,12 @@ export const CreateDiceGameCard = ({
         players: [ { uuid: playerUuid } ],
         creatorUuid: playerUuid,
         wager: { 
-          wagerType: wagerType.toUpperCase() as AllPossibleWagerTypes, 
+          wagerType: currentWagerType.toUpperCase() as AllPossibleWagerTypes, 
           wagerHash: createWagerData.wagerId as string, 
           tokenAddress, 
           wagerAmount: utils.parseEther(String(wager)).toString(), 
-          wagerCurrency: currencyType,
-          nonce: createWagerData.nonce, 
+          wagerCurrency: currentCurrencyType,
+          nonce: createWagerData.nonce,
         }
       }).unwrap();
       toast.success('Create game success', { ...toastSettings('success', 'top-center') as any });
@@ -213,7 +213,6 @@ export const CreateDiceGameCard = ({
         }
         {/* button approve */}
         {/* button start game */}
-        
         
         {/* details */}
         {/* wager  */}

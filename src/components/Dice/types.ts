@@ -9,14 +9,23 @@ export const DiceContainer = styled.div`
  align-items: center;
  gap: 17.349px;
  border-radius: 17.349px; 
- ${tw`bg-blanc`}
  box-shadow: 0px 6.939759254455566px 17.34939956665039px 0px rgba(0, 0, 0, 0.25);
+ background: rgba(75, 75, 75, 0.30 );
+ backdrop-filter: blur(15px);
+ ${tw`border border-blanc border-[1.5px]`}
  `
 export const DiceWrapper = styled.div`
+ position: relative;
+ z-index: 10;
  width: 70px;
  height: 70px;
  border-radius: 5.205px;
- ${tw`border border-pretu border-[5px]`} 
+ border-left: 5px solid #FF9C27;
+ border-right: 5px solid #F26D21;
+ background-image: linear-gradient(to left, #F26D21, #FF9C27), linear-gradient(to left, #F26D21, #FF9C27);
+ background-size: 100% 5px;
+ background-position:0 0, 0 100%;
+ background-repeat:no-repeat;
 `
 // eslint-disable-next-line no-unused-vars
 export enum DiceSides { MINUS_ONE, ONE, TWO, THREE, FOUR, FIVE, SIX } 

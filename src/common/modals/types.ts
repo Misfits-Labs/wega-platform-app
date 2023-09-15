@@ -1,4 +1,4 @@
-import tw, { styled } from 'twin.macro';
+import { styled } from 'twin.macro';
 
 export const ModalContainer = styled.div`
  position: fixed;
@@ -21,15 +21,4 @@ export const WinnerDeclarationContainer = styled.div`
  gap: 8px; 
  border-radius: 10px;
  background: #343434;
-`
-export const ClaimModalTitle = styled.span`
- text-align: center;
- leading-trim: both;
- font-family: League Spartan;
- font-size: 21px;
- font-style: normal;
- font-weight: 700;
- line-height: 12px;
- letter-spacing: 0.42px;
- ${tw`dark:text-blanc`}
 `
