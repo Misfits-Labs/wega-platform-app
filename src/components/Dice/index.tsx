@@ -6,7 +6,7 @@ import DiceThreeComponent from './images/DiceThree';
 import DiceFourComponent from './images/DiceFour';
 import DiceFiveComponent from './images/DiceFive';
 import DiceSixComponent from './images/DiceSix';
-import "twin.macro"; 
+import "twin.macro";
 
 export const Dice: React.FC<{
   gameResults: (number)[][], 
@@ -14,10 +14,15 @@ export const Dice: React.FC<{
   rollerIndex: number,
   currentTurn: number,
   isGamePlayable: boolean }> = ({ gameResults, currentRound, rollerIndex, isGamePlayable, currentTurn }: { 
-    gameResults: (number)[][], currentRound: number, rollerIndex: number, currentTurn: number, isGamePlayable: boolean }) => {
+    gameResults: (number)[][], 
+    currentRound: number, 
+    rollerIndex: number, 
+    currentTurn: number, 
+    isGamePlayable: boolean
+  }) => {
     const renderDice = () => {
       let Component;
-      if(!isGamePlayable && gameResults[0].length === 0) {
+      if(!isGamePlayable) {
         Component = DICE_SIDES[DiceSides.MINUS_ONE];
       } else {
         if(currentTurn == 0) {

@@ -3,7 +3,7 @@
 // @ts-nocheck
 import { useState, useEffect} from "react";
 import {  AllPossibleCoinSides, CoinSideTypes, CoinSideTypesEnum  } from "../../models"
-import CoinSide from "../CoinSide";
+import { CoinSideTailsIconWithCircle, CoinSideHeadsIconWithCircle } from "../../assets/icons";
 import {css} from 'twin.macro';
 
 export interface ToggleCoinFlipSidesProps extends React.ButtonHTMLAttributes<HTMLDivElement> {
@@ -56,7 +56,8 @@ export const ToggleCoinFlipSides: React.FC<ToggleCoinFlipSidesProps> = ({ setCur
       onClick={handleHeadsClick} 
       >
       {/* icon */}
-      <CoinSide coinSide={CoinSideTypes[CoinSideTypesEnum.HEADS]} tw="flex items-center max-w-[45px]" />
+      {/* <CoinSide coinSide={CoinSideTypes[CoinSideTypesEnum.HEADS]} tw="flex items-center max-w-[45px]" /> */}
+      <CoinSideHeadsIconWithCircle tw="max-w-[45px]" />
       <span tw="text-[21px] font-normal leading-[19px]">HEADS</span>
     </button>
     <button 
@@ -65,7 +66,7 @@ export const ToggleCoinFlipSides: React.FC<ToggleCoinFlipSidesProps> = ({ setCur
       css={[isTAILSSelected && selectedStyles]}
       >
       {/* icon */}
-      <CoinSide coinSide={CoinSideTypes[CoinSideTypesEnum.TAILS]} tw="flex items-center max-w-[45px]" />
+      <CoinSideTailsIconWithCircle tw="max-w-[60px]" />
       <span tw="text-[21px] font-normal leading-[19px]">TAILS</span>
     </button>
   </div>)

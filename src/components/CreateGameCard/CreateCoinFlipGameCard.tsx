@@ -140,7 +140,8 @@ export const CreateCoinFlipGameCard = ({
   useEffect(() => {
     allowance(tokenAddress, playerAddress, getValues('wager'));
     if(createGameStatus === 'fulfilled' && createGameResponse) {
-      navigateToGameUi(`/${gameType.toLowerCase()}/play/${createGameResponse.id}`, 1500, { replace: true });
+      navigateToGameUi(`/${gameType.toLowerCase()}/play/${createGameResponse.uuid}`, 1500, { replace: true,
+        state: { gameId: createGameResponse.id, gameUuid: createGameResponse.uuid } });
     }
   }, [
     watch('wager'), 

@@ -31,8 +31,7 @@ export const PrimaryButton = styled(BaseButton)<ButtonProps>(
     }
     `
   ] : [
-    tw`dark:text-pretu dark:opacity-50`,
-    `background: #9A9A9A;`
+    tw`dark:text-pretu dark:opacity-50 dark:bg-gradient-to-r from-oranjo-blanc to-oranjo`,
   ]
 
 )

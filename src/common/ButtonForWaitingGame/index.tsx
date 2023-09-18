@@ -26,7 +26,7 @@ export const ButtonForWaitingGame = ({ gameType, gameId, gameUuid }: ButtonForWa
       Play
       <StarLoaderIcon className="dark:fill-blanc h-[16px] w-[16px] ms-[5px]" />
     </Button> : isGamePlayable ? (
-    <Link to={`/${gameType.toLowerCase()}/play/${gameId}`}>
+    <Link to={`/${gameType.toLowerCase()}/play/${gameUuid}`} state={{ gameUuid, gameId }}>
       <Button buttonType="secondary" className="flex items-center">
         Play
       <StarLoaderIcon className="dark:fill-blanc h-[16px] w-[16px] ms-[5px]" />

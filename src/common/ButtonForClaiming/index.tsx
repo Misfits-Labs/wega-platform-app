@@ -17,7 +17,7 @@ export const ButtonForClaiming = ({ game  }: ButtonForClaimingProps) => {
   const { showModal, hideModal } = useGlobalModalContext();
 
   const handleClaim = async (wallet: any) => {
-    showModal(MODAL_TYPES.CLAIM_MODAL, { 
+    showModal(MODAL_TYPES.CLAIM_MODAL, {
       game,
       wallet,
       hide: hideModal,
@@ -33,7 +33,7 @@ export const ButtonForClaiming = ({ game  }: ButtonForClaimingProps) => {
      Claim
      <DownloadIcon tw="h-[16px] w-[16px] ms-[5px]" />
    </Button> :  
-     <Button buttonType="primary" className="flex items-center w-[max-content]" onClick={() => handleClaim(wallet)} >
+     <Button buttonType="primary" className="flex items-center w-[max-content]" onClick={() => handleClaim(wallet)}>
        Claim
      <DownloadIcon tw="h-[16px] w-[16px] ms-[5px] dark:stroke-blanc" />
     </Button> 

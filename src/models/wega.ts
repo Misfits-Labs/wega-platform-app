@@ -1,5 +1,6 @@
 import { Wager } from './wager';
 import { Player } from './player';
+import { AllPossibleCoinSides } from '.';
 
 // eslint-disable-next-line no-unused-vars
 export enum WegaTypesEnum { DICE, COINFLIP, RAFFLE }
@@ -11,6 +12,8 @@ export const WegaTypes = {
 } as const;
 
 export type AllPossibleWegaTypes = typeof WegaTypes[keyof typeof WegaTypes];
+
+export type WegaAttributes = ({ key: string; value: string | AllPossibleCoinSides })[] 
 
 export type Wega = {
  id: number;
@@ -24,5 +27,7 @@ export type Wega = {
  players: Player[];
  requiredPlayerNum: number;
  currentTurn: number;
- gameAttributes?: ({  key: string; value: string;})[]
+ gameAttributes?: WegaAttributes;
 }
+
+export type GameInfoType = { currentRound: number, rollerIndex: number, currentTurn: number };

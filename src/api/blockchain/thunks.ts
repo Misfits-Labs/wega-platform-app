@@ -112,6 +112,7 @@ export const getGameResultsQuery = createAsyncThunk<number[][], { escrowHash: He
   try {
     return await Promise.all(inpts.players.map(async (playerAddress: string) => {
       const res = await api.getGameResults(inpts.gameType, inpts.escrowHash, playerAddress.toLowerCase() as HexishString);
+      console.log(res)
       return res;
     }
     ));
@@ -123,11 +124,11 @@ export const getGameResultsQuery = createAsyncThunk<number[][], { escrowHash: He
   }
 })
 
-export const depositWagerMutation = createAsyncThunk<any, { escrowId: HexishString }>('gameController/depositOrPlay',
+export const depositWagerMutation = createAsyncThunk<any, { escrowId: HexishString, playerChoices?: number[] }>('gameController/depositOrPlay',
  async (inpts, { rejectWithValue }) => {
   const api = new BlockchainAPI();
    try {
-      const hash = await api.deposit(inpts.escrowId);
+      const hash = await api.deposit(inpts.escrowId, inpts.playerChoices);
       const receipt = await waitForTransaction({ hash });
     if(receipt) {
       toast.success('Deposit wager success', { ...{ ...toastSettings('success', 'top-center') } as any });

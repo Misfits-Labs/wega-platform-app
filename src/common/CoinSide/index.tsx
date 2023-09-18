@@ -10,8 +10,13 @@ export const COIN_SIDE_COMPONENTS: any = {
 export interface CoinSideProps extends React.Attributes, React.AllHTMLAttributes<HTMLDivElement> {
  coinSide: AllPossibleCoinSides;
 }
+
 const CoinSide: React.FC<CoinSideProps> = ({ children, coinSide, ...rest }: CoinSideProps) => {
-  const CoinSideComp = COIN_SIDE_COMPONENTS[String(coinSide)];
-  return (CoinSideComp && children ? <div {...rest}><CoinSideComp/>{children}</div> : <div {...rest}><CoinSideComp /></div>) ?? null
+  if(coinSide){
+    const CoinSideComp = COIN_SIDE_COMPONENTS[String(coinSide)];
+    return children ? <CoinSideComp {...rest}>{children}</CoinSideComp> : <CoinSideComp {...rest}/>;
+  } else {
+    return null;
+  }
 }
 export default CoinSide;

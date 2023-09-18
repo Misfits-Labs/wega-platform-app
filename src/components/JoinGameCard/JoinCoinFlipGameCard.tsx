@@ -17,6 +17,7 @@ import {
   HexishString,
   AllPossibleWegaTypes,
   AllPossibleCoinSides,
+  WegaAttributes,
 } from "../../models";
 import { 
   BadgeIcon, 
@@ -36,7 +37,7 @@ import toast from 'react-hot-toast';
 import { toastSettings } from '../../utils';
 import Button from '../../common/Button';
 import { useFormReveal } from '../CreateGameCard/animations';
-import { useJoinGameMutation } from '../../containers/App/api';
+import { useJoinGameMutation, useUpdateGameMutation } from '../../containers/App/api';
 import { ToggleCoinFlipSides } from '../../common/ToggleCoinFlipSides';
 
 
@@ -51,7 +52,7 @@ export interface JoinCoinFlipGameCardProps extends React.Attributes, React.AllHT
  gameUuid: string;
  escrowId: HexishString;
  gameId: number;
- gameAttributes: ({ key: string, value: string })[];
+ gameAttributes: WegaAttributes;
 }
 
 const JoinCoinFlipGameCard = ({ 
@@ -78,6 +79,7 @@ const JoinCoinFlipGameCard = ({
   const isWagerApproved = useAppSelector(state => selectWagerApproved(state));
   const {revealed, triggerRevealAnimation} = useFormReveal(false, formRef, detailsBlock);
   const [currentCoinSide] = useState<AllPossibleCoinSides>(gameAttributes && Number(gameAttributes[0].value) === 1 ? 2 : 1);
+
   
   const { 
     useAllowanceQuery,
@@ -89,10 +91,11 @@ const JoinCoinFlipGameCard = ({
     mode: 'onChange',
     resolver: joiResolver(createGameSchema('wager', wagerAmount)) , 
     reValidateMode: 'onChange',
-    defaultValues: { 
+    defaultValues: {
       wager: wagerAmount,
     }
   });
+  
   // approval for allowance
   const { isLoading: isGetAllowanceLoading, allowance } = useAllowanceQuery();
   
@@ -104,12 +107,16 @@ const JoinCoinFlipGameCard = ({
   
   const { isLoading: isDepositWagerLoading, depositWager } = useDepositWagerMutation();
   const [ joinGame, { isLoading: isJoinGameLoading  } ] = useJoinGameMutation();
+  const [ updateGame, { isLoading: isUpdateGameLoading  } ] = useUpdateGameMutation();
+
   const handleDepositWagerClick = async () => {
     try {
-      await depositWager(escrowId).unwrap();
+      const playerChoices = [Number(gameAttributes[0].value), currentCoinSide];
+      await depositWager(escrowId, playerChoices).unwrap();
       await joinGame({ newPlayerUuid: playerUuid, gameUuid }).unwrap();
-      navigateToGameUi(`/${gameType.toLowerCase()}/play/${gameId}`, 1500, { replace: true });
+      await updateGame({ uuid: gameUuid, gameAttributes: [{ key: "players[1].flipChoice", value: currentCoinSide.toString()}, ...gameAttributes] }).unwrap();
       toast.success('Deposit success', { ...toastSettings('success', 'top-center') as any });
+      navigateToGameUi(`/${gameType.toLowerCase()}/play/${gameUuid}`, 1500, { replace: true, state: { gameId, gameUuid } });
     } catch (e: any){
       console.log(e)
       const message = e?.message ?? 'Deposit error'
@@ -168,8 +175,8 @@ const JoinCoinFlipGameCard = ({
         {/* <Button buttonType="primary"><>Approve</></Button> */}
         { 
           isWagerApproved ? <Button type="submit" buttonType="primary" tw="flex">
-          {(isDepositWagerLoading || isJoinGameLoading) ? "Loading..." : "Deposit" }
-          <StarLoaderIcon loading={(isDepositWagerLoading || isJoinGameLoading)} color="#151515" tw="h-[16px] w-[16px] ms-[5px]" /> 
+          {(isDepositWagerLoading || isJoinGameLoading || isUpdateGameLoading) ? "Loading..." : "Deposit" }
+          <StarLoaderIcon loading={(isDepositWagerLoading || isJoinGameLoading || isUpdateGameLoading )} color="#151515" tw="h-[16px] w-[16px] ms-[5px]" /> 
           </Button> : <Button type="submit" buttonType="primary" tw="flex">
               { (isGetAllowanceLoading || isApproveERC20Loading) ? "Loading..." : "Approve" }
               <StarLoaderIcon loading={(isGetAllowanceLoading || isApproveERC20Loading)} color="#151515" tw="h-[16px] w-[16px] ms-[5px]" />

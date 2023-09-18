@@ -6,7 +6,8 @@ import {
   type Wega,
   type Player,
   type Wager,
-  type AllPossibleWegaTypes
+  type AllPossibleWegaTypes,
+  type WegaAttributes
 } from '../../models';
 
 const baseQuery = fetchBaseQuery({
@@ -32,11 +33,11 @@ export const appApiSlice = createApi({
         return response.uuid 
       },
     }),
-    joinGame: builder.mutation<any, { gameUuid: string, newPlayerUuid: string }>({
-      query: ({gameUuid , newPlayerUuid }) => ({
+    joinGame: builder.mutation<any, { gameUuid: string, newPlayerUuid: string,  gameAttributes?: WegaAttributes }>({
+      query: ({ gameUuid , newPlayerUuid, gameAttributes }) => ({
         url: `/games/${gameUuid}/join`,
         method: 'PATCH',
-        body: { newPlayerUuid, uuid: gameUuid }
+        body: { newPlayerUuid, uuid: gameUuid, gameAttributes }
       }),
       invalidatesTags: () => [ { type: 'Games', id: 'LIST' } ]
     }),
@@ -60,12 +61,13 @@ export const appApiSlice = createApi({
        return gamesAdapter.setAll(gamesInitialState, response.items)
       }
     }),
-    createGame: builder.mutation<Wega, Partial<Wega> & Pick<Wega, 'creatorUuid'> & Pick<Wega, 'wager'> & Pick<Wega, 'gameType'> & Partial<Player>>({
+    createGame: builder.mutation<Wega, Partial<Wega> & Pick<Wega, 'creatorUuid'> & Pick<Wega, 'wager'> & Pick<Wega, 'gameType'> & Pick<Wega, 'gameAttributes'> & Partial<Player>>({
       query: ({ wager, players, gameType, creatorUuid, gameAttributes }: {
        wager: Wager,
        players: Player[],
        gameType: AllPossibleWegaTypes,
        creatorUuid: string;
+       gameAttributes?: WegaAttributes;
       }) => ({
         url: '/games',
         method: 'POST',

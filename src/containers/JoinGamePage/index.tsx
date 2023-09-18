@@ -2,10 +2,9 @@ import { Helmet } from 'react-helmet-async';
 import Section from '../../common/Section';
 import { SectionHeaderTitle, SectionHeaderContainer } from '../../common/Section/types';
 import JoinGameCard from '../../components/JoinGameCard';
-// import JoinableGamesSection from '../../components/JoinableGamesSection';
-import {  AllPossibleWegaTypes, HexishString  } from '../../models';
+import { AllPossibleWegaTypes, HexishString, Wega } from '../../models';
 import { SupportedWagerTokenAddresses } from '../../models/constants';
-import { selectGameById } from '../App/api';
+import { selectAllGames } from '../App/api';
 import { useSelector } from 'react-redux';
 import { useWegaStore } from '../../hooks';
 import { ComponentLoader } from '../../common/loaders'
@@ -15,16 +14,19 @@ import { BADGE_TEXTS } from "../../common/JoinableGameBar";
 import { utils } from 'ethers';
 import 'twin.macro'; 
 
+// TODO 
+  // REF retrieval of game
 const JoinGamePage = () => {
  const { user, network, wallet } = useWegaStore();
- const { id } = useParams();
- const game = useSelector(state => selectGameById(state, Number(id)));
- return (network?.id && wallet && user.uuid && game && (game.gameType === "COINFLIP" ? game.gameAttributes : true)) ? (
+ const params = useParams();
+ const games = useSelector(state => selectAllGames(state));
+ const game: Wega = games.filter(g => g.uuid === params.id)[0];
+ return (network?.id && wallet && user.uuid && game) ? (
     <>
     <Helmet>
      <title>Join - {BADGE_TEXTS[game.gameType]} </title>
     </Helmet>
-    <MainContainer tw="min-h-[100vh]">
+    <MainContainer tw="min-h-[100vh]" >
       <Section 
       direction='col' 
       hdr={

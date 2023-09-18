@@ -14,8 +14,6 @@ import {
 import { 
   AllPossibleCurrencyTypes, 
   AllPossibleWagerTypes, 
-  HexishString,
-  AllPossibleWegaTypes,
 } from "../../models";
 import { 
   BadgeIcon, 
@@ -92,7 +90,7 @@ const JoinGameDiceCard: React.FC<JoinDiceGameCardProps> = ({
     try {
       await depositWager(escrowId).unwrap();
       await joinGame({ newPlayerUuid: playerUuid, gameUuid }).unwrap();
-      navigateToGameUi(`/${gameType.toLowerCase()}/play/${gameId}`, 1500, { replace: true });
+      navigateToGameUi(`/${gameType.toLowerCase()}/play/${gameUuid}`, 1500, { replace: true, state: { gameId: gameId, gameUuid } });
       toast.success('Deposit success', { ...toastSettings('success', 'top-center') as any });
     } catch (e: any){
       console.log(e)

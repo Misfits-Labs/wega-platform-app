@@ -5,6 +5,7 @@ import {
   AllPossibleWegaTypes,
   WegaTypesEnum,
   WegaTypes,
+  WegaAttributes
 } from "../../models";
 import JoinDiceGameCard from './JoinDiceGamecard';
 import JoinCoinFlipGameCard from './JoinCoinFlipGameCard';
@@ -20,7 +21,7 @@ export interface JoinGameCardProps extends React.Attributes, React.AllHTMLAttrib
   gameUuid: string;
   escrowId: HexishString;
   gameId: number;
-  gameAttributes?: ({ key: string, value: string })[];
+  gameAttributes?: WegaAttributes;
 }
 
 const JOIN_GAME_CARD_COMPONENTS: any = {
@@ -72,6 +73,7 @@ const JoinGameCard = ({
             gameType,
             wagerAmount,
             escrowId,
+            gameUuid,
             gameId, 
             ...rest 
             } 

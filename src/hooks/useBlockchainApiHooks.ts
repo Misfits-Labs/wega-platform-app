@@ -167,7 +167,7 @@ function useDepositWagerMutation(){
   const [isIdle, setIsIdle] = useState<boolean>();
   const [isSuccess, setIsSuccess] = useState<boolean>();
   
-  const depositWager = (escrowId: HexishString) => dispatch(depositWagerMutation({ escrowId }));
+  const depositWager = (escrowId: HexishString, playerChoices?: number[]) => dispatch(depositWagerMutation({ escrowId, playerChoices }));
   
   useEffect(() => {
     setIsError(status === 'rejected');

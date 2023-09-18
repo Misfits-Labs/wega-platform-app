@@ -33,3 +33,5 @@ export { default as DownloadIcon } from './DownloadIcon';
 export { default as ArrowDownIconV2 } from './ArrowDownIconV2';
 export { default as CoinSideHeadsIcon } from './CoinSideHeadsIcon';
 export { default as CoinSideTailsIcon } from './CoinSideTailsIcon';
+export { default as CoinSideHeadsIconWithCircle } from './CoinSideHeadsIconWithCircle';
+export { default as CoinSideTailsIconWithCircle } from './CoinSideTailsIconWithCircle';
