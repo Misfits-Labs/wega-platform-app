@@ -45,7 +45,7 @@ const PlayCoinFlipGameSection: React.FC<PlayGameSectionProps> = ({
 }: PlayGameSectionProps) => {
  const [updateGame] = useUpdateGameMutation()
  const maxTurns = 1;
- const { showModal, hideModal } = useGlobalModalContext()
+ const { showModal, hideModal } = useGlobalModalContext();
  
  const handleOnRollClick = async (gameUuid: string, turn: number) => {
   // should trigger the animation here
@@ -59,8 +59,6 @@ const PlayCoinFlipGameSection: React.FC<PlayGameSectionProps> = ({
  // setup the animation
  const coinRef = useRef<any>(null)
  const isPlayerOne = players && wallet.address.toLowerCase() === players[0]?.walletAddress?.toLowerCase();
- const playerFlipChoice = Number(gameAttributes.filter(a => a.key === 'players[0].flipChoice')[0].value) as AllPossibleCoinSides
- const oppFlipChoice =  Number(gameAttributes.filter(a => a.key === 'players[1].flipChoice')[0].value) as AllPossibleCoinSides
  const { triggerRoll, rolled } = useRoll(coinRef);
  
  useEffect(() => {
@@ -94,11 +92,12 @@ const PlayCoinFlipGameSection: React.FC<PlayGameSectionProps> = ({
   }
   if(gameInfo && gameResults && gameInfo.currentTurn > 0) {
     const indexOfMaxValue = gameResults.reduce((iMax: any, x: any, i: any, arr: any) => x > arr[iMax] ? i : iMax, 0);
-    triggerRoll([playerFlipChoice, oppFlipChoice][indexOfMaxValue]);
+    triggerRoll([Number(gameAttributes.filter(a => a.key === 'players[0].flipChoice')[0].value) as AllPossibleCoinSides,
+      Number(gameAttributes.filter(a => a.key === 'players[1].flipChoice')[0].value) as AllPossibleCoinSides][indexOfMaxValue]);
   }
  }, [players.length, wallet?.address, gameInfo?.currentTurn, maxTurns, rolled]);
 
- return (
+ return players && (
   <PlayGameContainer>
    {/* orbs */}
    {/* timer icon row */}
@@ -109,6 +108,7 @@ const PlayCoinFlipGameSection: React.FC<PlayGameSectionProps> = ({
    </div>
    {/* plage game ui */}
    <div tw="flex gap-x-[25px] items-center justify-center">
+    
     {/* player card */}
     <PlayGamePlayerCard
      status={"connected"}
@@ -116,7 +116,7 @@ const PlayCoinFlipGameSection: React.FC<PlayGameSectionProps> = ({
      wager={game.wager}
      isRolling={gameInfo.rollerIndex === 0}
      isGameOver={gameInfo.currentTurn >= maxTurns}
-     coinFlipChoice={isPlayerOne ? playerFlipChoice : oppFlipChoice}
+     coinFlipChoice={isPlayerOne ? Number(gameAttributes.filter(a => a.key === 'players[0].flipChoice')[0].value) as AllPossibleCoinSides : isGamePlayable ? Number(gameAttributes.filter(a => a.key === 'players[1].flipChoice')[0].value) as AllPossibleCoinSides : undefined}
     />
     
     <CoinFlip coinRef={coinRef} />
@@ -128,7 +128,7 @@ const PlayCoinFlipGameSection: React.FC<PlayGameSectionProps> = ({
      wager={game.wager}
      isRolling={gameInfo.rollerIndex !== 0}
      isGameOver={gameInfo.currentTurn >= maxTurns}
-     coinFlipChoice={isPlayerOne ? oppFlipChoice : playerFlipChoice}
+     coinFlipChoice={isGamePlayable && isPlayerOne ? Number(gameAttributes.filter(a => a.key === 'players[1].flipChoice')[0].value) as AllPossibleCoinSides : Number(gameAttributes.filter(a => a.key === 'players[0].flipChoice')[0].value) as AllPossibleCoinSides}
     />
    </div>
    {
