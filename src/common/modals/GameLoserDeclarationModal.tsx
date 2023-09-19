@@ -36,7 +36,7 @@ export const GameLoserDeclarationModal = ({
           <RestartIcon  color="#151515" tw="h-[16px] w-[16px] ms-[5px]"/>
         </Button>
       </Link>
-      <Link to={`/${gameType.toLocaleLowerCase()}/create`} tw="min-w-[197px]" state={{ gameType: gameType.toLowerCase() }}>
+      <Link to={`/${gameType.toLocaleLowerCase()}/create`} tw="min-w-[197px]" state={{ gameType }}>
         <Button buttonType="secondary" tw="flex items-center w-full justify-center">
           Start a new game
           <StarLoaderIcon tw="dark:fill-blanc h-[16px] w-[16px] ms-[5px]" />

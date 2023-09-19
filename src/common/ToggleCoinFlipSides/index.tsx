@@ -14,12 +14,7 @@ export interface ToggleCoinFlipSidesProps extends React.ButtonHTMLAttributes<HTM
 
 export const ToggleCoinFlipSides: React.FC<ToggleCoinFlipSidesProps> = ({ setCurrentCoinSide, currentCoinSide, locked,...rest }: ToggleCoinFlipSidesProps) => {
   const selectedStyles = css`
-    border-left: 2.5px solid #FF9C27;
-    border-right: 2.5px solid #F26D21;
-    background-image: linear-gradient(to left, #F26D21, #FF9C27), linear-gradient(to left, #F26D21, #FF9C27);
-    background-size: 100% 2.5px;
-    background-position:0 0, 0 100%;
-    background-repeat:no-repeat;
+    border: 2.5px solid #F26D21;
   ` 
   const [isHEADSSelected, setIsHEADSSelected] = useState<boolean>(currentCoinSide === CoinSideTypes[CoinSideTypesEnum.HEADS]);
   const [isTAILSSelected, setIsTAILSSelected] = useState<boolean>(currentCoinSide === CoinSideTypes[CoinSideTypesEnum.TAILS]);
