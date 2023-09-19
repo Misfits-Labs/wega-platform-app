@@ -23,7 +23,7 @@ const PlayGamePage = () => {
  const { user, wallet } = useWegaStore();
  const { useGetGameResultsQuery, useGetWinnersQuery } = useBlockchainApiHooks;
  const game = useSelector(state => selectGameById(state, gameId));
- const { isGamePlayable, players, gameInfo, gameAttributes } = useFirebaseData(gameUuid);
+ const { isGamePlayable, players, gameInfo, gameAttributes, playerFlipChoices } = useFirebaseData(gameUuid);
  const { getGameResults, data: gameResults } = useGetGameResultsQuery();
  const { getWinners, data: winners } = useGetWinnersQuery();
  
@@ -70,12 +70,13 @@ const PlayGamePage = () => {
      isGamePlayable={isGamePlayable}
      winners={winners}
      gameAttributes={gameAttributes}
+     playerFlipChoices={playerFlipChoices}
     />
    </Section>
   </MainContainer>
   </div>
  ) : (
-  <ComponentLoader tw="min-w-[559px] min-h-[494px]" />
+   <ComponentLoader tw="min-w-[100vw] min-h-[100vh]" />
  )
 }
 export default PlayGamePage

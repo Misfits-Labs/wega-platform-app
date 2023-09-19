@@ -112,7 +112,6 @@ export const getGameResultsQuery = createAsyncThunk<number[][], { escrowHash: He
   try {
     return await Promise.all(inpts.players.map(async (playerAddress: string) => {
       const res = await api.getGameResults(inpts.gameType, inpts.escrowHash, playerAddress.toLowerCase() as HexishString);
-      console.log(res)
       return res;
     }
     ));

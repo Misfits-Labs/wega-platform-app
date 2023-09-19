@@ -8,7 +8,8 @@ import {
  Player,
  Wallet,
  WegaAttributes,
- AllPossibleCoinSides
+ AllPossibleCoinSides,
+ PlayerFlipChoices
 } from "../../models"
 import { HelpCircleIcon, ClockIcon, SparkleIcon } from "../../assets/icons"
 import { NormalText } from "../CreateGameCard/types"
@@ -29,7 +30,8 @@ interface PlayGameSectionProps {
  wallet: Wallet
  isGamePlayable: boolean
  winners: HexishString[]
- gameAttributes: WegaAttributes
+ gameAttributes: WegaAttributes;
+ playerFlipChoices: PlayerFlipChoices; 
 }
 
 const PlayCoinFlipGameSection: React.FC<PlayGameSectionProps> = ({
@@ -41,7 +43,7 @@ const PlayCoinFlipGameSection: React.FC<PlayGameSectionProps> = ({
  wallet,
  isGamePlayable,
  winners,
- gameAttributes
+ playerFlipChoices
 }: PlayGameSectionProps) => {
  const [updateGame] = useUpdateGameMutation()
  const maxTurns = 1;
@@ -62,7 +64,7 @@ const PlayCoinFlipGameSection: React.FC<PlayGameSectionProps> = ({
  const { triggerRoll, rolled } = useRoll(coinRef);
  
  useEffect(() => {
-  if(rolled){
+  if(rolled) {
     if (gameInfo.currentTurn >= maxTurns) {
      if (winners.length > 1) {
       showModal(MODAL_TYPES.WINNER_DECLARATION_WINNER_MODAL, {
@@ -92,13 +94,10 @@ const PlayCoinFlipGameSection: React.FC<PlayGameSectionProps> = ({
   }
   if(gameInfo && gameResults && gameInfo.currentTurn > 0) {
     const indexOfMaxValue = gameResults.reduce((iMax: any, x: any, i: any, arr: any) => x > arr[iMax] ? i : iMax, 0);
-    triggerRoll([Number(gameAttributes.filter(a => a.key === 'players[0].flipChoice')[0].value) as AllPossibleCoinSides,
-      Number(gameAttributes.filter(a => a.key === 'players[1].flipChoice')[0].value) as AllPossibleCoinSides][indexOfMaxValue]);
+    triggerRoll([playerFlipChoices.playerOne as AllPossibleCoinSides, playerFlipChoices.playerTwo as AllPossibleCoinSides][indexOfMaxValue], gameInfo.currentTurn >= maxTurns);
   }
  }, [players.length, wallet?.address, gameInfo?.currentTurn, maxTurns, rolled]);
-
- return players && (
-  <PlayGameContainer>
+ return players && playerFlipChoices && (<PlayGameContainer>
    {/* orbs */}
    {/* timer icon row */}
    <div tw="flex flex-row justify-center gap-x-[10px] items-center">
@@ -111,24 +110,24 @@ const PlayCoinFlipGameSection: React.FC<PlayGameSectionProps> = ({
     
     {/* player card */}
     <PlayGamePlayerCard
-     status={"connected"}
-     player={user}
-     wager={game.wager}
-     isRolling={gameInfo.rollerIndex === 0}
-     isGameOver={gameInfo.currentTurn >= maxTurns}
-     coinFlipChoice={isPlayerOne ? Number(gameAttributes.filter(a => a.key === 'players[0].flipChoice')[0].value) as AllPossibleCoinSides : isGamePlayable ? Number(gameAttributes.filter(a => a.key === 'players[1].flipChoice')[0].value) as AllPossibleCoinSides : undefined}
+      status={"connected"}
+      player={user}
+      wager={game.wager}
+      shouldRoll={gameInfo.rollerIndex === 0}
+      coinFlipChoice={isPlayerOne ? playerFlipChoices.playerOne : playerFlipChoices.playerTwo}
+      isRolling={false}
+      isGameOver={gameInfo.currentTurn >= maxTurns}
     />
-    
     <CoinFlip coinRef={coinRef} />
-
     {/* searching for opponent box */}
     <PlayGamePlayerCard
-     status={isGamePlayable ? "connected" : "connecting"}
-     opponent={players.filter((player) => player.uuid !== user.uuid)[0]}
-     wager={game.wager}
-     isRolling={gameInfo.rollerIndex !== 0}
-     isGameOver={gameInfo.currentTurn >= maxTurns}
-     coinFlipChoice={isGamePlayable && isPlayerOne ? Number(gameAttributes.filter(a => a.key === 'players[1].flipChoice')[0].value) as AllPossibleCoinSides : Number(gameAttributes.filter(a => a.key === 'players[0].flipChoice')[0].value) as AllPossibleCoinSides}
+      status={isGamePlayable ? "connected" : "connecting"}
+      opponent={players.filter((player) => player.uuid !== user.uuid)[0]}
+      wager={game.wager}
+      shouldRoll={gameInfo.rollerIndex !== 0}
+      isGameOver={gameInfo.currentTurn >= maxTurns}
+      isRolling={false}
+      coinFlipChoice={isPlayerOne ? playerFlipChoices.playerTwo : playerFlipChoices.playerOne}
     />
    </div>
    {

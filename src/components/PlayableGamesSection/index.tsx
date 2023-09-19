@@ -8,7 +8,7 @@ interface PlayableGamesSectionProps extends React.Attributes {
 
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 function PlayableGamesSection({ gameIds , ...rest }: PlayableGamesSectionProps){
-  return (<Section hdr="My Games" direction="col" className="gap-2" { ...rest } >
+  return (<Section hdr="Playable games" direction="col" className="gap-2" { ...rest } >
     <GameBarHeader />
     {
       gameIds.map(

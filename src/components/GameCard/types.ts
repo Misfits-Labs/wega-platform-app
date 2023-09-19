@@ -9,7 +9,7 @@ ${ tw`flex flex-col items-stretch` }
 `
 export const GameCardHeader = styled.div`
  border-radius: 15px 15px 0px 0px;
- background: #343434;
+//  background: #343434;
  min-height: 160px;
  width: 100%;
  position: inherit;

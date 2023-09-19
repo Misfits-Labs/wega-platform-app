@@ -32,11 +32,15 @@ export const ButtonForWaitingGame = ({ gameType, gameId, gameUuid }: ButtonForWa
       <StarLoaderIcon className="dark:fill-blanc h-[16px] w-[16px] ms-[5px]" />
       </Button>
     </Link>  
+
     ) : (  
-    <Button buttonType="secondary" className="flex items-center w-[max-content]">
-      Searching...
-      <StarLoaderIcon loading={true} className="dark:fill-blanc h-[16px] w-[16px] ms-[5px]" />
-    </Button>
+      <Link to={`/${gameType.toLowerCase()}/play/${gameUuid}`} state={{ gameUuid, gameId }}>
+        <Button buttonType="secondary" className="flex items-center w-[max-content]">
+          Matching...
+          <StarLoaderIcon loading={true} className="dark:fill-blanc h-[16px] w-[16px] ms-[5px]" />
+        </Button>
+      </Link>  
     )
-)
+  )
 }
+

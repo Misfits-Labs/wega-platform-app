@@ -84,7 +84,7 @@ export const NavigationBar = styled.nav`
     z-index: 998;
     opacity: 0;
     background: ${rgba('#151515', 0.90)};
-    transition: opacity 500ms ease-out 60ms;
+    transition: transform 500ms ease-out 60ms;
   }
 
   &::after, &.nav-mobile .navigation::after {
@@ -98,7 +98,7 @@ export const NavigationBar = styled.nav`
     opacity: 0;
     ${tw`shadow-wega-nav`}
     backdrop-filter: blur(5.5rem) opacity(0.85);
-    transition: opacity 500ms ease-out 60ms;
+    transition: transform 500ms ease-out 60ms;
   }
 `
 

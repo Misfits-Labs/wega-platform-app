@@ -23,7 +23,10 @@ export const ClaimModal = ({ hide, game, wallet
 }: ClaimModalProps) => {
   const {useClaimMutation} = useBlockchainApiHooks;
   const {claim, isLoading: isClaimingLoading} = useClaimMutation();
-  const handleClaimClick = () => claim(game.wager.wagerHash as HexishString);
+  const handleClaimClick = async () => { 
+    await claim(game.wager.wagerHash as HexishString).unwrap();
+    hide(); 
+  };
   return (
    <WinnerDeclarationContainer tw="items-start p-[24px] gap-y-[16px] min-w-[340px]">
     <div tw="flex justify-end w-full">

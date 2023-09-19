@@ -9,7 +9,8 @@ import {
   GameInfoType, 
   Wallet,
   Player,
-  WegaAttributes
+  WegaAttributes,
+  PlayerFlipChoices,
 } from "../../models";
 import 'twin.macro';
 
@@ -22,7 +23,8 @@ export interface PlayGameSectionProps extends React.Attributes, React.AllHTMLAtt
   wallet: Wallet;
   isGamePlayable: boolean;
   winners: HexishString[];
-  gameAttributes: WegaAttributes;
+  gameAttributes?: WegaAttributes;
+  playerFlipChoices?: PlayerFlipChoices; 
 }
 
 const GAME_COMPONENTS: any = {
@@ -41,6 +43,7 @@ const PlayGameSection: React.FC<PlayGameSectionProps> = ({
   isGamePlayable,
   winners,
   gameAttributes,
+  playerFlipChoices,
   ...rest 
 }) => {
   const renderGame = () => {
@@ -60,6 +63,7 @@ const PlayGameSection: React.FC<PlayGameSectionProps> = ({
           isGamePlayable,
           winners,
           gameAttributes,
+          playerFlipChoices,
           ...rest 
         }}>{children}</Comp>
       } else {
@@ -73,6 +77,7 @@ const PlayGameSection: React.FC<PlayGameSectionProps> = ({
           isGamePlayable,
           winners,
           gameAttributes,
+          playerFlipChoices,
           ...rest
         }} /> 
       }

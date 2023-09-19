@@ -1,14 +1,12 @@
-import { useEffect, useState } from "react"
-import { useWindowScroll } from "react-use"
+import { useEffect, useState } from "react";
+import { useWindowScroll } from "react-use";
+import { useScrollDirection } from 'react-use-scroll-direction';
 
 export function useAnimateNav() {
+ const { isScrollingUp, isScrollingDown, isScrolling } = useScrollDirection();
  const [navEl, setNavEl] = useState<any>(null)
  const [bodyEl, setBodyEl] = useState<any>(null)
- const [currentScrollTop, setCurrentScrollTop] = useState<number>(0)
  const [hideNav, setHideNav] = useState<boolean>()
- const [a, setA] = useState<number>(0)
- const [b, setB] = useState<number>(0)
- const [c, setC] = useState<number>(0)
 
  const windowScroll = useWindowScroll()
 
@@ -19,19 +17,14 @@ export function useAnimateNav() {
   if (!bodyEl) {
    setBodyEl(document.querySelector("body"))
   }
- }, [navEl, bodyEl])
+ }, [setNavEl, setBodyEl, navEl, bodyEl])
 
  useEffect(() => {
-  setA(bodyEl?.parentNode.scrollTop)
-  setB(navEl?.offsetHeight)
-  setCurrentScrollTop(a)
-  if (c < currentScrollTop && a > b + b) {
+  if (isScrollingDown) {
    setHideNav(true)
-  } else if (c > currentScrollTop && !(a <= b)) {
+  } else if (isScrollingUp || !isScrolling) {
    setHideNav(false)
   }
-  setC(currentScrollTop)
- // eslint-disable-next-line react-hooks/exhaustive-deps
  }, [windowScroll])
 
  useEffect(() => {
@@ -42,7 +35,6 @@ export function useAnimateNav() {
    navEl?.classList.add("nav-hide")
    navEl?.classList.remove("nav-show")
   }
- // eslint-disable-next-line react-hooks/exhaustive-deps
  }, [hideNav])
 
  return hideNav

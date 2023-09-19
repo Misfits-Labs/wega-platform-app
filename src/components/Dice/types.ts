@@ -4,15 +4,19 @@ export const DiceContainer = styled.div`
  display: flex;
  width: 144px;
  height: 144px;
- padding: 17.349px;
+ padding: 17.5px;
  justify-content: center;
  align-items: center;
- gap: 17.349px;
- border-radius: 17.349px; 
+ gap: 17.5px;
+ border-radius: 17.5px; 
  box-shadow: 0px 6.939759254455566px 17.34939956665039px 0px rgba(0, 0, 0, 0.25);
  background: rgba(75, 75, 75, 0.30 );
  backdrop-filter: blur(15px);
  ${tw`border border-blanc border-[1.5px]`}
+
+ > svg {
+  17.5px
+ }
  `
 export const DiceWrapper = styled.div`
  position: relative;

@@ -17,10 +17,8 @@ const WinsPage = () => {
   const { claimableGameIds, isLoading } = useGetGamesQuery(undefined, {
     selectFromResult: ({ data, isLoading }) => ({
       claimableGameIds: data ? Object.entries(data.entities)
-      .filter(([, game]: any) => 
-       game.players
-        .filter((player: any) => player.walletAddress.toLowerCase() === wallet?.address.toLowerCase()).length > 0)
-        .map(([id,]: any) => Number(id)) : [],
+      .filter(([, game]: any) => game.players.filter((player: any) => player.walletAddress.toLowerCase() === wallet?.address.toLowerCase()).length > 0)
+      .map(([id,]: any) => Number(id)) : [],
       isLoading,
     })
   })

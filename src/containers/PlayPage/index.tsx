@@ -40,7 +40,7 @@ const PlayPage = () => {
         <Section 
           direction='col' 
           hdr={ <WordCarousel 
-          pre="Play, wager and win" 
+          pre="Play and win" 
           className='dark:text-oranjo'
           fontSize={51}
           words={[

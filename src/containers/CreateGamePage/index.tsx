@@ -4,7 +4,7 @@ import Section from '../../common/Section';
 import { SectionHeaderContainer, SectionHeaderTitle } from '../../common/Section/types';
 import CreateGameCard from '../../components/CreateGameCard';
 import PlayableGamesSection from '../../components/PlayableGamesSection';
-import { WagerTypes, WagerTypesEnum, CurrencyTypes, CurrencyTypesEnum, AllPossibleWegaTypes } from '../../models';
+import { WagerTypes, WagerTypesEnum, CurrencyTypes, CurrencyTypesEnum, AllPossibleWegaTypes, WegaTypesEnum, WegaTypes } from '../../models';
 import { SupportedWagerTokenAddresses } from '../../models/constants';
 import { useGetGamesQuery } from '../App/api';
 import { useWegaStore } from '../../hooks';
@@ -12,18 +12,17 @@ import { ComponentLoader } from '../../common/loaders'
 import MainContainer from '../../components/MainContainer';
 import { BADGE_TEXTS } from '../../common/GameBar';
 import { MinimumGameRounds } from '../../components/PlayGameSection/types';
-
 import 'twin.macro';
 
 const CreateGamePage = () => {
   const { state } = useLocation();
   const { user, network, wallet } = useWegaStore();
-  const { isLoading, playableGameIds } = useGetGamesQuery(undefined, {
+  const { isLoading, joinableGameIds } = useGetGamesQuery(undefined, {
     selectFromResult: ({ data, isLoading, isSuccess }) => ({ 
-      playableGameIds: data ? isSuccess && Object.entries(data.entities)
-      .filter(([, game]: any) => game.creatorUuid === user.uuid && (game.currentTurn !== (MinimumGameRounds[game.gameType] * game.requiredPlayerNum) && state.gameType.toUpperCase() === game.gameType ))
-      .map(([id,]: any) => Number(id)) : [],
-      isLoading,
+        joinableGameIds: data ? isSuccess && Object.entries(data.entities)
+          .filter(([, game]: any) => game.creatorUuid !== user.uuid && (game.currentTurn !== (game.gameType === WegaTypes[WegaTypesEnum.COINFLIP] ? 1 : MinimumGameRounds[game.gameType] * game.requiredPlayerNum)))
+          .map(([id,]: any) => Number(id)) : [],      
+        isLoading,
       })
     }
   );
@@ -38,9 +37,10 @@ const CreateGamePage = () => {
     <Helmet>
       <title>Create - {BADGE_TEXTS[state.gameType.toUpperCase()]} </title>
     </Helmet>
-    <MainContainer tw="min-h-[100vh]">
+    <MainContainer>
       <Section
       tw="min-h-[max-content]"
+      className={`${state.gameType === WegaTypes[WegaTypesEnum.COINFLIP] ? 'mt-[7.5rem]' : '' }`}
       direction='col'
       hdr={
       <SectionHeaderContainer tw='justify-center'>
@@ -57,9 +57,9 @@ const CreateGamePage = () => {
           playerUuid={user.uuid}
         />
       </Section>
-      <PlayableGamesSection gameIds={playableGameIds as number[]} />
+      <PlayableGamesSection gameIds={joinableGameIds as number[]} />
     </MainContainer>
-  </>) : <ComponentLoader tw="min-w-[559px] min-h-[494px]" />
+  </>) : <ComponentLoader tw="min-w-[100vw] min-h-[100vh]" />
 }
 export default CreateGamePage;
 

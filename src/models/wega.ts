@@ -31,3 +31,4 @@ export type Wega = {
 }
 
 export type GameInfoType = { currentRound: number, rollerIndex: number, currentTurn: number };
+export type PlayerFlipChoices = { playerOne: AllPossibleCoinSides, playerTwo: AllPossibleCoinSides  | undefined }
