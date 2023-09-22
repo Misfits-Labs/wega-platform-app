@@ -88,8 +88,7 @@ export const {
  
 const gamesAdapter = createEntityAdapter<Wega>({
   sortComparer: (a, b) => {
-    console.log(`a: ${new Date(a.createdAt).getTime()}, b: ${new Date(b.createdAt).getTime()}, div: ${new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()}`);
-    return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime() < 0 ? -1 : 0;
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime() < 0 ? 0 : 1;
   }, // sorts from most recent to later
 });
 
