@@ -6,13 +6,14 @@ import {
   CoinFlipGameCard,
   RaffleGameCard
 } from '../../components/GameCard';
-import 'twin.macro';
 import JoinableOrPlayableGamesSection from '../../components/JoinableOrPlayableGamesSection';
 import { useGetGamesQuery } from '../App/api';
 import { ComponentLoader } from '../../common/loaders';
 import MainContainer from '../../components/MainContainer';
 import { useWegaStore } from '../../hooks';
-import { MinimumGameRounds } from '../../components/PlayGameSection/types'
+import { MinimumGameRounds } from '../../components/PlayGameSection/types';
+import { WegaTypes, WegaTypesEnum } from '../../models'
+import 'twin.macro';
 
 const PlayPage = () => {
   const { user } = useWegaStore();
@@ -20,28 +21,27 @@ const PlayPage = () => {
     selectFromResult: ({ data, isLoading, isSuccess  }) => ({
       joinableGameIds: data ? 
         isSuccess && Object.entries(data.entities)
-          .filter(([, game]: any) => game.creatorUuid !== user.uuid && (game.currentTurn !== (MinimumGameRounds[game.gameType] * game.requiredPlayerNum)))
+          .filter(([, game]: any) => game.creatorUuid !== user.uuid && (game.currentTurn !== (game.gameType === WegaTypes[WegaTypesEnum.COINFLIP] ? 1 : MinimumGameRounds[game.gameType] * game.requiredPlayerNum)))
           .map(([id,]: any) => Number(id)) : [],
       playableGameIds: data ? 
         isSuccess && Object.entries(data.entities)
-        .filter(([, game]: any) => game.creatorUuid === user.uuid && (game.currentTurn !== (MinimumGameRounds[game.gameType] * game.requiredPlayerNum)))
+        .filter(([, game]: any) => game.creatorUuid === user.uuid && (game.currentTurn !== (game.gameType === WegaTypes[WegaTypesEnum.COINFLIP] ? 1 : MinimumGameRounds[game.gameType] * game.requiredPlayerNum)))
         .map(([id,]: any) => Number(id)) : [],
       isLoading,
       })
     }
   );
-  
   return (
     <>
       <Helmet>
       <title>Play</title>
       </Helmet>
       <MainContainer tw="min-h-[100vh]">
-        <Section 
+        <Section
           direction='col' 
           hdr={ <WordCarousel 
           pre="Play and win" 
-          className='dark:text-oranjo'
+          className='dark:text-oranjo mt-[5rem]'
           fontSize={51}
           words={[
           "Crypto",

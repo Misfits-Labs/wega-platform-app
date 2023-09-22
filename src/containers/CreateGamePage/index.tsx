@@ -20,7 +20,8 @@ const CreateGamePage = () => {
   const { isLoading, joinableGameIds } = useGetGamesQuery(undefined, {
     selectFromResult: ({ data, isLoading, isSuccess }) => ({ 
         joinableGameIds: data ? isSuccess && Object.entries(data.entities)
-          .filter(([, game]: any) => game.creatorUuid !== user.uuid && (game.currentTurn !== (game.gameType === WegaTypes[WegaTypesEnum.COINFLIP] ? 1 : MinimumGameRounds[game.gameType] * game.requiredPlayerNum)))
+          .filter(([, game]: any) => 
+          game.creatorUuid !== user.uuid && (game.currentTurn !== (game.gameType === WegaTypes[WegaTypesEnum.COINFLIP] ? 1 : MinimumGameRounds[game.gameType] * game.requiredPlayerNum)))
           .map(([id,]: any) => Number(id)) : [],      
         isLoading,
       })
@@ -40,7 +41,7 @@ const CreateGamePage = () => {
     <MainContainer>
       <Section
       tw="min-h-[max-content]"
-      className={`${state.gameType === WegaTypes[WegaTypesEnum.COINFLIP] ? 'mt-[7.5rem]' : '' }`}
+      className={`${state.gameType === WegaTypes[WegaTypesEnum.COINFLIP] ? 'mt-[7.5rem]' : 'mt-[7.5rem]' }`}
       direction='col'
       hdr={
       <SectionHeaderContainer tw='justify-center'>

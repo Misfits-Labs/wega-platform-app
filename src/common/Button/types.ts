@@ -38,7 +38,7 @@ export const PrimaryButton = styled(BaseButton)<ButtonProps>(
 
 export const SecondaryButton = styled(BaseButton)<ButtonProps>(
   ({ disabled }) => !disabled ? [
-    tw`dark:bg-pretu dark:border-oranjo border`,
+    tw`dark:border-oranjo border`,
     `
       box-shadow: 5px 5px 15px 0px rgba(0, 0, 0, 0.25);
       &:hover {

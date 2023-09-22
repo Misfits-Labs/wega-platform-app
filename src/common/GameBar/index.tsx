@@ -50,12 +50,12 @@ function GameBar({
     {/* date */}
     <DateColumn tw="max-w-[max-content]">{dateFromTs(new Date(game.createdAt as string).getTime() * 1000)}</DateColumn>
     
-    <GameTypeBadgeWrapper tw="w-[fit-content]">
+    <GameTypeBadgeWrapper tw="w-[7.5rem]">
      {renderGameTypeBadge(game.gameType)}
      <BadgeText>{BADGE_TEXTS[game.gameType]}</BadgeText>
     </GameTypeBadgeWrapper>
     
-    <WagerTypeBadgeWrapper>
+    <WagerTypeBadgeWrapper >
      <BadgeText>{utils.formatEther(game.wager.wagerAmount)}</BadgeText>
      <BadgeIcon>{renderWagerBadge(game.wager.wagerType, game.wager.wagerCurrency)}</BadgeIcon>
      <BadgeText>{game.wager.wagerCurrency}</BadgeText>

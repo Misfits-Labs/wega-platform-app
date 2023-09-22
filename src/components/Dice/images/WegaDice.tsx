@@ -2,8 +2,8 @@ import { SVGProps, forwardRef } from "react"
 const SvgComponent = forwardRef((props: SVGProps<SVGSVGElement>, ref: any) => (
   <svg
     width={70}
-    height={71}
-    viewBox="0 0 70 71"
+    height={70}
+    viewBox="0 0 70 70"
     fill="none"
     id="wega-dice"
     {...props}

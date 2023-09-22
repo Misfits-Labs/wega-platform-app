@@ -18,6 +18,7 @@ export interface PlayGamePlayerCardProps {
  shouldRoll: boolean;
  isGameOver: boolean;
  isRolling: boolean;
+ isGamePlayable: boolean;
  coinFlipChoice?: AllPossibleCoinSides; 
 }
 export const PlayGamePlayerCard = ({ 
@@ -28,7 +29,8 @@ export const PlayGamePlayerCard = ({
   shouldRoll,
   isRolling,
   isGameOver, 
-  coinFlipChoice 
+  coinFlipChoice,
+  isGamePlayable,
 }: PlayGamePlayerCardProps) => {
   return status !== 'connecting' ? (
     <PlayerCardContainer tw="gap-y-[7.5px]">
@@ -60,12 +62,16 @@ export const PlayGamePlayerCard = ({
         </WagerTypeBadgeWrapper>
       </div>
       {
-        !isGameOver && shouldRoll && ( 
+        !isGameOver && isGamePlayable && (shouldRoll ? ( 
         <div>
           <NormalText> 
             Press roll to start...
           </NormalText>
-        </div>)
+        </div>) : (
+        <NormalText> 
+          Awaiting opponent
+        </NormalText>
+        ))
       }
       {
         !isGameOver && (isRolling && 

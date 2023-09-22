@@ -15,7 +15,7 @@ export const DiceContainer = styled.div`
  ${tw`border border-blanc border-[1.5px]`}
 
  > svg {
-  17.5px
+  border-radius: 5px;
  }
  `
 export const DiceWrapper = styled.div`

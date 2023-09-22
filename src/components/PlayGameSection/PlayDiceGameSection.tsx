@@ -130,6 +130,7 @@ const PlayDiceGameSection: React.FC<PlayGameSectionProps>= ({
         isGameOver={gameInfo.currentTurn === maxTurns}
         isRolling={isRolling && !shouldCurrentPlayerRoll}
         shouldRoll={gameInfo.currentTurn > 0 ? hasRolled && shouldCurrentPlayerRoll : shouldCurrentPlayerRoll}
+        isGamePlayable={isGamePlayable}
       />
       <Dice diceRef={diceRef} />
       {/* searching for opponent box */}
@@ -140,6 +141,7 @@ const PlayDiceGameSection: React.FC<PlayGameSectionProps>= ({
         isGameOver={gameInfo.currentTurn === maxTurns}
         isRolling={isRolling && shouldCurrentPlayerRoll}
         shouldRoll={gameInfo.currentTurn > 0 ? hasRolled && !shouldCurrentPlayerRoll : !shouldCurrentPlayerRoll}
+        isGamePlayable={isGamePlayable}
       />
    </div>
     {

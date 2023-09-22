@@ -87,7 +87,10 @@ export const {
  } = appApiSlice;
  
 const gamesAdapter = createEntityAdapter<Wega>({
-  sortComparer: (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime() // sorts from most recent to later
+  sortComparer: (a, b) => {
+    console.log(`a: ${new Date(a.createdAt).getTime()}, b: ${new Date(b.createdAt).getTime()}, div: ${new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()}`);
+    return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime() < 0 ? -1 : 0;
+  }, // sorts from most recent to later
 });
 
 // games  

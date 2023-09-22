@@ -134,7 +134,8 @@ export const CreateDiceGameCard = ({
     allowance(tokenAddress, playerAddress, getValues('wager'));
     if(createGameStatus === 'fulfilled' && createGameResponse) {
       navigateToGameUi(`/${gameType.toLowerCase()}/play/${createGameResponse.uuid}`, 1500, { replace: true, 
-        state: { gameId: createGameResponse.id, gameUuid: createGameResponse.uuid } });
+        state: { gameId: createGameResponse.id, gameUuid: createGameResponse.uuid } 
+      });
     }
   }, [
     watch('wager'), 

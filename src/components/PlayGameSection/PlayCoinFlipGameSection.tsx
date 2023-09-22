@@ -117,6 +117,7 @@ const PlayCoinFlipGameSection: React.FC<PlayGameSectionProps> = ({
       coinFlipChoice={isPlayerOne ? playerFlipChoices.playerOne : playerFlipChoices.playerTwo}
       isRolling={false}
       isGameOver={gameInfo.currentTurn >= maxTurns}
+      isGamePlayable={isGamePlayable}
     />
     <CoinFlip coinRef={coinRef} />
     {/* searching for opponent box */}
@@ -128,6 +129,7 @@ const PlayCoinFlipGameSection: React.FC<PlayGameSectionProps> = ({
       isGameOver={gameInfo.currentTurn >= maxTurns}
       isRolling={false}
       coinFlipChoice={isPlayerOne ? playerFlipChoices.playerTwo : playerFlipChoices.playerOne}
+      isGamePlayable={isGamePlayable}
     />
    </div>
    {
