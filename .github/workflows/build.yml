@@ -69,7 +69,7 @@ jobs:
           # cp .env.qa .env
 
           # TODO Temporary disable CI to test deployment
-          CI=false yarn build
+          CI=false yarn build --mode qa
           QA_TAG=${SHORT_COMMIT}-qa
 
           echo "QA_TAG=$QA_TAG"
