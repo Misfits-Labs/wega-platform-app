@@ -20,6 +20,7 @@ import "twin.macro"
 
 const PlayGamePage = () => {
  const { state: { gameId, gameUuid } } = useLocation();
+ 
  const { user, wallet } = useWegaStore();
  const { useGetGameResultsQuery, useGetWinnersQuery } = useBlockchainApiHooks;
  const game = useSelector(state => selectGameById(state, gameId));
