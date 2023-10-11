@@ -4,7 +4,8 @@ import {
   HexishString,
   AllPossibleWegaTypes,
   WegaTypesEnum,
-  WegaTypes
+  WegaTypes,
+  Network
 } from "../../models";
 import { CreateDiceGameCard } from './CreateDiceGameCard';
 import { CreateCoinFlipGameCard } from './CreateCoinFlipGameCard';
@@ -16,6 +17,7 @@ export interface CreateGameCardInterface extends React.Attributes, React.AllHTML
   playerAddress: HexishString;
   gameType: AllPossibleWegaTypes;
   playerUuid: string;
+  network: Network;
 }
 
 const CREATE_GAME_CARD_COMPONENTS: any = {
@@ -31,6 +33,7 @@ const CreateGameCard = ({
   playerUuid,
   gameType,
   children,
+  network,
   ...rest 
 }: CreateGameCardInterface) => {
   const renderCard = () => {
@@ -47,6 +50,7 @@ const CreateGameCard = ({
           playerAddress,
           playerUuid,
           gameType,
+          network,
           ...rest 
         } }>{children}</Comp> 
       } else {
@@ -57,6 +61,7 @@ const CreateGameCard = ({
             playerAddress,
             playerUuid,
             gameType,
+            network,
             ...rest 
             } 
           }

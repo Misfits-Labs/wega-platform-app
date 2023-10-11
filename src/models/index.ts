@@ -6,7 +6,9 @@ export {
  WegaTypesEnum, 
  type WegaAttributes,
  type GameInfoType,
- type PlayerFlipChoices
+ type PlayerFlipChoices,
+ type AllPossibleWegaStates,
+ WegaState
 } from './wega'
 export { type AllPossibleWagerTypes, WagerTypesEnum, type Wager, WagerTypes } from './wager';
 export { type AllPossibleCurrencyTypes, CurrencyTypes, CurrencyTypesEnum } from './currency'

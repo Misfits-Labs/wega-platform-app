@@ -15,7 +15,7 @@ export const WaitForPlayerConnectCard = () => {
       <ComponentLoader tw="h-[unset] w-[unset]" />
       {/* text */}
       <NormalText>Searching for opponent...</NormalText>
-      <CopyToClipboard onCopy={() => toast.success('Join link copied', { ...{ ...toastSettings('success', 'bottom-center') } as any })} text={document.URL.replace('play', 'join')} >
+      <CopyToClipboard onCopy={() => toast.success('Join link copied', { ...{ ...toastSettings('success', 'top-center') } as any })} text={document.URL.replace('play', 'join')} >
         <Button buttonType="primary" tw="font-normal flex items-center rounded-[5px]">Invite link<CopyPasteIcon tw="ms-[10px]"/></Button>
       </CopyToClipboard>
     </PlayerCardContainer>

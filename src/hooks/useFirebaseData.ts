@@ -9,7 +9,8 @@ import {
   WegaTypes, 
   WegaTypesEnum, 
   AllPossibleCoinSides,
-  PlayerFlipChoices, 
+  PlayerFlipChoices,
+  Wega
 } from '../models';
  
 export function useFirebaseData(gameUuid: string) {
@@ -18,11 +19,15 @@ export function useFirebaseData(gameUuid: string) {
   const [playersInGame, setPlayersInGame] = useGetSet<Player[]>([]);
   const [wegaAttributes, setWegaAttributes] = useGetSet<WegaAttributes>([]);
   const [playerFlipChoices, setPlayerFlipChoices] = useGetSet<PlayerFlipChoices | undefined >(undefined);
+  const [gamesCount, setGamesCount] = useGetSet<number>(0);
+  const [game, setGame] = useGetSet<Wega | undefined>(undefined);
 
   const startListeningFirebase = () => {
     const databaseRef = ref(database);
     onValue(databaseRef, (snapshot) => {
       const { games } = snapshot.val();
+      setGame(games[gameUuid]);
+      setGamesCount(Object.keys(games).length);
       const { players, requiredPlayerNum, currentTurn, gameAttributes, gameType } = games[gameUuid];
       if(players.length === requiredPlayerNum) {
         setIsGamePlayable(true);
@@ -59,7 +64,8 @@ export function useFirebaseData(gameUuid: string) {
     setPlayersInGame,
     setGameInfo,
     setWegaAttributes,
-    setPlayerFlipChoices
+    setPlayerFlipChoices,
+    setGamesCount
   ]);
 
   return { 
@@ -68,18 +74,7 @@ export function useFirebaseData(gameUuid: string) {
     gameInfo: gameInfo(),
     gameAttributes: wegaAttributes(),
     playerFlipChoices: playerFlipChoices(),
+    gamesCount: gamesCount(),
+    game: game(),
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

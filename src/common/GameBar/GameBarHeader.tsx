@@ -6,5 +6,4 @@ export const GameBarHeader: React.FC<React.Attributes> = (props: React.Attribute
   <BarHeaderColumn>Date created</BarHeaderColumn>
   <BarHeaderColumn>Game</BarHeaderColumn>
   <BarHeaderColumn>Wager</BarHeaderColumn>
-  <BarHeaderColumn>Escrow</BarHeaderColumn>
 </BarWrapper>   

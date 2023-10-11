@@ -32,3 +32,13 @@ export type Wega = {
 
 export type GameInfoType = { currentRound: number, rollerIndex: number, currentTurn: number };
 export type PlayerFlipChoices = { playerOne: AllPossibleCoinSides, playerTwo: AllPossibleCoinSides  | undefined }
+
+// eslint-disable-next-line no-unused-vars
+export const WegaState = { 
+ 'PLAYING': 'PLAYING', 
+ 'PENDING': 'PENDING', 
+ 'COMPLETED': 'COMPLETED', 
+ 'CANCELED': 'CANCELED'
+} as const;
+
+export type AllPossibleWegaStates = typeof WegaState[keyof typeof WegaState];

@@ -6,31 +6,15 @@ import {
   CoinFlipGameCard,
   RaffleGameCard
 } from '../../components/GameCard';
-import JoinableOrPlayableGamesSection from '../../components/JoinableOrPlayableGamesSection';
-import { useGetGamesQuery } from '../App/api';
 import { ComponentLoader } from '../../common/loaders';
 import MainContainer from '../../components/MainContainer';
-import { useWegaStore } from '../../hooks';
-import { MinimumGameRounds } from '../../components/PlayGameSection/types';
-import { WegaTypes, WegaTypesEnum } from '../../models'
+import { JoinableAndPlayableGames } from '../../components/WegaGames'
+import { useWegaStore, useFirebaseData } from '../../hooks';
 import 'twin.macro';
 
 const PlayPage = () => {
-  const { user } = useWegaStore();
-  const { joinableGameIds, isLoading, playableGameIds } = useGetGamesQuery(undefined, {
-    selectFromResult: ({ data, isLoading, isSuccess  }) => ({
-      joinableGameIds: data ? 
-        isSuccess && Object.entries(data.entities)
-          .filter(([, game]: any) => game.creatorUuid !== user.uuid && (game.currentTurn !== (game.gameType === WegaTypes[WegaTypesEnum.COINFLIP] ? 1 : MinimumGameRounds[game.gameType] * game.requiredPlayerNum)))
-          .map(([id,]: any) => Number(id)) : [],
-      playableGameIds: data ? 
-        isSuccess && Object.entries(data.entities)
-        .filter(([, game]: any) => game.creatorUuid === user.uuid && (game.currentTurn !== (game.gameType === WegaTypes[WegaTypesEnum.COINFLIP] ? 1 : MinimumGameRounds[game.gameType] * game.requiredPlayerNum)))
-        .map(([id,]: any) => Number(id)) : [],
-      isLoading,
-      })
-    }
-  );
+  const { user } = useWegaStore(); 
+  const { gamesCount } = useFirebaseData('');
   return (
     <>
       <Helmet>
@@ -38,7 +22,7 @@ const PlayPage = () => {
       </Helmet>
       <MainContainer tw="min-h-[100vh]">
         <Section
-          direction='col' 
+          direction='col'
           hdr={ <WordCarousel 
           pre="Play and win" 
           className='dark:text-oranjo mt-[5rem]'
@@ -57,7 +41,7 @@ const PlayPage = () => {
             <RaffleGameCard />
           </div>
         </Section>
-        { !isLoading && joinableGameIds && playableGameIds && user?.uuid ? <JoinableOrPlayableGamesSection gameIds={[...joinableGameIds, ...playableGameIds ]} /> : <ComponentLoader tw="w-full" /> }
+        { user?.uuid ? <JoinableAndPlayableGames gamesCount={gamesCount} userUuid={user?.uuid} /> : <ComponentLoader tw="w-full" /> }
       </MainContainer>
     </>
   )

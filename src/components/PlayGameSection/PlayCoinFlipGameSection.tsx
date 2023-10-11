@@ -9,7 +9,8 @@ import {
  Wallet,
  WegaAttributes,
  AllPossibleCoinSides,
- PlayerFlipChoices
+ PlayerFlipChoices,
+ WegaState
 } from "../../models"
 import { HelpCircleIcon, ClockIcon, SparkleIcon } from "../../assets/icons"
 import { NormalText } from "../CreateGameCard/types"
@@ -52,7 +53,7 @@ const PlayCoinFlipGameSection: React.FC<PlayGameSectionProps> = ({
  const handleOnRollClick = async (gameUuid: string, turn: number) => {
   // should trigger the animation here
   try {
-    await updateGame({ uuid: gameUuid, currentTurn: turn }).unwrap();
+    await updateGame({ uuid: gameUuid, currentTurn: turn, state: WegaState.COMPLETED }).unwrap();
   } catch (e) {
     console.log(e)
   }

@@ -4,14 +4,11 @@ import LanguageProvider from '../LanguageProvider';
 import { localeSelector } from '../LanguageProvider/intlSlice';
 import { useAppSelector } from '../../hooks/useAppDispatch';
 import { RouterProvider } from 'react-router-dom';
-import { appApiSlice } from './api';
-import { store } from '../../app/store';
 import router from '../Router';
 import 'twin.macro';
 
 
 function App() {
-  store.dispatch(appApiSlice.endpoints.getGames.initiate());
   const locale = useAppSelector(state => localeSelector(state));
   
   useEffect(()=>{

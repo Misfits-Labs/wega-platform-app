@@ -13,7 +13,8 @@ import {
  } from '../../common/JoinableGameBar/types';
 import { 
   AllPossibleCurrencyTypes, 
-  AllPossibleWagerTypes, 
+  AllPossibleWagerTypes,
+  WegaState
 } from "../../models";
 import { 
   BadgeIcon, 
@@ -33,7 +34,7 @@ import toast from 'react-hot-toast';
 import { toastSettings } from '../../utils';
 import Button from '../../common/Button';
 import { useFormReveal } from '../CreateGameCard/animations';
-import { useJoinGameMutation } from '../../containers/App/api';
+import { useJoinGameMutation, useUpdateGameMutation } from '../../containers/App/api';
 import { JoinGameCardProps } from './'
 
 export interface JoinDiceGameCardProps extends JoinGameCardProps, React.Attributes, React.AllHTMLAttributes<HTMLDivElement> {};
@@ -61,6 +62,7 @@ const JoinGameDiceCard: React.FC<JoinDiceGameCardProps> = ({
   const isWagerApproved = useAppSelector(state => selectWagerApproved(state));
   const {revealed, triggerRevealAnimation} = useFormReveal(false, formRef, detailsBlock);
   
+  // should go into blockchain api slice 
   const { 
     useAllowanceQuery,
     useApproveERC20Mutation,
@@ -75,21 +77,24 @@ const JoinGameDiceCard: React.FC<JoinDiceGameCardProps> = ({
       wager: wagerAmount,
     }
   });
+
   // approval for allowance
   const { isLoading: isGetAllowanceLoading, allowance } = useAllowanceQuery();
   
-  // get token balance of userP
+  // get token balance of user
   const { data: userWagerBalance, isLoading: isWagerbalanceLoading } = useBalance({ 
     address: playerAddress,
     token: tokenAddress,
   })
   
+  const [ updateGame, { isLoading: isUpdateGameLoading }  ] = useUpdateGameMutation(); 
   const { isLoading: isDepositWagerLoading, depositWager } = useDepositWagerMutation();
   const [ joinGame, { isLoading: isJoinGameLoading  } ] = useJoinGameMutation();
   const handleDepositWagerClick = async () => {
     try {
       await depositWager(escrowId).unwrap();
       await joinGame({ newPlayerUuid: playerUuid, gameUuid }).unwrap();
+      await updateGame({ uuid: gameUuid, state: WegaState.PLAYING }).unwrap();
       navigateToGameUi(`/${gameType.toLowerCase()}/play/${gameUuid}`, 1500, { replace: true, state: { gameId: gameId, gameUuid } });
       toast.success('Deposit success', { ...toastSettings('success', 'top-center') as any });
     } catch (e: any){
@@ -146,8 +151,8 @@ const JoinGameDiceCard: React.FC<JoinDiceGameCardProps> = ({
         {/* <Button buttonType="primary"><>Approve</></Button> */}
         { 
           isWagerApproved ? <Button type="submit" buttonType="primary" tw="flex">
-          {(isDepositWagerLoading || isJoinGameLoading) ? "Loading..." : "Deposit" }
-          <StarLoaderIcon loading={(isDepositWagerLoading || isJoinGameLoading)} color="#151515" tw="h-[16px] w-[16px] ms-[5px]" /> 
+          {(isDepositWagerLoading || isJoinGameLoading || isUpdateGameLoading) ? "Loading..." : "Deposit" }
+          <StarLoaderIcon loading={(isDepositWagerLoading || isJoinGameLoading || isUpdateGameLoading )} color="#151515" tw="h-[16px] w-[16px] ms-[5px]" /> 
           </Button> : <Button type="submit" buttonType="primary" tw="flex">
               { (isGetAllowanceLoading || isApproveERC20Loading) ? "Loading..." : "Approve" }
               <StarLoaderIcon loading={(isGetAllowanceLoading || isApproveERC20Loading)} color="#151515" tw="h-[16px] w-[16px] ms-[5px]" />

@@ -61,7 +61,7 @@ export const ToggleCoinFlipSides: React.FC<ToggleCoinFlipSidesProps> = ({ setCur
       css={[isTAILSSelected && selectedStyles]}
       >
       {/* icon */}
-      <CoinSideTailsIconWithCircle tw="max-w-[60px]" />
+      <CoinSideTailsIconWithCircle tw="max-w-[45px]" />
       <span tw="text-[21px] font-normal leading-[19px]">TAILS</span>
     </button>
   </div>)

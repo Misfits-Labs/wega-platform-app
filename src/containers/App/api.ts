@@ -51,14 +51,16 @@ export const appApiSlice = createApi({
       },
       invalidatesTags: () => [ { type: 'Games', id: 'LIST' } ]
     }),
-    getGames: builder.query<any, void>({
-      query: () => ({
-        url: '/games',
-        method: 'GET',
-      }),
+    getGames: builder.query<any, any>({
+      query: (filterData) => {
+        return ({
+          url: filterData ? `/games?${Object.keys(filterData).map((key: any, index: number) => index !== 0 ? `&${key}=${filterData[key]}` : `${key}=${filterData[key]}` ).join('')}` : '/games?sort=-createdAt',
+          method: 'GET',
+        })
+      },
       providesTags: (result) => result ? [ { type: 'Games', id: 'LIST' }, ...result.ids.map((id: any) => ({ type: 'Game' as const, id })) ] : [{ type: 'Games', id: 'LIST' }],
       transformResponse: (response: any) => {
-       return gamesAdapter.setAll(gamesInitialState, response.items)
+        return gamesAdapter.setAll(gamesInitialState, response.items)
       }
     }),
     createGame: builder.mutation<Wega, Partial<Wega> & Pick<Wega, 'creatorUuid'> & Pick<Wega, 'wager'> & Pick<Wega, 'gameType'> & Pick<Wega, 'gameAttributes'> & Partial<Player>>({
@@ -88,20 +90,19 @@ export const {
  
 const gamesAdapter = createEntityAdapter<Wega>({
   sortComparer: (a, b) => {
-    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime() < 0 ? 0 : 1;
+    return a.createdAt.localeCompare(b.createdAt);
   }, // sorts from most recent to later
 });
 
 // games  
 export const gamesInitialState = gamesAdapter.getInitialState();
-export const selectGamesResult = appApiSlice.endpoints.getGames.select();
+export const selectGamesResult = appApiSlice.endpoints.getGames.select(undefined);
+
 const selectGamesData = createSelector(selectGamesResult, (gamesResult) => gamesResult.data);
- 
+
 export const {
   selectAll: selectAllGames,
   selectById: selectGameById,
-  selectIds: selectAllGamesIds
+  selectIds: selectAllGamesIds,
+  selectTotal: selectGamesCount,
 } = gamesAdapter.getSelectors((state: any) => selectGamesData(state) ?? gamesInitialState);
-
-
-

@@ -17,10 +17,11 @@ import {
  AllPossibleCurrencyTypes,
  AllPossibleWagerTypes 
 } from '../../models';
+import { useSelector } from 'react-redux'; 
 import { dateFromTs } from '../../utils';
-import{ BarDiceIcon, BarCoinIcon, USDCIcon, USDTIcon} from '../../assets/icons';
-import { selectGameById } from '../../containers/App/api';
-import { useSelector } from 'react-redux' 
+import { BarDiceIcon, BarCoinIcon, USDCIcon, USDTIcon } from '../../assets/icons';
+import { selectGameById } from '../../components/WegaGames/apiSlice';
+import { GameBarLoadingSkeleton } from '../GameBar/GameBarLoadingSkeleton';
 import { utils } from 'ethers';
 import { ButtonForJoinableGame } from '../ButtonForJoinableGame';
 import { ButtonForWaitingGame } from '../ButtonForWaitingGame';
@@ -43,16 +44,15 @@ function GameBar({
   ...rest
 }: { gameId: number } & React.Attributes & Partial<React.AllHTMLAttributes<HTMLDivElement>> & GameBarProps) {
   const game = useSelector(state => selectGameById(state, gameId));
-  const { user } = useWegaStore()
-
-  return game && user?.uuid && (
+  const { user } = useWegaStore();
+  return game && user?.uuid ? (
    <BarWrapper tw="grid grid-cols-4" {...rest}>
     {/* date */}
     <DateColumn tw="max-w-[max-content]">{dateFromTs(new Date(game.createdAt as string).getTime() * 1000)}</DateColumn>
     
-    <GameTypeBadgeWrapper tw="w-[7.5rem]">
+    <GameTypeBadgeWrapper tw="w-[7.5rem]" >
      {renderGameTypeBadge(game.gameType)}
-     <BadgeText>{BADGE_TEXTS[game.gameType]}</BadgeText>
+     <BadgeText >{BADGE_TEXTS[game.gameType]}</BadgeText>
     </GameTypeBadgeWrapper>
     
     <WagerTypeBadgeWrapper >
@@ -76,7 +76,7 @@ function GameBar({
       </div>
     }
    </BarWrapper>
-  )
+  ) : <GameBarLoadingSkeleton />
 }
 
 export default GameBar;

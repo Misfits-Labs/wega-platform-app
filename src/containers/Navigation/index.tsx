@@ -34,7 +34,6 @@ const Navigation = () => {
           </BrandContainer>
           <ul tw="block flex items-end" css={[liElementStyle]} >
             <li><Link to="/" tw="px-[8px]"><span>Play</span></Link></li>
-            <li><Link to="/swap" tw="px-[8px]"><span>Swap</span></Link></li>
             <li><Link to="/wins" tw="px-[8px]"><span>Wins</span></Link></li>
           </ul>
         </NavigationLinksContainer>

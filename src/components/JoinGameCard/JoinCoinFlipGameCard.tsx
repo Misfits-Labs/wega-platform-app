@@ -18,6 +18,7 @@ import {
   AllPossibleWegaTypes,
   AllPossibleCoinSides,
   WegaAttributes,
+  WegaState
 } from "../../models";
 import { 
   BadgeIcon, 
@@ -114,9 +115,21 @@ const JoinCoinFlipGameCard = ({
       const playerChoices = [Number(gameAttributes[0].value), currentCoinSide];
       await depositWager(escrowId, playerChoices).unwrap();
       await joinGame({ newPlayerUuid: playerUuid, gameUuid }).unwrap();
-      await updateGame({ uuid: gameUuid, gameAttributes: [{ key: "players[1].flipChoice", value: currentCoinSide.toString()}, ...gameAttributes] }).unwrap();
+      await updateGame({ 
+        uuid: gameUuid, 
+        state: WegaState.PLAYING, 
+        gameAttributes: [
+            { key: "players[1].flipChoice", value: currentCoinSide.toString()}, 
+            ...gameAttributes
+          ] 
+        }
+      ).unwrap();
       toast.success('Deposit success', { ...toastSettings('success', 'top-center') as any });
-      navigateToGameUi(`/${gameType.toLowerCase()}/play/${gameUuid}`, 1500, { replace: true, state: { gameId, gameUuid } });
+      navigateToGameUi(`/${gameType.toLowerCase()}/play/${gameUuid}`, 1500, { 
+        replace: true, 
+        state: { 
+          gameId, gameUuid 
+        } });
     } catch (e: any){
       console.log(e)
       const message = e?.message ?? 'Deposit error'
@@ -129,7 +142,7 @@ const JoinCoinFlipGameCard = ({
   const handleApproveWagerClick = ({ wager }: { wager: number }) => {
     approveERC20(tokenAddress, wager);
   };
-  
+  // 
   const navigateToGameUi = useNavigateTo()
   useEffect(() => {
     allowance(tokenAddress, playerAddress, wagerAmount);

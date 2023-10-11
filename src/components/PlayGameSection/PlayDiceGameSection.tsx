@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import 'twin.macro';
-import { Wega, HexishString, GameInfoType, User, Player, Wallet } from "../../models"
+import { Wega, HexishString, GameInfoType, User, Player, Wallet, WegaState } from "../../models"
 import { HelpCircleIcon, ClockIcon, SparkleIcon } from '../../assets/icons';
 import { NormalText } from '../CreateGameCard/types';
 import { PlayGameContainer, MinimumGameRounds } from './types';
@@ -51,7 +51,7 @@ const PlayDiceGameSection: React.FC<PlayGameSectionProps>= ({
   const handleOnRollClick = async (gameUuid: string, turn: number) => {
     // should trigger the animation here
     try {
-      return await updateGame({ uuid: gameUuid, currentTurn: turn }).unwrap();
+      return await updateGame({ uuid: gameUuid, currentTurn: turn, state: WegaState.COMPLETED }).unwrap();
     } catch (e) {
       console.log(e)
     }
