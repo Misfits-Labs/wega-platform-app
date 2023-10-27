@@ -33,7 +33,7 @@ export function useRoll(diceRef: any, onBegin?: Callback, onEnd?: Callback) {
    setAnimationTarget(String(rollDestination * 100));
    setStrigger(s => !s); 
    if(isGameOver) {
-    setTimeout(() => setRolled(true), 3000);
+    setTimeout(() => setRolled(true), 4000);
    }
   };
 

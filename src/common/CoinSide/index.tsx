@@ -1,10 +1,10 @@
-import { CoinSideHeadsIcon, CoinSideTailsIcon } from "../../assets/icons";
+import { CoinSideHeadsIcon, CoinSideTailsIconWithCircle } from "../../assets/icons";
 import { CoinSideTypes, CoinSideTypesEnum, AllPossibleCoinSides } from "../../models";
 import 'twin.macro';
 
 export const COIN_SIDE_COMPONENTS: any = {
  [CoinSideTypes[CoinSideTypesEnum.HEADS]]: CoinSideHeadsIcon, 
- [CoinSideTypes[CoinSideTypesEnum.TAILS]]: CoinSideTailsIcon, 
+ [CoinSideTypes[CoinSideTypesEnum.TAILS]]: CoinSideTailsIconWithCircle, 
 }
 
 export interface CoinSideProps extends React.Attributes, React.AllHTMLAttributes<HTMLDivElement> {

@@ -13,10 +13,7 @@ export const DiceContainer = styled.div`
  background: rgba(75, 75, 75, 0.30 );
  backdrop-filter: blur(15px);
  ${tw`border border-blanc border-[1.5px]`}
-
- > svg {
-  border-radius: 5px;
- }
+ border-radius: 5px;
  `
 export const DiceWrapper = styled.div`
  position: relative;

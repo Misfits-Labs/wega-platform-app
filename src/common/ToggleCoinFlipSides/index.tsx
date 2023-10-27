@@ -46,7 +46,7 @@ export const ToggleCoinFlipSides: React.FC<ToggleCoinFlipSidesProps> = ({ setCur
     // replace gradient border with other approach
   return (<div tw="flex flex-row rounded-[20px] gap-x-[40px]" {...rest}>
     <button
-      tw="cursor-pointer flex w-[fit-content] justify-center items-center gap-[10px] px-[20px] py-[10px] rounded-[15px]" 
+      tw="cursor-pointer flex w-[fit-content] justify-center items-center gap-[10px] px-[20px] py-[10px] rounded-[15px] border border-[2px] border-shinishi" 
       css={[isHEADSSelected && selectedStyles]}
       onClick={handleHeadsClick} 
       >
@@ -57,7 +57,7 @@ export const ToggleCoinFlipSides: React.FC<ToggleCoinFlipSidesProps> = ({ setCur
     </button>
     <button 
       onClick={handleTailsClick} 
-      className="cursor-pointer flex w-[fit-content] justify-center items-center gap-[10px] px-[20px] py-[10px] rounded-[15px]"
+      tw="cursor-pointer flex w-[fit-content] justify-center items-center gap-[10px] px-[20px] py-[10px] rounded-[15px] border border-[2px] border-shinishi"
       css={[isTAILSSelected && selectedStyles]}
       >
       {/* icon */}

@@ -1,28 +1,36 @@
+import { useEffect } from 'react';
+import { useGetSet } from 'react-use';
+import { useAppDispatch } from '../../hooks';
 import PlayDiceGameSection from './PlayDiceGameSection'; 
-import PlayCoinFlipGameSection from './PlayCoinFlipGameSection'; 
+import PlayCoinFlipGameSection from './PlayCoinFlipGameSection';
+import { 
+  useGetGameWinnersQuery,
+  playGameBlockchainApiSlice
+ } from './blockchainApiSlice'
+ 
 import { 
   Wega, 
   User, 
   WegaTypes, 
   WegaTypesEnum, 
+  GameInfoType,
   HexishString, 
-  GameInfoType, 
   Wallet,
   Player,
   WegaAttributes,
   PlayerFlipChoices,
 } from "../../models";
+
+import { ComponentLoader } from "../../common/loaders"
 import 'twin.macro';
 
 export interface PlayGameSectionProps extends React.Attributes, React.AllHTMLAttributes<HTMLDivElement> {
   game: Wega;
   user: User;
   players: Player[];
-  gameResults: any;
   gameInfo: GameInfoType;
   wallet: Wallet;
   isGamePlayable: boolean;
-  winners: HexishString[];
   gameAttributes?: WegaAttributes;
   playerFlipChoices?: PlayerFlipChoices; 
 }
@@ -37,15 +45,33 @@ const PlayGameSection: React.FC<PlayGameSectionProps> = ({
   game,
   user,
   players,
-  gameResults,
   gameInfo,
   wallet,
   isGamePlayable,
-  winners,
   gameAttributes,
   playerFlipChoices,
   ...rest 
 }) => {
+  const dispatch = useAppDispatch();
+  const [gameResults, setGameResults] = useGetSet<number[][] | undefined>(undefined);
+  // TODO
+    // convert to hook
+  const { gameType, wager: { wagerHash: escrowHash } } = game;
+  const getGameResultsOfAllPlayers = async () => {
+    const results = (await Promise.all(players.map(async (player) => dispatch(playGameBlockchainApiSlice.endpoints.getGameResults.initiate({ 
+      gameType, 
+      escrowHash: escrowHash as HexishString, 
+      player: player.walletAddress as HexishString 
+    }))))).map((result: any) => result.data);
+    setGameResults(results as unknown as number[][]);
+  }
+  const { data: winners } = useGetGameWinnersQuery({
+    gameType,
+    escrowHash: escrowHash as HexishString,
+  });
+  useEffect(() => {
+    getGameResultsOfAllPlayers();
+  }, [players.length]);
   const renderGame = () => {
     let Comp;
     if(!game) {
@@ -53,11 +79,11 @@ const PlayGameSection: React.FC<PlayGameSectionProps> = ({
     } else {
       Comp = GAME_COMPONENTS[game.gameType.toUpperCase()];
       if(children) {
-        return <Comp {...{
+        return gameResults() && winners ? <Comp {...{
           game,
           user,
           players,
-          gameResults,
+          gameResults: gameResults(),
           gameInfo,
           wallet,
           isGamePlayable,
@@ -65,13 +91,13 @@ const PlayGameSection: React.FC<PlayGameSectionProps> = ({
           gameAttributes,
           playerFlipChoices,
           ...rest 
-        }}>{children}</Comp>
+        }}>{children}</Comp> : <ComponentLoader tw="w-[100%] h-[100%]" />       
       } else {
-        return <Comp {...{
+        return gameResults() && winners ? <Comp {...{
           game,
           user,
           players,
-          gameResults,
+          gameResults: gameResults(),
           gameInfo,
           wallet,
           isGamePlayable,
@@ -79,10 +105,10 @@ const PlayGameSection: React.FC<PlayGameSectionProps> = ({
           gameAttributes,
           playerFlipChoices,
           ...rest
-        }} /> 
+        }} /> : <ComponentLoader tw="w-[100%] h-[100%]" />
       }
     }
   }
-  return renderGame();  
+  return  renderGame() ;  
 }
 export default PlayGameSection;

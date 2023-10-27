@@ -18,19 +18,20 @@ const JoinGamePage = () => {
   const params = useParams();
   const { game } = useFirebaseData(params.id as string);
   return (network?.id && wallet && user.uuid && game) ? (
-    <div tw="min-w-[100vw] min-h-[100vh] relative">
+    <>
       <Helmet>
       <title>Join - {BADGE_TEXTS[game.gameType]} </title>
       </Helmet>
       <FloatingOrbs />
-      <MainContainer tw="min-h-[100vh]" >
+      <MainContainer tw="min-h-[85vh] items-start">
         <Section 
         direction='col'
         hdr={
           <SectionHeaderContainer tw='justify-center'>
             <SectionHeaderTitle>Match wager</SectionHeaderTitle>
           </SectionHeaderContainer>}>
-          <JoinGameCard 
+          <JoinGameCard
+            network={network} 
             wagerType={game.wager.wagerType}  
             currencyType={game.wager.wagerCurrency}
             tokenAddress={SupportedWagerTokenAddresses(network?.id as number)[game.wager.wagerCurrency]}
@@ -45,8 +46,8 @@ const JoinGamePage = () => {
           />
         </Section>
       </MainContainer>
-    </div>
-  ) : <ComponentLoader tw="min-w-[559px] min-h-[494px]" />
+    </>
+  ) : <ComponentLoader tw="min-w-[559px] min-h-[100vh]" />
 }
 export default JoinGamePage;
 

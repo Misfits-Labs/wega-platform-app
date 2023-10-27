@@ -7,6 +7,8 @@ const CustomStyles = createGlobalStyle({
 
   body: {
   overflowX: 'hidden',
+  zIndex: '-40',
+  position: 'relative',
   WebkitTapHighlightColor: theme`colors.orange`,
   ...tw`antialiased`,
   ...tw`dark:bg-pretu dark:text-blanc`,

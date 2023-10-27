@@ -1,5 +1,4 @@
 import { useEffect, useState, useRef } from 'react';
-import 'twin.macro';
 import { Wega, HexishString, GameInfoType, User, Player, Wallet, WegaState } from "../../models"
 import { HelpCircleIcon, ClockIcon, SparkleIcon } from '../../assets/icons';
 import { NormalText } from '../CreateGameCard/types';
@@ -7,9 +6,10 @@ import { PlayGameContainer, MinimumGameRounds } from './types';
 import { PlayGamePlayerCard } from "../PlayGamePlayerCard";
 import { Dice } from "../Dice";
 import { useRoll } from '../Dice/animations';
-import Button from "../../common/Button";
-import { useUpdateGameMutation } from "../../containers/App/api";
+import { useUpdateGameMutation } from "./apiSlice";
 import { useGlobalModalContext, MODAL_TYPES } from "../../common/modals";
+import Button from "../../common/Button";
+import 'twin.macro';
 
 interface PlayGameSectionProps {
  game: Wega;
@@ -104,14 +104,13 @@ const PlayDiceGameSection: React.FC<PlayGameSectionProps>= ({
       triggerRoll(animationTarget, gameInfo.currentTurn >= maxTurns);
     }
   }, [ 
-    gameResults.length, 
-    players.length, 
+    gameResults.length,
+    players.length,
     wallet?.address, 
     gameInfo?.currentTurn,
     gameInfo?.currentRound,
     rolled
   ]);
-  console.log(gameInfo.rollerIndex, shouldCurrentPlayerRoll)
  return players && gameInfo && <PlayGameContainer>
     {/* orbs */}
     {/* timer icon row */}
@@ -157,7 +156,4 @@ const PlayDiceGameSection: React.FC<PlayGameSectionProps>= ({
     }
   </PlayGameContainer>
 }
-export default PlayDiceGameSection; 
-
-// who should roll
-  // is the rollerIndex 
+export default PlayDiceGameSection;

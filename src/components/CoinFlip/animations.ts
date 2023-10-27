@@ -26,7 +26,7 @@ export function useRoll(coinRef: any) {
    setAnimationTarget(String(rollDestination * 100));
    setStrigger(s => !s);
    if(isGameOver){
-    setTimeout(() => setRolled(true), 2000);
+    setTimeout(() => setRolled(true), 4000);
    }
   };
 

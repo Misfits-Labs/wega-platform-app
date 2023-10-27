@@ -10,5 +10,3 @@ export const blockchainApiSlice = createApi({
   reducerPath: baseUrl,
   endpoints: () => ({})
 });
-
- 

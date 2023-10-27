@@ -271,3 +271,5 @@ const SvgComponent = forwardRef((props: SVGProps<SVGSVGElement>, ref: any) => (
   </svg>
 ))
 export default SvgComponent;
+
+// transform: translateY(69px);

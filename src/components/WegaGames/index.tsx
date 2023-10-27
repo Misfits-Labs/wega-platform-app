@@ -2,17 +2,23 @@ import { useEffect, useState } from 'react';
 import GameBar from "../../common/GameBar";
 import Section from '../../common/Section';
 import { JoinableGamesHeaderBar } from '../../common/JoinableGameBar/types';
+// import ClaimBar from '../../common/ClaimBar';
 import { useGetGamesQuery } from './apiSlice';
 import { Wega, WegaState } from '../../models';
+// import { useGetGameWinnersQuery, playGameBlockchainApiSlice } from '../PlayGameSection/blockchainApiSlice'
+
 import 'twin.macro';
 
 export interface JoinableAndPlayableGamesProps extends React.Attributes {
  userUuid: string;
  gamesCount: number;
 }
-const filterPlayableGames = (data: Wega[], userUuid: string) => data.filter(game => game.state === WegaState.PLAYING && game.players.some(predicate => predicate.uuid === userUuid )); 
+const filterPlayableGames = (data: Wega[], userUuid: string) => data.filter(game => game.state === WegaState.PLAYING && game.players.some(predicate => predicate.uuid === userUuid ));
 const filterJoinableGames = (data: Wega[], userUuid: string) => data.filter(game => game.state === WegaState.PENDING && game.players.every(predicate => predicate.uuid !== userUuid )); 
 const sortPlayableGames = (data: Wega[]) => data.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+// const filterClaimableGames = (data: Wega[], userUuid: string) => data.filter(game => game.players.some(predicate => predicate.uuid === userUuid ));
+// const attachGameWinners = (data: Wega[], winners: HexishString[]) => data.map(game => ({ ...game, winners }));
+// const filterClaimableGames = (data: Wega[], userAddress: HexishString) => data.filter(game => game.players.some(predicate => predicate.walletAddress?.toLowerCase() !== userAddress.toLowerCase())); 
 
 export const JoinableAndPlayableGames: React.FC<JoinableAndPlayableGamesProps> = ({ gamesCount, userUuid, ...rest }: JoinableAndPlayableGamesProps) => {
  const { data, isLoading, isSuccess} = useGetGamesQuery(undefined);
@@ -26,16 +32,17 @@ export const JoinableAndPlayableGames: React.FC<JoinableAndPlayableGamesProps> =
     setGameIds(sortedGameIds);
   }
  }, [data, gamesCount, isSuccess]);
- return (<Section hdr="Join matches instantly" direction="col" className="gap-2" { ...rest }>
+ 
+ return (<Section hdr="Join matches instantly" direction="col" className="gap-2 mt-[35px]" { ...rest }>
   <JoinableGamesHeaderBar>
    <span>Date created</span>
    <span>Game</span>
    <span>Wager</span>
    <span>Escrow</span>
   </JoinableGamesHeaderBar>
-  {
-   !isLoading && gameIds && gameIds.map((gameId: number) => (<GameBar gameId={gameId} key={`joinable-and-playable-game-bar${gameId}`} tw="dark:bg-[#1C1C1C] py-2 px-3 rounded-[5px]" /> )) 
-  }
+    {
+      !isLoading && gameIds && gameIds.map((gameId: number) => (<GameBar gameId={gameId} key={`joinable-and-playable-game-bar${gameId}`} tw="dark:bg-[#1C1C1C] py-2 px-3 rounded-[5px]" /> )) 
+    }
   </Section>
  )
 }
@@ -89,3 +96,43 @@ export const PlayableGames: React.FC<JoinableAndPlayableGamesProps> = ({ gamesCo
   </Section>
  )
 }
+
+// interface ClaimableGamesProps extends JoinableAndPlayableGamesProps {
+//   winners: HexishString[];
+//   gameType: AllPossibleWegaTypes;
+//   escrowHash: HexishString;
+// }
+// export const ClaimableGames: React.FC<JoinableAndPlayableGamesProps> = ({ gamesCount, userUuid, ...rest }: JoinableAndPlayableGamesProps) => {
+//  const getGamesQuery = useGetGamesQuery({ state: WegaState.COMPLETED });
+//  const [gameIds, setGameIds] = useState<number[]>();
+//  const getGameWinners = async (games: Wega[]) => await Promise.all(games.map(async (game) => {
+//   const { gameType, wager: { wagerHash } } = game;
+//   const winnersData = playGameBlockchainApiSlice.endpoints.getGameWinners.useQuery({ gameType, escrowHash: wagerHash as HexishString });
+//  })) 
+
+//  const { data: winners } = useGetGameWinnersQuery({  });
+ 
+//  useEffect(() => {
+//   if(getGamesQuery.isSuccess && getGamesQuery.data) {
+//     // once we have the data,
+
+//   }
+//   const dataArray = getGamesQuery.data.ids.map((id: number) => getGamesQuery.data.entities[id]) as Wega[];
+//   const joinableGames = filterJoinableGames(dataArray, userUuid);
+//   const sortedGameIds = sortPlayableGames(joinableGames).map(game => game.id);
+//   setGameIds(sortedGameIds ?? []);
+//  }, [data, gamesCount]);
+//  return (<Section hdr="Playable Matches" direction="col" className="gap-2" { ...rest }>
+//   <JoinableGamesHeaderBar>
+//    <span>Date created</span>
+//    <span>Game</span>
+//    <span>Wager</span>
+//    <span>Escrow</span>
+//   </JoinableGamesHeaderBar>
+//   {
+//    !isLoading && gameIds && gameIds.map((gameId: number, i) => (<ClaimBar count={i+1} gameId={gameId} key={`playable-game-bar${gameId}`} tw="dark:bg-[#1C1C1C] py-2 px-3 rounded-[5px]" />)) 
+//   }
+//   </Section>
+//  )
+// }
+

@@ -19,7 +19,7 @@ import { PlayGamePlayerCard } from "../PlayGamePlayerCard"
 import { CoinFlip } from "../CoinFlip"
 import { useRoll } from "../CoinFlip/animations"
 import Button from "../../common/Button"
-import { useUpdateGameMutation } from "../../containers/App/api"
+import { useUpdateGameMutation } from "./apiSlice"
 import { useGlobalModalContext, MODAL_TYPES } from "../../common/modals"
 
 interface PlayGameSectionProps {

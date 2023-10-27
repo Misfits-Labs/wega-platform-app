@@ -1,6 +1,6 @@
 import { Wager } from './wager';
 import { Player } from './player';
-import { AllPossibleCoinSides } from '.';
+import { AllPossibleCoinSides, HexishString } from '.';
 
 // eslint-disable-next-line no-unused-vars
 export enum WegaTypesEnum { DICE, COINFLIP, RAFFLE }
@@ -28,6 +28,7 @@ export type Wega = {
  requiredPlayerNum: number;
  currentTurn: number;
  gameAttributes?: WegaAttributes;
+ winners?: HexishString[];
 }
 
 export type GameInfoType = { currentRound: number, rollerIndex: number, currentTurn: number };

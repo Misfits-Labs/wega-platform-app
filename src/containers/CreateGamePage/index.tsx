@@ -8,9 +8,7 @@ import {
   WagerTypesEnum, 
   CurrencyTypes, 
   CurrencyTypesEnum, 
-  AllPossibleWegaTypes, 
-  WegaTypesEnum, 
-  WegaTypes 
+  AllPossibleWegaTypes
 } from '../../models';
 import { SupportedWagerTokenAddresses } from '../../models/constants';
 import { useWegaStore } from '../../hooks';
@@ -30,15 +28,14 @@ const CreateGamePage = () => {
     wallet && 
     user.uuid && 
     state 
-  ) ? (<div tw="min-w-[100vw] min-h-[100vh] relative">
+  ) ? (<>
     <Helmet>
       <title>Create - {BADGE_TEXTS[state.gameType.toUpperCase()]} </title>
     </Helmet>
     <FloatingOrbs />
     <MainContainer>
       <Section
-      tw="min-h-[max-content]"
-      className={`${state.gameType === WegaTypes[WegaTypesEnum.COINFLIP] ? 'mt-[7.5rem]' : 'mt-[7.5rem]' }`}
+      tw="min-h-[75vh]"
       direction='col'
       hdr={
       <SectionHeaderContainer tw='justify-center'>
@@ -57,7 +54,7 @@ const CreateGamePage = () => {
         />
       </Section>
     </MainContainer>
-  </div>) : <ComponentLoader tw="min-w-[100vw] min-h-[100vh]" />
+  </>) : <ComponentLoader tw="min-w-[100vw] min-h-[100vh]" />
 }
 export default CreateGamePage;
 

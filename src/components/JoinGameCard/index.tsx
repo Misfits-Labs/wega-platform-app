@@ -5,7 +5,8 @@ import {
   AllPossibleWegaTypes,
   WegaTypesEnum,
   WegaTypes,
-  WegaAttributes
+  WegaAttributes,
+  Network,
 } from "../../models";
 import JoinDiceGameCard from './JoinDiceGamecard';
 import JoinCoinFlipGameCard from './JoinCoinFlipGameCard';
@@ -22,6 +23,7 @@ export interface JoinGameCardProps extends React.Attributes, React.AllHTMLAttrib
   escrowId: HexishString;
   gameId: number;
   gameAttributes?: WegaAttributes;
+  network: Network;
 }
 
 const JOIN_GAME_CARD_COMPONENTS: any = {
@@ -41,6 +43,7 @@ const JoinGameCard = ({
   escrowId,
   gameId, 
   children,
+  network,
   ...rest 
 }: JoinGameCardProps ) => {
   const renderCard = () => {
@@ -61,6 +64,7 @@ const JoinGameCard = ({
           wagerAmount,
           escrowId,
           gameId,
+          network,
           ...rest,
         } }>{children}</Comp> 
       } else {
@@ -74,7 +78,8 @@ const JoinGameCard = ({
             wagerAmount,
             escrowId,
             gameUuid,
-            gameId, 
+            gameId,
+            network, 
             ...rest 
             } 
           }

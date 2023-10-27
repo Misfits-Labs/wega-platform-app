@@ -18,7 +18,8 @@ import {
   AllPossibleWegaTypes,
   AllPossibleCoinSides,
   WegaAttributes,
-  WegaState
+  WegaState,
+  Network
 } from "../../models";
 import { 
   BadgeIcon, 
@@ -32,10 +33,11 @@ import { ArrowDownIcon, StarLoaderIcon } from '../../assets/icons';
 import tw from 'twin.macro';
 import { useForm } from 'react-hook-form';
 import { useBalance } from 'wagmi';
-import { useBlockchainApiHooks, useAppSelector, useNavigateTo } from '../../hooks';
-import { selectWagerApproved } from '../../api/blockchain/blockchainSlice';
+import { useNavigateTo } from '../../hooks';
+import { useDepositAndJoinCoinflipMutation } from './blockchainApiSlice';
+import { useAllowanceQuery, useApproveERC20Mutation } from '../CreateGameCard/blockchainApiSlice';
 import toast from 'react-hot-toast';
-import { toastSettings } from '../../utils';
+import { toastSettings, escrowConfig, toBigIntInWei } from '../../utils';
 import Button from '../../common/Button';
 import { useFormReveal } from '../CreateGameCard/animations';
 import { useJoinGameMutation, useUpdateGameMutation } from '../../containers/App/api';
@@ -54,6 +56,7 @@ export interface JoinCoinFlipGameCardProps extends React.Attributes, React.AllHT
  escrowId: HexishString;
  gameId: number;
  gameAttributes: WegaAttributes;
+ network: Network;
 }
 
 const JoinCoinFlipGameCard = ({ 
@@ -68,6 +71,7 @@ const JoinCoinFlipGameCard = ({
   escrowId,
   gameId,
   gameAttributes,
+  network,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   css,
   ...rest 
@@ -77,17 +81,9 @@ const JoinCoinFlipGameCard = ({
   const detailsBlock = useRef<HTMLDivElement>(null)
   const [currentWagerType] = useState<AllPossibleWagerTypes>(wagerType);
   const [currentCurrencyType] = useState<AllPossibleCurrencyTypes>(currencyType);
-  const isWagerApproved = useAppSelector(state => selectWagerApproved(state));
   const {revealed, triggerRevealAnimation} = useFormReveal(false, formRef, detailsBlock);
   const [currentCoinSide] = useState<AllPossibleCoinSides>(gameAttributes && Number(gameAttributes[0].value) === 1 ? 2 : 1);
 
-  
-  const { 
-    useAllowanceQuery,
-    useApproveERC20Mutation,
-    useDepositWagerMutation,
-  } = useBlockchainApiHooks;
-  
   const { register, formState: { errors }, handleSubmit } = useForm({ 
     mode: 'onChange',
     resolver: joiResolver(createGameSchema('wager', wagerAmount)) , 
@@ -98,7 +94,12 @@ const JoinCoinFlipGameCard = ({
   });
   
   // approval for allowance
-  const { isLoading: isGetAllowanceLoading, allowance } = useAllowanceQuery();
+  const isWagerApproved = (allowance: number, wagerAmount: number) => allowance >= wagerAmount;
+  const allowanceQuery = useAllowanceQuery({ 
+    spender: escrowConfig.address[network.id as keyof typeof escrowConfig.address], 
+    owner: playerAddress,
+    tokenAddress,  
+  });
   
   // get token balance of userP
   const { data: userWagerBalance, isLoading: isWagerbalanceLoading } = useBalance({ 
@@ -106,14 +107,18 @@ const JoinCoinFlipGameCard = ({
     token: tokenAddress,
   })
   
-  const { isLoading: isDepositWagerLoading, depositWager } = useDepositWagerMutation();
-  const [ joinGame, { isLoading: isJoinGameLoading  } ] = useJoinGameMutation();
-  const [ updateGame, { isLoading: isUpdateGameLoading  } ] = useUpdateGameMutation();
+  const [updateGame, updateGameQuery] = useUpdateGameMutation(); 
+  const [depositAndJoinCoinflip, depositAndJoinQuery] = useDepositAndJoinCoinflipMutation();
+  const [joinGame, joinGameQuery] = useJoinGameMutation();
+  const [approveERC20, approveERC20Query] = useApproveERC20Mutation();
 
   const handleDepositWagerClick = async () => {
     try {
+      if(!isWagerApproved(allowanceQuery.data, wagerAmount)) {
+        await approveERC20({ spender: escrowConfig.address[network.id as keyof typeof escrowConfig.address], wagerAsBigint: toBigIntInWei(wagerAmount), tokenAddress }).unwrap();
+      }
       const playerChoices = [Number(gameAttributes[0].value), currentCoinSide];
-      await depositWager(escrowId, playerChoices).unwrap();
+      await depositAndJoinCoinflip({escrowHash: escrowId, playerChoices }).unwrap();
       await joinGame({ newPlayerUuid: playerUuid, gameUuid }).unwrap();
       await updateGame({ 
         uuid: gameUuid, 
@@ -136,22 +141,16 @@ const JoinCoinFlipGameCard = ({
       toast.error(message, { ...toastSettings('error', 'bottom-center') as any });
     }
   }
-
-  // approve token
-  const { isLoading: isApproveERC20Loading, approveERC20 } = useApproveERC20Mutation();
-  const handleApproveWagerClick = ({ wager }: { wager: number }) => {
-    approveERC20(tokenAddress, wager);
-  };
-  // 
+ 
   const navigateToGameUi = useNavigateTo()
   useEffect(() => {
-    allowance(tokenAddress, playerAddress, wagerAmount);
+    allowanceQuery.refetch();
   }, [tokenAddress, wagerAmount, isWagerApproved]);
   
   return (
     <form 
       tw="w-full flex flex-col justify-center items-center" 
-      onSubmit={!isWagerApproved ? handleSubmit(handleApproveWagerClick) : handleSubmit(handleDepositWagerClick)} 
+      onSubmit={handleSubmit(handleDepositWagerClick)} 
       ref={formRef}
     >
       <ToggleCoinFlipSides currentCoinSide={currentCoinSide} setCurrentCoinSide={(e: any) => {
@@ -187,12 +186,14 @@ const JoinCoinFlipGameCard = ({
         </div>
         {/* <Button buttonType="primary"><>Approve</></Button> */}
         { 
-          isWagerApproved ? <Button type="submit" buttonType="primary" tw="flex">
-          {(isDepositWagerLoading || isJoinGameLoading || isUpdateGameLoading) ? "Loading..." : "Deposit" }
-          <StarLoaderIcon loading={(isDepositWagerLoading || isJoinGameLoading || isUpdateGameLoading )} color="#151515" tw="h-[16px] w-[16px] ms-[5px]" /> 
-          </Button> : <Button type="submit" buttonType="primary" tw="flex">
-              { (isGetAllowanceLoading || isApproveERC20Loading) ? "Loading..." : "Approve" }
-              <StarLoaderIcon loading={(isGetAllowanceLoading || isApproveERC20Loading)} color="#151515" tw="h-[16px] w-[16px] ms-[5px]" />
+          <Button type="submit" buttonType="primary" tw="flex">
+          {(
+            approveERC20Query.isLoading || 
+            depositAndJoinQuery.isLoading || 
+            joinGameQuery.isLoading || 
+            updateGameQuery.isLoading 
+          ) ? "Loading..." : "Play game"}
+            <StarLoaderIcon loading={approveERC20Query.isLoading || depositAndJoinQuery.isLoading || joinGameQuery.isLoading || updateGameQuery.isLoading} color="#151515" tw="h-[16px] w-[16px] ms-[5px]" />
           </Button>
         }
         {/* details */}

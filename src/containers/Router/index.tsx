@@ -1,5 +1,6 @@
 import {
  createHashRouter,
+ redirect
 } from "react-router-dom";
 import Layout from "../Layout";
 import PlayPage  from '../PlayPage';
@@ -7,11 +8,22 @@ import CreateGamePage  from '../CreateGamePage';
 import JoinGamePage  from '../JoinGamePage';
 import PlayGamePage  from '../PlayGamePage';
 import WinsPage from '../WinsPage';
+import { gamesApiSlice } from '../../components/WegaGames/apiSlice'; 
+
+declare global  {
+ interface Window{
+   ethereum?: any
+ }
+}
 
 const router = createHashRouter([
  {
   path: '/',
   element: <Layout />,
+  loader: async() => {
+   gamesApiSlice.endpoints.getGames.initiate(undefined);
+   return null;
+  },
   children: [
    {
     index: true,
@@ -22,11 +34,17 @@ const router = createHashRouter([
     children: [
      {
       index: true,
-      element: <PlayPage />
+      element: <PlayPage />, 
      },
      {
       path: 'create',
-      element: <CreateGamePage />
+      element: <CreateGamePage />,
+      loader: async () => { 
+       if(!window.ethereum.isConnected() || !window.ethereum.selectedAddress) {
+        redirect('/');
+       }
+       return null;       
+      },
      },
      {
       path: 'join/:id',

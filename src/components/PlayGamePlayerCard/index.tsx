@@ -32,6 +32,7 @@ export const PlayGamePlayerCard = ({
   coinFlipChoice,
   isGamePlayable,
 }: PlayGamePlayerCardProps) => {
+  console.log(coinFlipChoice)
   return status !== 'connecting' ? (
     <PlayerCardContainer tw="gap-y-[7.5px]">
       { 
@@ -50,7 +51,9 @@ export const PlayGamePlayerCard = ({
       }
       {
         coinFlipChoice && <div tw="flex justify-center w-[50px] px-[5px] py-[5px] dark:bg-[#4B4B4B4D] rounded-[30px]">
-            <CoinSide coinSide={coinFlipChoice} tw="flex items-center w-[12px] py-[5px]" />
+            {
+              coinFlipChoice == 1 ? <CoinSide coinSide={coinFlipChoice} tw={"flex items-center py-[5px] w-[13px]"} /> : <CoinSide coinSide={coinFlipChoice} tw={"flex items-center py-[7px] w-[20px]"} />
+            }
           </div>
       }
       <div tw="flex flex-col gap-y-[16px] items-center">
