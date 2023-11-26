@@ -10,8 +10,6 @@ import {
   CurrencyTypesEnum, 
   AllPossibleWegaTypes
 } from '../../models';
-import { SupportedWagerTokenAddresses } from '../../models/constants';
-import { useWegaStore } from '../../hooks';
 import { ComponentLoader } from '../../common/loaders'
 import MainContainer from '../../components/MainContainer';
 import { FloatingOrbs } from "../../common/FloatingOrbs";
@@ -20,15 +18,7 @@ import 'twin.macro';
 
 const CreateGamePage = () => {
   const { state } = useLocation();
-  const { user, network, wallet } = useWegaStore();
-
-  return (
-    network && 
-    network?.id && 
-    wallet && 
-    user.uuid && 
-    state 
-  ) ? (<>
+  return state ? ( <>
     <Helmet>
       <title>Create - {BADGE_TEXTS[state.gameType.toUpperCase()]} </title>
     </Helmet>
@@ -46,11 +36,7 @@ const CreateGamePage = () => {
         <CreateGameCard
           wagerType={WagerTypes[WagerTypesEnum.TOKEN]}  
           currencyType={CurrencyTypes[CurrencyTypesEnum.USDC]}
-          tokenAddress={SupportedWagerTokenAddresses(network?.id as number)[CurrencyTypes[CurrencyTypesEnum.USDC]]}
-          playerAddress={wallet.address}
           gameType={state.gameType.toUpperCase() as AllPossibleWegaTypes}
-          playerUuid={user.uuid}
-          network={network}
         />
       </Section>
     </MainContainer>

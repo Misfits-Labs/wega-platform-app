@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { parseEther } from 'ethers';
 import Joi from 'joi';
+import {
+  useConnectModal,
+} from '@rainbow-me/rainbowkit';
 import { 
   CreateGameCardContainer, 
   InputBox, 
@@ -17,7 +20,6 @@ import {
   AllPossibleWagerTypes, 
   HexishString,
   AllPossibleWegaTypes,
-  Network,
 } from "../../models";
 import { 
   BadgeIcon, 
@@ -31,7 +33,7 @@ import { ArrowDownIcon, StarLoaderIcon } from '../../assets/icons';
 import tw from 'twin.macro';
 import { useForm } from 'react-hook-form';
 import { useBalance } from 'wagmi';
-import { useNavigateTo } from '../../hooks';
+import { useNavigateTo, useWegaStore, useCreateGameParams } from '../../hooks';
 import { useCreateGameMutation } from '../../containers/App/api';
 import { 
   useCreateWagerAndDepositMutation,
@@ -44,34 +46,30 @@ import Button from '../../common/Button';
 import { ToggleWagerBadge } from '../../common/ToggleWagerBadge';
 import { useFormReveal } from './animations';
 
+
 export interface CreateGameCardInterface {
   wagerType: AllPossibleWagerTypes;
   currencyType: AllPossibleCurrencyTypes;
-  tokenAddress: HexishString;
-  playerAddress: HexishString;
   gameType: AllPossibleWegaTypes;
-  playerUuid: string;
-  network: Network;
 }
 
 export const CreateDiceGameCard = ({ 
   wagerType, 
   currencyType,
-  tokenAddress,
-  playerAddress,
-  playerUuid,
   gameType,
-  network,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   css, 
   ...rest 
 }: CreateGameCardInterface & React.Attributes & React.AllHTMLAttributes<HTMLDivElement> ) => {
-  
+  const { openConnectModal } = useConnectModal();
+  const { wallet, user, network } = useWegaStore();
+  const {tokenAddress, playerAddress, playerUuid } = useCreateGameParams({ wallet, user, network});
   const formRef = useRef<HTMLFormElement>(null);
   const detailsBlock = useRef<HTMLDivElement>(null)
   const [currentWagerType] = useState<AllPossibleWagerTypes>(wagerType);
   const [currentCurrencyType, setCurrentCurrencyType] = useState<AllPossibleCurrencyTypes>(currencyType);
   const {revealed, triggerRevealAnimation} = useFormReveal(false, formRef, detailsBlock);
+  
   const { register, formState: { errors }, watch, handleSubmit, setValue } = useForm({ 
     mode: 'onChange', 
     resolver: joiResolver(createGameSchema('wager')) , 
@@ -80,20 +78,24 @@ export const CreateDiceGameCard = ({
       wager: 1
     }
   });
-
   
   // approval for allowance
   const isWagerApproved = (allowance: number, wagerAmount: number) => allowance >= wagerAmount;
   const allowanceQuery = useAllowanceQuery({ 
-    spender: escrowConfig.address[network.id as keyof typeof escrowConfig.address], 
+    spender: escrowConfig.address[network?.id as keyof typeof escrowConfig.address], 
     owner: playerAddress,
-    tokenAddress,  
+    tokenAddress,
   });
   
   // get token balance of user
   const { data: userWagerBalance, isLoading: isWagerbalanceLoading } = useBalance({ 
-    address: playerAddress,
+    address: wallet?.address as HexishString,
     token: tokenAddress,
+    enabled: false,
+    cacheTime: 60_000,
+    onError(error) {
+      console.log('Error', error)
+    },
   })
     
   // create game 
@@ -109,7 +111,7 @@ export const CreateDiceGameCard = ({
   const handleCreateGameClick = async ({ wager }: { wager: number }) => {
     try {
       if(!isWagerApproved(allowanceQuery.data, wager)) {
-        await approveERC20({ spender: escrowConfig.address[network.id as keyof typeof escrowConfig.address], wagerAsBigint: toBigIntInWei(wager), tokenAddress }).unwrap();
+        await approveERC20({ spender: escrowConfig.address[network?.id as keyof typeof escrowConfig.address], wagerAsBigint: toBigIntInWei(wager), tokenAddress }).unwrap();
       }
       const receipt = await createWagerAndDeposit({ tokenAddress, wagerAsBigint: toBigIntInWei(wager), gameType }).unwrap();
       const parsedTopicData = parseTopicDataFromEventLog(receipt.logs[3], ['event GameCreation(bytes32 indexed escrowHash, uint256 indexed nonce, address creator, string name)']);
@@ -141,11 +143,13 @@ export const CreateDiceGameCard = ({
   
   const navigateToGameUi = useNavigateTo()
   useEffect(() => {
-    allowanceQuery.refetch();
-    if(createGameStatus === 'fulfilled' && createGameResponse) {
-      navigateToGameUi(`/${gameType.toLowerCase()}/play/${createGameResponse.uuid}`, 1500, { replace: true, 
-        state: { gameId: createGameResponse.id, gameUuid: createGameResponse.uuid } 
-      });
+    if(playerAddress && tokenAddress){
+      allowanceQuery.refetch();
+      if(createGameStatus === 'fulfilled' && createGameResponse) {
+        navigateToGameUi(`/${gameType.toLowerCase()}/play/${createGameResponse.uuid}`, 1500, { replace: true, 
+          state: { gameId: createGameResponse.id, gameUuid: createGameResponse.uuid } 
+        });
+      }
     }
   }, [
     watch('wager'), 
@@ -178,7 +182,7 @@ export const CreateDiceGameCard = ({
             />
             <NormalText tw="dark:text-shinishi">00,00 USD</NormalText>
             <SmallText> Balance: {
-              isWagerbalanceLoading ? "Retrieving balance..." : userWagerBalance?.formatted + ' ' + userWagerBalance?.symbol 
+              isWagerbalanceLoading ? "Retrieving balance..." : userWagerBalance ? userWagerBalance?.formatted + ' ' + userWagerBalance?.symbol : 0
             } </SmallText> 
             {/* useBalance from wagmi can be used here */}
           </div>
@@ -213,6 +217,14 @@ export const CreateDiceGameCard = ({
         </div>
         {/* <Button buttonType="primary"><>Approve</></Button> */}
         {
+          (!wallet && openConnectModal) ? <Button buttonType="primary" tw="flex" onClick={
+            (e: any) => { 
+              e.preventDefault();
+              openConnectModal();
+            }}>
+            {"Start Game"}
+            <StarLoaderIcon loading={false} color="#151515" tw="h-[16px] w-[16px] ms-[5px]" />
+          </Button> :
           <Button type="submit" buttonType="primary" tw="flex">
             {(
               approveERC20Query.isLoading || 

@@ -6,13 +6,16 @@ import { localhost, polygonMumbai } from 'wagmi/chains';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 import { HexishString } from '../../models';
-import { tokenConfig, escrowConfig, gameControllerConfig } from "../../utils";
+import { tokenConfig, escrowConfig, gameControllerConfig, wegaRandomizerControllerConfig } from "../../utils";
 
 
 
 const { chains, publicClient } = configureChains(
-  [polygonMumbai, localhost],
-  [alchemyProvider({ apiKey: import.meta.env.VITE_RPC_PROVIDER_ALCHEMY as string }), publicProvider()]
+  [localhost, polygonMumbai],
+  [
+    alchemyProvider({ apiKey: import.meta.env.VITE_RPC_PROVIDER_ALCHEMY as string }), 
+    publicProvider()
+]
 );
 const projectId = import.meta.env.VITE_WALLET_CONNECT_ID as string;
 const { wallets } = getDefaultWallets({
@@ -48,7 +51,8 @@ export interface IBlockchainAPIBase {
 export const ContractTypes = {
   'TOKEN': 'wegaErc20Dummy', 
   'ERC20ESCROW': 'wegaErc20Escrow',
-  'GAMECONTROLLER': 'wegaGameController'
+  'GAMECONTROLLER': 'wegaGameController',
+  'RADNOMIZER_CONTROLLER': 'wegaRandomizerController'
 } as const;
 
 export const ContractConfig = {
@@ -58,6 +62,7 @@ export const ContractConfig = {
     abi: tokenConfig.abi as typeof tokenConfig.abi
   },
   [ContractTypes.GAMECONTROLLER]: gameControllerConfig,
+  [ContractTypes.RADNOMIZER_CONTROLLER]: wegaRandomizerControllerConfig,
 } as const; 
 
 export type AllContractTypes = typeof ContractTypes[keyof typeof ContractTypes];

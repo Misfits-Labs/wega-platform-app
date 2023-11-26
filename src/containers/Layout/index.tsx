@@ -36,9 +36,8 @@ const Layout = () => {
        Navigating...
      </div>
      <Navigation />
-     <GlobalModal >
-       <Outlet />
-     </GlobalModal>
+     <Outlet />
+     <GlobalModal />
      <Footer />
      <ScrollRestoration getKey={getKey} />
      <Toaster />

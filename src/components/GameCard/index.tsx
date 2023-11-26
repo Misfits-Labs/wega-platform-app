@@ -14,20 +14,15 @@ import  {
 import  { GameCardOrb } from '../../assets/images';
 import Button from '../../common/Button';
 import { gsap } from 'gsap'; 
-import {
-  useConnectModal,
-} from '@rainbow-me/rainbowkit';
-import { useWegaStore } from '../../hooks';
 import { Link } from "react-router-dom";
 import { WegaTypes, WegaTypesEnum } from '../../models';
+import 'twin.macro';
 
 export const DiceGameCard = () => {
   const iconRef = useRef<SVGSVGElement>(null);
   const orbRef = useRef<SVGSVGElement>(null);
   const [hovering, setHovering] = useState<boolean>();
-  const { openConnectModal } = useConnectModal();
-  const { wallet } = useWegaStore();
-  
+
   useEffect(() => {    
     const ctx = gsap.context(() => {
       const duration = 0.65;
@@ -61,7 +56,7 @@ export const DiceGameCard = () => {
 
   return (
     <GameCardContainer onMouseEnter={() => setHovering(true)} onMouseLeave={() => setHovering(false)} >
-      <GameCardHeader className="flex justify-center items-center">
+      <GameCardHeader tw="flex justify-center items-center">
       <DiceIcon ref={iconRef} width="120px" height="90.7px" />
       <GameCardOrb
         ref={orbRef}
@@ -69,18 +64,17 @@ export const DiceGameCard = () => {
         height='269px'
         filter="blur(15px)"
         fill= "#C836E0"
-        className="card-orb absolute inset-0 z-40 translate-y-[-1.125rem]" 
+        tw="absolute inset-0 z-40 translate-y-[-1.125rem]"
+        className="card-orb" 
       />
       </GameCardHeader>
-      <GameCardBody className="position-inherit">
+      <GameCardBody>
       <GameCardTitle>Dice</GameCardTitle>
       <GameCardDescription>
         Roll the dice, the player with the highest number wins.
       </GameCardDescription>
       {
-        (!wallet && openConnectModal) ?
-        <Button buttonType="primary" content='Play' className="w-[75%]" onClick={()=> openConnectModal() } />
-        : <Link to="/dice/create" className="w-[75%]" state={ { gameType: WegaTypes[WegaTypesEnum.DICE] }}><Button buttonType="primary" content='Play' className="w-[100%]"/></Link>
+        <Link to="/dice/create" tw="w-[75%]" state={{ gameType: WegaTypes[WegaTypesEnum.DICE] }}><Button buttonType="primary" content='Create Game' tw="w-[100%]" /></Link>
       }
       </GameCardBody>
     </GameCardContainer>
@@ -91,8 +85,6 @@ export const CoinFlipGameCard = () => {
   const iconRef = useRef<SVGSVGElement>(null);
   const orbRef = useRef<SVGSVGElement>(null);
   const [hovering, setHovering] = useState<boolean>();
-  const { openConnectModal } = useConnectModal();
-  const { wallet } = useWegaStore();
   
   useEffect(() => {    
     const ctx = gsap.context(() => {
@@ -126,14 +118,15 @@ export const CoinFlipGameCard = () => {
 
   return (
    <GameCardContainer onMouseEnter={() => setHovering(true)} onMouseLeave={() => setHovering(false)} >
-    <GameCardHeader className="flex justify-center items-center relative">
-     <CoinFlipIcon width="83.002px" height="110.513px" ref={iconRef} className="translate-y-[1rem]"/>
+    <GameCardHeader tw="flex justify-center items-center relative">
+     <CoinFlipIcon width="83.002px" height="110.513px" ref={iconRef} tw="translate-y-[1rem]"/>
      <GameCardOrb 
       ref={orbRef}
       width='269px'
       height='269px'
       filter="blur(15px)"
-      className="card-orb fill-oranjo absolute inset-0 z-40 translate-y-[-1.125rem]" 
+      className="card-orb"
+      tw="fill-oranjo absolute inset-0 z-40 translate-y-[-1.125rem]" 
      />
     </GameCardHeader>
     <GameCardBody>
@@ -143,9 +136,7 @@ export const CoinFlipGameCard = () => {
      </GameCardDescription>
 
      {
-      (!wallet && openConnectModal) ?
-        <Button buttonType="primary" content='Play' className="w-[75%]" onClick={()=> openConnectModal() } /> :
-        <Link to="/coinflip/create" className="w-[75%]" state={ { gameType: WegaTypes[WegaTypesEnum.COINFLIP] } } ><Button buttonType="primary" content='Play' className="w-[100%]" /></Link>
+      <Link to="/coinflip/create" tw="w-[75%]" state={ { gameType: WegaTypes[WegaTypesEnum.COINFLIP] }} ><Button buttonType="primary" content='Create Game' tw="w-[100%]" /></Link>
      }
     </GameCardBody>
    </GameCardContainer>
@@ -190,15 +181,16 @@ export const CoinFlipGameCard = () => {
 
   return (
    <GameCardContainer onMouseEnter={() => setHovering(true)} onMouseLeave={() => setHovering(false)}>
-    <GameCardHeader className="flex justify-center items-center relative">
-     <RaffleIcon width="120px" height="143px" ref={iconRef} className="rotate-[25deg] translate-y-[1.125rem]" />
+    <GameCardHeader tw="flex justify-center items-center relative">
+     <RaffleIcon width="120px" height="143px" ref={iconRef} tw="rotate-[25deg] translate-y-[1.125rem]" />
      <GameCardOrb
       ref={orbRef}
       width='269px'
       height='269px'
       filter="blur(15px)"
       fill="#B80D57"
-      className="card-orb absolute inset-0 z-40 translate-y-[-1.125rem]"  
+      className="card-orb"
+      tw="absolute inset-0 z-40 translate-y-[-1.125rem]"  
      />
     </GameCardHeader>
     <GameCardBody>
@@ -210,7 +202,7 @@ export const CoinFlipGameCard = () => {
       buttonType="primary" 
       disabled={true}
       content='Coming soon' 
-      className="w-[75%] dark:bg-gradient-to-r from-oranjo-blanc to-oranjo"/>
+      tw="w-[75%] dark:bg-gradient-to-r from-oranjo-blanc to-oranjo"/>
     </GameCardBody>
    </GameCardContainer>
   )

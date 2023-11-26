@@ -40,10 +40,11 @@ const GlobalModalContext = createContext(initalState)
 export const useGlobalModalContext = () => useContext(GlobalModalContext)
 
 type GlobalModalProps = {
- children: React.ReactNode | React.ReactNode[]
+ children?: React.ReactNode | React.ReactNode[]
 }
 
-const GlobalModal: React.FC<GlobalModalProps> = ({ children }) => {
+// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+const GlobalModal: React.FC<GlobalModalProps> = (props) => {
 
   const [store, setStore] = useState<ContextType['store']>({
     modalType: undefined,
@@ -151,12 +152,7 @@ const GlobalModal: React.FC<GlobalModalProps> = ({ children }) => {
           }
         </ResponseModalContainer>
       } */}
-      {children}
     </GlobalModalContext.Provider>
     )
 }
-
-
-
-
 export default GlobalModal

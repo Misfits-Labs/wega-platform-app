@@ -3,7 +3,6 @@ import Joi from 'joi';
 import { parseEther } from 'ethers';
 import { useBalance } from 'wagmi';
 import toast from 'react-hot-toast';
-
 import { 
   CreateGameCardContainer, 
   InputBox, 
@@ -18,12 +17,10 @@ import {
 import { 
   AllPossibleCurrencyTypes, 
   AllPossibleWagerTypes, 
-  HexishString,
   AllPossibleWegaTypes,
   AllPossibleCoinSides, 
   CoinSideTypes, 
-  CoinSideTypesEnum,
-  Network
+  CoinSideTypesEnum
 } from "../../models";
 import { 
   BadgeIcon, 
@@ -36,7 +33,7 @@ import { ErrorMessage } from '@hookform/error-message';
 import { ArrowDownIcon, StarLoaderIcon } from '../../assets/icons';
 import tw from 'twin.macro';
 import { useForm } from 'react-hook-form';
-import { useNavigateTo } from '../../hooks';
+import { useCreateGameParams, useNavigateTo, useWegaStore } from '../../hooks';
 import { 
   useCreateWagerAndDepositMutation,
   useAllowanceQuery,
@@ -48,36 +45,35 @@ import Button from '../../common/Button';
 import { ToggleWagerBadge } from '../../common/ToggleWagerBadge';
 import { useFormReveal } from './animations';
 import { ToggleCoinFlipSides } from '../../common/ToggleCoinFlipSides';
+import {
+  useConnectModal,
+} from '@rainbow-me/rainbowkit';
 
 export interface CreateGameCardInterface {
   wagerType: AllPossibleWagerTypes;
   currencyType: AllPossibleCurrencyTypes;
-  tokenAddress: HexishString;
-  playerAddress: HexishString;
   gameType: AllPossibleWegaTypes;
-  playerUuid: string;
-  network: Network;
 }
 
 export const CreateCoinFlipGameCard = ({ 
   wagerType, 
   currencyType,
-  tokenAddress,
-  playerAddress,
-  playerUuid,
   gameType,
-  network,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   css, 
   ...rest 
 }: CreateGameCardInterface & React.Attributes & React.AllHTMLAttributes<HTMLDivElement> ) => {
-  
+  const { openConnectModal } = useConnectModal();
+  const { wallet, network, user} = useWegaStore();
   const formRef = useRef<HTMLFormElement>(null);
   const detailsBlock = useRef<HTMLDivElement>(null)
   const [currentWagerType] = useState<AllPossibleWagerTypes>(wagerType);
   const [currentCurrencyType, setCurrentCurrencyType] = useState<AllPossibleCurrencyTypes>(currencyType);
   const [currentCoinSide, setCurrentCoinSide] = useState<AllPossibleCoinSides>(CoinSideTypes[CoinSideTypesEnum.HEADS]);
   const {revealed, triggerRevealAnimation} = useFormReveal(false, formRef, detailsBlock);
+  const { playerAddress, tokenAddress, playerUuid} = useCreateGameParams({
+    wallet, network, user
+  });
   
   const { register, formState: { errors }, watch, handleSubmit, setValue } = useForm({ 
     mode: 'onChange', 
@@ -91,7 +87,7 @@ export const CreateCoinFlipGameCard = ({
   // approval for allowance
   const isWagerApproved = (allowance: number, wagerAmount: number) => allowance >= wagerAmount;
   const allowanceQuery = useAllowanceQuery({ 
-    spender: escrowConfig.address[network.id as keyof typeof escrowConfig.address], 
+    spender: escrowConfig.address[network?.id as keyof typeof escrowConfig.address], 
     owner: playerAddress,
     tokenAddress,  
   });
@@ -115,7 +111,7 @@ export const CreateCoinFlipGameCard = ({
     try {
       if(!isWagerApproved(allowanceQuery.data, wager)) {
         await approveERC20({ 
-          spender: escrowConfig.address[network.id as keyof typeof escrowConfig.address], wagerAsBigint: toBigIntInWei(wager), tokenAddress }).unwrap();
+          spender: escrowConfig.address[network?.id as keyof typeof escrowConfig.address], wagerAsBigint: toBigIntInWei(wager), tokenAddress }).unwrap();
       }
       const receipt = await createWagerAndDeposit({ tokenAddress, wagerAsBigint: toBigIntInWei(wager), gameType }).unwrap();
       const parsedTopicData = parseTopicDataFromEventLog(receipt.logs[3], ['event GameCreation(bytes32 indexed escrowHash, uint256 indexed nonce, address creator, string name)']);
@@ -149,10 +145,12 @@ export const CreateCoinFlipGameCard = ({
 
   const navigateToGameUi = useNavigateTo()
   useEffect(() => {
-    allowanceQuery.refetch();
-    if(createGameStatus === 'fulfilled' && createGameResponse) {
-      navigateToGameUi(`/${gameType.toLowerCase()}/play/${createGameResponse.uuid}`, 1500, { replace: true,
-        state: { gameId: createGameResponse.id, gameUuid: createGameResponse.uuid } });
+    if(wallet){
+      allowanceQuery.refetch();
+      if(createGameStatus === 'fulfilled' && createGameResponse) {
+        navigateToGameUi(`/${gameType.toLowerCase()}/play/${createGameResponse.uuid}`, 1500, { replace: true,
+          state: { gameId: createGameResponse.id, gameUuid: createGameResponse.uuid } });
+      }
     }
   }, [
     watch('wager'), 
@@ -221,6 +219,14 @@ export const CreateCoinFlipGameCard = ({
         </div>
         {/* <Button buttonType="primary"><>Approve</></Button> */}
         {
+          (!wallet && openConnectModal) ? <Button buttonType="primary" tw="flex" onClick={
+            (e: any) => { 
+              e.preventDefault();
+              openConnectModal();
+            }}>
+            {"Start Game"}
+            <StarLoaderIcon loading={false} color="#151515" tw="h-[16px] w-[16px] ms-[5px]" />
+          </Button> :
           <Button type="submit" buttonType="primary" tw="flex">
           {(
             approveERC20Query.isLoading || 

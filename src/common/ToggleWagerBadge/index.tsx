@@ -48,7 +48,7 @@ export const ToggleWagerBadge: React.FC<ToggleWagerBadgesProps> = ({ setCurrentC
       onClick={handleUSDCBadgeClick} 
       >
       {/* icon */}
-      <BadgeIcon><>{renderWagerBadge(WagerTypes[WagerTypesEnum.TOKEN], CurrencyTypes[CurrencyTypesEnum.USDC])}</></BadgeIcon>
+      <BadgeIcon>{renderWagerBadge(WagerTypes[WagerTypesEnum.TOKEN], CurrencyTypes[CurrencyTypesEnum.USDC])}</BadgeIcon>
       <span>{CurrencyTypes[CurrencyTypesEnum.USDC]}</span>
     </button>
     <button 
@@ -57,7 +57,7 @@ export const ToggleWagerBadge: React.FC<ToggleWagerBadgesProps> = ({ setCurrentC
       css={[isUSDTSelected && selectedStyles]}
       >
       {/* icon */}
-      <BadgeIcon><>{renderWagerBadge(WagerTypes[WagerTypesEnum.TOKEN], CurrencyTypes[CurrencyTypesEnum.USDT])}</></BadgeIcon>
+      <BadgeIcon>{renderWagerBadge(WagerTypes[WagerTypesEnum.TOKEN], CurrencyTypes[CurrencyTypesEnum.USDT])}</BadgeIcon>
       <span>{CurrencyTypes[CurrencyTypesEnum.USDT]}</span>
     </button>
   </div>)

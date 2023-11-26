@@ -1,11 +1,9 @@
 import { 
   AllPossibleCurrencyTypes, 
   AllPossibleWagerTypes, 
-  HexishString,
   AllPossibleWegaTypes,
   WegaTypesEnum,
   WegaTypes,
-  Network
 } from "../../models";
 import { CreateDiceGameCard } from './CreateDiceGameCard';
 import { CreateCoinFlipGameCard } from './CreateCoinFlipGameCard';
@@ -13,11 +11,7 @@ import { CreateCoinFlipGameCard } from './CreateCoinFlipGameCard';
 export interface CreateGameCardInterface extends React.Attributes, React.AllHTMLAttributes<HTMLDivElement> {
   wagerType: AllPossibleWagerTypes;
   currencyType: AllPossibleCurrencyTypes;
-  tokenAddress: HexishString;
-  playerAddress: HexishString;
   gameType: AllPossibleWegaTypes;
-  playerUuid: string;
-  network: Network;
 }
 
 const CREATE_GAME_CARD_COMPONENTS: any = {
@@ -28,12 +22,8 @@ const CREATE_GAME_CARD_COMPONENTS: any = {
 const CreateGameCard = ({ 
   wagerType, 
   currencyType,
-  tokenAddress,
-  playerAddress,
-  playerUuid,
   gameType,
   children,
-  network,
   ...rest 
 }: CreateGameCardInterface) => {
   const renderCard = () => {
@@ -46,22 +36,14 @@ const CreateGameCard = ({
         return <Comp { ...{ 
           wagerType, 
           currencyType,
-          tokenAddress,
-          playerAddress,
-          playerUuid,
           gameType,
-          network,
           ...rest 
         } }>{children}</Comp> 
       } else {
         return <Comp { ...{ 
             wagerType, 
             currencyType,
-            tokenAddress,
-            playerAddress,
-            playerUuid,
             gameType,
-            network,
             ...rest 
             } 
           }
@@ -72,4 +54,3 @@ const CreateGameCard = ({
   return renderCard();
 }
 export default CreateGameCard;
-
