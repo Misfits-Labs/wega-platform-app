@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { utils, BigNumber } from 'ethers';
+import { toBigInt, formatEther, parseEther } from 'ethers';
 import { 
  prepareWriteContract, 
  writeContract, 
@@ -7,7 +7,7 @@ import {
  readContract, 
  waitForTransaction
  } from '@wagmi/core';
-import { tokenConfig, escrowConfig, erc20ABI, gameControllerConfig } from "../../utils";
+import { tokenConfig, escrowConfig, erc20ABI, gameControllerConfig, randomizerControllerConfig } from "../../utils";
 import { HexishString, AllPossibleWegaTypes } from '../../models';
 
 
@@ -24,7 +24,6 @@ interface IBlockchainAPI {
 // TODO 
   // add appropriate logging lib
   // add correct fn typing on class interface
-
 export class BlockchainAPI implements IBlockchainAPI {
   private chain = (getNetwork()).chain;
   private tokenConfig = {
@@ -39,6 +38,10 @@ export class BlockchainAPI implements IBlockchainAPI {
     address: gameControllerConfig.address[this.chain?.id as keyof typeof gameControllerConfig.address] as HexishString,
     abi: gameControllerConfig.abi,
   }
+  private randomizerControllerConfig = {
+    address: randomizerControllerConfig.address[this.chain?.id as keyof typeof gameControllerConfig.address] as HexishString,
+    abi: randomizerControllerConfig.abi,
+  }
  
  constructor(){}
  
@@ -47,11 +50,11 @@ export class BlockchainAPI implements IBlockchainAPI {
   wager: number,
   gameType: AllPossibleWegaTypes,
  }){
-  const wagerAsBigint = utils.parseEther(String(wager)).toBigInt()
+  const wagerAsBigint = parseEther(String(wager));
   const config = await prepareWriteContract({
     ...this.gameControllerConfig,
     functionName: 'createGame',
-    args: [gameType, tokenAddress, wagerAsBigint]
+    args: [gameType, tokenAddress, wagerAsBigint, [toBigInt(10)]] // placeholder random num for now
   })
   return await this.handleWriteRequest(config);
  }
@@ -62,11 +65,11 @@ export class BlockchainAPI implements IBlockchainAPI {
     functionName: 'allowance',
     args: [ owner, escrowConfig.address[this.chain?.id as keyof typeof escrowConfig.address] as HexishString ]
   })
-  return Number(utils.formatEther(allowance));
+  return Number(formatEther(allowance));
  }
 
  async approveERC20(tokenAddress: HexishString, wager: number){
-  const wagerAsBigint = utils.parseEther(String(wager)).toBigInt();
+  const wagerAsBigint = parseEther(String(wager));
   const config = await prepareWriteContract({
     address: tokenAddress,
     abi: this.tokenConfig.abi,
@@ -98,7 +101,7 @@ export class BlockchainAPI implements IBlockchainAPI {
     account,
    ]
   })
-  return Number(utils.formatEther(deposit));
+  return Number(formatEther(deposit));
  }
 
  async deposit(escrowHash: HexishString, playerChoices?: number[]){
@@ -106,7 +109,7 @@ export class BlockchainAPI implements IBlockchainAPI {
    address: this.gameControllerConfig.address,
    abi: this.gameControllerConfig.abi,
    functionName: 'depositOrPlay',
-   args: playerChoices ? [escrowHash, playerChoices.map(choice => BigNumber.from(choice).toBigInt())] : [escrowHash],
+   args: playerChoices ? [escrowHash, playerChoices.map(choice => toBigInt(choice)), [toBigInt(10)]] : [escrowHash, [toBigInt(10)]],
   })
   return await this.handleWriteRequest(depositConfig);
  }
@@ -129,15 +132,13 @@ export class BlockchainAPI implements IBlockchainAPI {
     accountsCount: number, 
     wager: number 
   }) {
-  const wagerAsBigInt = utils.parseEther(String(wager)).toBigInt();
-  const numPlayers = BigNumber.from(accountsCount).toBigInt();  
+  const wagerAsBigInt = parseEther(String(wager));
+  const numPlayers = toBigInt(accountsCount);  
   const nonce = await readContract({
     address: this.escrowConfig.address,
     abi: this.escrowConfig.abi,
-    functionName: 'currentNonce',
-    args: [
-      playerAddress,
-    ]
+    functionName: 'nonces',
+    args: [this.randomizerControllerConfig.address]
   });
   const hash = await readContract({
     address: this.escrowConfig.address,
@@ -153,7 +154,6 @@ export class BlockchainAPI implements IBlockchainAPI {
    });
    return { hash, nonce: Number(nonce.toString()) };
  }
- 
  async getGameResults(gameType: AllPossibleWegaTypes, escrowHash: HexishString, player: HexishString) {
   const results = await readContract({
     address: this.gameControllerConfig.address,
@@ -167,7 +167,6 @@ export class BlockchainAPI implements IBlockchainAPI {
   });
   return results.map(v => Number(v.toString()));
  }
- 
  async getWinners(gameType: AllPossibleWegaTypes, escrowHash: HexishString) {
   const winners = await readContract({
     address: this.gameControllerConfig.address,
@@ -180,7 +179,6 @@ export class BlockchainAPI implements IBlockchainAPI {
   });
   return winners as HexishString[];
  }
- 
  handleError(error: any, customMessage: string){
   if (error.message){
     if(error.message.split("\n\n") && error.message.split("\n\n").length > 0) {
@@ -191,17 +189,12 @@ export class BlockchainAPI implements IBlockchainAPI {
     return customMessage;
   }
  }
- 
  private async handleWriteRequest(config: any) {
   const { hash } = await writeContract(config);
   return hash;
- } 
-
+ }
  async waitForMined(hash: HexishString) {
   return await waitForTransaction({ hash })
  }
-
  getRequest(){}
 }
-
-

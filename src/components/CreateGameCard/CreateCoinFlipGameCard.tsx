@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import Joi from 'joi';
-import { utils } from 'ethers';
+import { parseEther } from 'ethers';
 import { useBalance } from 'wagmi';
 import toast from 'react-hot-toast';
 
@@ -118,7 +118,7 @@ export const CreateCoinFlipGameCard = ({
           spender: escrowConfig.address[network.id as keyof typeof escrowConfig.address], wagerAsBigint: toBigIntInWei(wager), tokenAddress }).unwrap();
       }
       const receipt = await createWagerAndDeposit({ tokenAddress, wagerAsBigint: toBigIntInWei(wager), gameType }).unwrap();
-      const { escrowHash, nonce } = parseTopicDataFromEventLog(receipt.logs[3], ['event GameCreation(bytes32 indexed escrowHash, uint256 indexed nonce, address creator, string name)']);
+      const parsedTopicData = parseTopicDataFromEventLog(receipt.logs[3], ['event GameCreation(bytes32 indexed escrowHash, uint256 indexed nonce, address creator, string name)']);
 
       await createGame({ 
         gameType, 
@@ -126,11 +126,11 @@ export const CreateCoinFlipGameCard = ({
         creatorUuid: playerUuid,
         wager: { 
           wagerType: currentWagerType.toUpperCase() as AllPossibleWagerTypes, 
-          wagerHash: escrowHash, 
+          wagerHash: parsedTopicData?.escrowHash, 
           tokenAddress, 
-          wagerAmount: utils.parseEther(String(wager)).toString(), 
+          wagerAmount: parseEther(String(wager)).toString(), 
           wagerCurrency: currentCurrencyType,
-          nonce: nonce.toNumber(),
+          nonce: parsedTopicData?.nonce.toNumber(),
         },
         gameAttributes: [{ key: "players[0].flipChoice", value: currentCoinSide.toString()}]
       }).unwrap();

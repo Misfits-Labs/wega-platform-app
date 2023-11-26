@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { utils } from 'ethers';
+import { formatEther } from 'ethers';
 import { 
  GameTypeBadgeWrapper, 
  DateColumn, 
@@ -66,7 +66,7 @@ function ClaimBar({
     </GameTypeBadgeWrapper>
     
     <WagerTypeBadgeWrapper>
-      <BadgeText>{utils.formatEther(game.wager.wagerAmount)}</BadgeText>
+      <BadgeText>{formatEther(game.wager.wagerAmount)}</BadgeText>
       <BadgeIcon>{renderWagerBadge(game.wager.wagerType, game.wager.wagerCurrency)}</BadgeIcon>
       <BadgeText>{game.wager.wagerCurrency}</BadgeText>
     </WagerTypeBadgeWrapper>

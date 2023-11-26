@@ -7,7 +7,7 @@ import { WagerTypeBadgeWrapper, BadgeText} from "../../common/GameBar/types";
 import { BadgeIcon, renderWagerBadge } from "../../common/GameBar";
 import { WaitForPlayerConnectCard } from '../../components/WaitForPlayerConnectCard';
 import CoinSide from "../../common/CoinSide";
-import { utils } from 'ethers';
+import { formatEther } from 'ethers';
 import 'twin.macro';
 
 export interface PlayGamePlayerCardProps {
@@ -59,7 +59,7 @@ export const PlayGamePlayerCard = ({
       <div tw="flex flex-col gap-y-[16px] items-center">
         <NormalText>Wager: </NormalText>
         <WagerTypeBadgeWrapper>
-          <BadgeText>{utils.formatEther(wager.wagerAmount)}</BadgeText>
+          <BadgeText>{formatEther(wager.wagerAmount)}</BadgeText>
           <BadgeIcon>{renderWagerBadge(wager.wagerType, wager.wagerCurrency)}</BadgeIcon>
           <BadgeText>{wager.wagerCurrency}</BadgeText>
         </WagerTypeBadgeWrapper>

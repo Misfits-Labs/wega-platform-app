@@ -2,14 +2,11 @@ import { useEffect, useState } from 'react';
 import GameBar from "../../common/GameBar";
 import Section from '../../common/Section';
 import { JoinableGamesHeaderBar } from '../../common/JoinableGameBar/types';
-// import ClaimBar from '../../common/ClaimBar';
 import { useGetGamesQuery } from './apiSlice';
 import { Wega, WegaState } from '../../models';
-// import { useGetGameWinnersQuery, playGameBlockchainApiSlice } from '../PlayGameSection/blockchainApiSlice'
-
 import 'twin.macro';
 
-export interface JoinableAndPlayableGamesProps extends React.Attributes {
+export interface JoinableAndPlayableGamesProps extends React.Attributes, React.HTMLAttributes<HTMLDivElement> {
  userUuid: string;
  gamesCount: number;
 }
@@ -32,8 +29,8 @@ export const JoinableAndPlayableGames: React.FC<JoinableAndPlayableGamesProps> =
     setGameIds(sortedGameIds);
   }
  }, [data, gamesCount, isSuccess]);
- 
- return (<Section hdr="Join matches instantly" direction="col" className="gap-2 mt-[35px]" { ...rest }>
+
+ return (<Section hdr="Join matches instantly" direction="col" tw="gap-2 mt-[35px] w-full" { ...rest }>
   <JoinableGamesHeaderBar>
    <span>Date created</span>
    <span>Game</span>

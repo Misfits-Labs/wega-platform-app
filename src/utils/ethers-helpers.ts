@@ -1,27 +1,27 @@
-import { BigNumber, utils } from "ethers";
+import { parseEther, BigNumberish, Interface } from "ethers";
 import { Player } from '../models'
 
-export function parseIntFromBigNumber(val: BigNumber | number) {
+export function parseIntFromBigNumber(val: BigNumberish | number) {
  if(typeof val == 'object'){
-   return parseInt((val as BigNumber)._hex, 16);
+   return parseInt(val, 10);
  }
  return val;
 }
 
 export function toBigIntInWei(value: number): bigint {
-  return utils.parseEther(String(value)).toBigInt()
+  return parseEther(String(value))
 }
 
 export const miniWalletAddress = (address: `0x${string}` | undefined) => {
   return address?.slice(0, 6) + "..."
-}
+} 
 
 export function interfaceIdFromAbi(abi: string[]) {
-  return new utils.Interface(abi);
+  return new Interface(abi);
 }
 
-export function parseTopicDataFromEventLog(txLog: any, eventAbi: string[]){
-  return interfaceIdFromAbi(eventAbi).parseLog(txLog).args;
+export function parseTopicDataFromEventLog(txLog: { data: string, topics: Array<string>}, eventAbi: string[]){
+  return interfaceIdFromAbi(eventAbi).parseLog(txLog)?.args.toObject();
 }
 
 export function isGameCreator(

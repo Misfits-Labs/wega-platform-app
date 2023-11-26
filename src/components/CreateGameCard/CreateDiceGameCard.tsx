@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { utils } from 'ethers';
+import { parseEther } from 'ethers';
 import Joi from 'joi';
 import { 
   CreateGameCardContainer, 
@@ -112,18 +112,18 @@ export const CreateDiceGameCard = ({
         await approveERC20({ spender: escrowConfig.address[network.id as keyof typeof escrowConfig.address], wagerAsBigint: toBigIntInWei(wager), tokenAddress }).unwrap();
       }
       const receipt = await createWagerAndDeposit({ tokenAddress, wagerAsBigint: toBigIntInWei(wager), gameType }).unwrap();
-      const { escrowHash, nonce } = parseTopicDataFromEventLog(receipt.logs[3], ['event GameCreation(bytes32 indexed escrowHash, uint256 indexed nonce, address creator, string name)']);
+      const parsedTopicData = parseTopicDataFromEventLog(receipt.logs[3], ['event GameCreation(bytes32 indexed escrowHash, uint256 indexed nonce, address creator, string name)']);
       await createGame({ 
         gameType, 
         players: [ { uuid: playerUuid } ],
         creatorUuid: playerUuid,
         wager: { 
           wagerType: currentWagerType.toUpperCase() as AllPossibleWagerTypes, 
-          wagerHash: escrowHash, 
+          wagerHash: parsedTopicData?.escrowHash, 
           tokenAddress, 
-          wagerAmount: utils.parseEther(String(wager)).toString(), 
+          wagerAmount: parseEther(String(wager)).toString(), 
           wagerCurrency: currentCurrencyType,
-          nonce: nonce.toNumber(),
+          nonce: parsedTopicData?.nonce.toNumber(),
         }
       }).unwrap();
       toast.success('Create game success', { ...toastSettings('success', 'top-center') as any });

@@ -22,7 +22,7 @@ import { dateFromTs } from '../../utils';
 import { BarDiceIcon, BarCoinIcon, USDCIcon, USDTIcon } from '../../assets/icons';
 import { selectGameById } from '../../components/WegaGames/apiSlice';
 import { GameBarLoadingSkeleton } from '../GameBar/GameBarLoadingSkeleton';
-import { utils } from 'ethers';
+import { formatEther } from 'ethers';
 import { ButtonForJoinableGame } from '../ButtonForJoinableGame';
 import { ButtonForWaitingGame } from '../ButtonForWaitingGame';
 import { useWegaStore } from '../../hooks'
@@ -56,7 +56,7 @@ function GameBar({
     </GameTypeBadgeWrapper>
     
     <WagerTypeBadgeWrapper >
-     <BadgeText>{utils.formatEther(game.wager.wagerAmount)}</BadgeText>
+     <BadgeText>{formatEther(game.wager.wagerAmount)}</BadgeText>
      <BadgeIcon>{renderWagerBadge(game.wager.wagerType, game.wager.wagerCurrency)}</BadgeIcon>
      <BadgeText>{game.wager.wagerCurrency}</BadgeText>
     </WagerTypeBadgeWrapper>

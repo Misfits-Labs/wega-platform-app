@@ -1,4 +1,4 @@
-import { styled } from 'twin.macro';
+import {styled} from 'twin.macro';
 
 interface DivWrapperWithGradientBorderProps {
   border?: number;

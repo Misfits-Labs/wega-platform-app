@@ -6,7 +6,7 @@ import { BadgeIcon, renderWagerBadge } from "../GameBar";
 import Button from '../Button';
 import 'twin.macro';
 import { AllPossibleCurrencyTypes, AllPossibleWagerTypes, AllPossibleWegaTypes} from '../../models';
-import { BigNumberish, utils } from 'ethers';
+import { BigNumberish, formatEther } from 'ethers';
 import { Link } from 'react-router-dom';
 
 export interface GameWinnerDeclarationModalProps {
@@ -29,7 +29,7 @@ export const GameWinnerDeclarationModal = ({
     <CrownIcon />
     <ExtraLargeText>You won!</ExtraLargeText>
     <WagerTypeBadgeWrapper>
-      <BadgeText>{utils.formatEther(wagerAmount)}</BadgeText>
+      <BadgeText>{formatEther(wagerAmount)}</BadgeText>
       <BadgeIcon>{renderWagerBadge(wagerType, wagerCurrency)}</BadgeIcon>
       <BadgeText>{wagerCurrency}</BadgeText>
     </WagerTypeBadgeWrapper>

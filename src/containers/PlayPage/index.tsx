@@ -25,7 +25,7 @@ const PlayPage = () => {
           direction='col'
           hdr={ <WordCarousel 
           pre="Play and win" 
-          className='dark:text-oranjo mt-[5rem] min-h-[100vh]'
+          tw='dark:text-oranjo min-h-[100vh]'
           fontSize={51}
           words={[
           "Crypto",
@@ -41,7 +41,7 @@ const PlayPage = () => {
             <RaffleGameCard />
           </div>
         </Section>
-        { user?.uuid ? <JoinableAndPlayableGames gamesCount={gamesCount} userUuid={user?.uuid} /> : gamesCount && !user.uuid ? <></> : <ComponentLoader tw="mt-20 w-full" /> }
+        { user?.uuid ? <JoinableAndPlayableGames tw="md:w-[978px]" gamesCount={gamesCount} userUuid={user?.uuid} /> : gamesCount && !user.uuid ? <></> : <ComponentLoader tw="mt-20 w-full" /> }
       </MainContainer>
     </>
   )

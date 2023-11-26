@@ -7,7 +7,7 @@ import { ContractTypes } from '../../libs/wagmi';
 export const joinGameBlockchainApiSlice = blockchainApiSlice.injectEndpoints({
   endpoints: (builder) => ({
    depositAndJoinDice: builder.mutation<any, { escrowHash: HexishString }>({
-     query: ({ escrowHash }) => ({
+     query: ({escrowHash}) => ({
       functionName: 'depositOrPlay',
       contract: ContractTypes.GAMECONTROLLER,
       method: 'WRITE',
@@ -15,7 +15,7 @@ export const joinGameBlockchainApiSlice = blockchainApiSlice.injectEndpoints({
      })
     }),
    depositAndJoinCoinflip: builder.mutation<any, { escrowHash: HexishString, playerChoices: number[] }>({
-     query: ({ escrowHash, playerChoices }) => ({
+     query: ({ escrowHash, playerChoices}) => ({
       functionName: 'depositOrPlay',
       contract: ContractTypes.GAMECONTROLLER,
       method: 'WRITE',

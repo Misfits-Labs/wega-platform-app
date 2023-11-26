@@ -1,4 +1,4 @@
-import { utils } from 'ethers';
+import { formatEther } from 'ethers';
 import tw, { styled } from 'twin.macro';
 import { WinnerDeclarationContainer } from './types';
 import { NormalText, SmallText } from '../../components/CreateGameCard/types';
@@ -49,8 +49,8 @@ export const ClaimModal = ({ hide, game, wallet
       <div tw="flex flex-row gap-x-[11px]">
        <BadgeIcon size="44px">{renderWagerBadge(game.wager.wagerType, game.wager.wagerCurrency)}</BadgeIcon>
        <div tw="flex flex-col gap-y-[11px]">
-        <NormalText tw="text-blanc">{utils.formatEther(game.wager.wagerAmount)} USDC</NormalText>
-        <NormalText tw="text-shinishi">${utils.formatEther(game.wager.wagerAmount)}</NormalText>
+        <NormalText tw="text-blanc">{formatEther(game.wager.wagerAmount)} USDC</NormalText>
+        <NormalText tw="text-shinishi">${formatEther(game.wager.wagerAmount)}</NormalText>
        </div>
       </div>
      </div>
@@ -92,7 +92,7 @@ export const ClaimModal = ({ hide, game, wallet
 
      <div tw="flex flex-row items-end justify-between w-full">
       <NormalText tw="dark:text-shinishi">Total claim before fees</NormalText>
-      <NormalText>{utils.formatEther(game.wager.wagerAmount)} {game.wager.wagerCurrency}</NormalText>
+      <NormalText>{formatEther(game.wager.wagerAmount)} {game.wager.wagerCurrency}</NormalText>
      </div>
      <div tw="flex flex-row items-end justify-between w-full">
       <NormalText tw="dark:text-shinishi">Gas costs</NormalText>
@@ -105,7 +105,7 @@ export const ClaimModal = ({ hide, game, wallet
     </div>
     <div tw="flex flex-row items-center gap-[10px] rounded-[5px] dark:bg-[#414141] py-[8px] px-[16px]">
      <NormalText tw="dark:text-shinishi">What you should receive after fees</NormalText>
-     <NormalText>{utils.formatEther(game.wager.wagerAmount)} {game.wager.wagerCurrency}</NormalText>
+     <NormalText>{formatEther(game.wager.wagerAmount)} {game.wager.wagerCurrency}</NormalText>
     </div>
     <Button buttonType="primary" className="flex items-center justify-center w-full" onClick={() => handleClaimClick()} >
      { isClaimingLoading ? "Loading..." : "Claim" }

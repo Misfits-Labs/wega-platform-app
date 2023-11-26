@@ -1,9 +1,7 @@
 import { styled } from 'twin.macro';
-
 export interface CarouselProps {
  fontSize: number;
 }
-
 export const AnimationContainer = styled.div<CarouselProps>(({ fontSize }) => [
  `
  --font-size: ${fontSize}px;

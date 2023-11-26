@@ -4,7 +4,7 @@ import {
   HexishString 
 } from '../../models';
 import { ContractTypes } from '../../libs/wagmi';
-import { utils } from 'ethers';
+import { formatEther } from 'ethers';
 
 // Todo 
   // write function names with type safety 
@@ -35,7 +35,7 @@ export const createGameBlockchainApiSlice = blockchainApiSlice.injectEndpoints({
           contractAddress: tokenAddress,
           args: [owner, spender]
         }),
-        transformResponse: (response: any) => utils.formatEther(response.toString()) 
+        transformResponse: (response: any) => formatEther(response.toString()) 
       }),
     hash: builder.query<any, { tokenAddress: HexishString,  numPlayers: bigint, wagerAsBigint: bigint, playerAddress: HexishString, nonce: bigint }> ({
         query: ({ tokenAddress, numPlayers, playerAddress, nonce, wagerAsBigint }) => ({

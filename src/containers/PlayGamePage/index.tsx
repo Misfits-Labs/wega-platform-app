@@ -36,7 +36,7 @@ const PlayGamePage = () => {
         </SectionHeaderContainer>
         }
       >
-        <PlayGameSection 
+      <PlayGameSection 
         game={game}
         user={user}
         players={players}
@@ -45,7 +45,7 @@ const PlayGamePage = () => {
         isGamePlayable={isGamePlayable}
         gameAttributes={gameAttributes}
         playerFlipChoices={playerFlipChoices}
-        />
+      />
       </Section>
       </MainContainer>
       </>

@@ -15,9 +15,11 @@ export {
  wegaErc20DummyConfig as tokenConfig,
  wegaErc20EscrowConfig as escrowConfig, 
  wegaGameControllerConfig as gameControllerConfig,
+ wegaRandomizerControllerConfig as randomizerControllerConfig
 } from './abis.ts'
 export {
  wegaErc20DummyConfig,
  wegaErc20EscrowConfig, 
  wegaGameControllerConfig,
+ wegaRandomizerControllerConfig
 } from './abis.ts'

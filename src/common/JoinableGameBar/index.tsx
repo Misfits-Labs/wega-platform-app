@@ -21,7 +21,7 @@ import{ BarDiceIcon, BarCoinIcon, USDCIcon, StarLoaderIcon, USDTIcon} from '../.
 import Button from '../Button';
 import { selectGameById } from '../../containers/App/api';
 import { useSelector } from 'react-redux' 
-import { utils } from 'ethers';
+import { formatEther } from 'ethers';
 import { Link } from 'react-router-dom';
 import {
   useConnectModal,
@@ -49,7 +49,7 @@ function JoinableGameBar({ gameId , ...rest}: { gameId: number } & React.Attribu
     </GameTypeBadgeWrapper>
     
     <WagerTypeBadgeWrapper>
-     <BadgeText>{utils.formatEther(game.wager.wagerAmount)}</BadgeText>
+     <BadgeText>{formatEther(game.wager.wagerAmount)}</BadgeText>
      <BadgeIcon><>{renderWagerBadge(game.wager.wagerType, game.wager.wagerCurrency)}</></BadgeIcon>
      <BadgeText>{game.wager.wagerCurrency}</BadgeText>
     </WagerTypeBadgeWrapper>
