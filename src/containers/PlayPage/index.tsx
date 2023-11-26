@@ -25,7 +25,7 @@ const PlayPage = () => {
           direction='col'
           hdr={ <WordCarousel 
           pre="Play and win" 
-          tw='dark:text-oranjo min-h-[100vh]'
+          tw='dark:text-oranjo'
           fontSize={51}
           words={[
           "Crypto",

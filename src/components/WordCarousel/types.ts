@@ -7,22 +7,22 @@ export const AnimationContainer = styled.div<CarouselProps>(({ fontSize }) => [
  --font-size: ${fontSize}px;
  position: relative;
 
- @keyframes rotate {
+//  @keyframes rotate {
    
-   5%, 20% {
-    transform: translateY(0);
-   }
-   25%,45% {
-    transform: translateY(calc(var(--font-size) * -1.5));
-   }
-   50%,70% {
-    transform: translateY(calc(var(--font-size) * -3));
-   }
-   75%,95% {
-    transform: translateY(calc(var(--font-size) * -4.5));
-   }
-  }
-  animation: rotate 7s ease-in-out infinite;
+//    5%, 20% {
+//     transform: translateY(0);
+//    }
+//    25%,45% {
+//     transform: translateY(calc(var(--font-size) * -1.5));
+//    }
+//    50%,70% {
+//     transform: translateY(calc(var(--font-size) * -3));
+//    }
+//    75%,95% {
+//     transform: translateY(calc(var(--font-size) * -4.5));
+//    }
+//   }
+//   animation: rotate 7s ease-in-out infinite;
  `
 ])
 
