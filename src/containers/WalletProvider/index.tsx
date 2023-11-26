@@ -15,7 +15,7 @@ const WalletProvider = (props: WalletConnectorProps) => {
       <RainbowKitProvider
         theme={props.isDark ? darkTheme() : lightTheme()}
         chains={chains}
-        initialChain={localhost} // TODO change to mumbai
+        initialChain={localhost || polygonMumbai} // TODO change to mumbai
         avatar={WalletAvatar}
       >
         <div tw="relative z-[1]">

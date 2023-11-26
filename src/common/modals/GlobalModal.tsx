@@ -44,7 +44,7 @@ type GlobalModalProps = {
 }
 
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-const GlobalModal: React.FC<GlobalModalProps> = (props) => {
+const GlobalModal: React.FC<GlobalModalProps> = () => {
 
   const [store, setStore] = useState<ContextType['store']>({
     modalType: undefined,
