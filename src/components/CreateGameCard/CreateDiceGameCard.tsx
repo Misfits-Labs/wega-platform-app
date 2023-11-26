@@ -33,7 +33,7 @@ import { ArrowDownIcon, StarLoaderIcon } from '../../assets/icons';
 import tw from 'twin.macro';
 import { useForm } from 'react-hook-form';
 import { useBalance } from 'wagmi';
-import { useNavigateTo, useWegaStore, useCreateGameParams } from '../../hooks';
+import { useNavigateTo, useWegaStore, useCreateGameParams, useTokenUSDValue } from '../../hooks';
 import { useCreateGameMutation } from '../../containers/App/api';
 import { 
   useCreateWagerAndDepositMutation,
@@ -69,7 +69,6 @@ export const CreateDiceGameCard = ({
   const [currentWagerType] = useState<AllPossibleWagerTypes>(wagerType);
   const [currentCurrencyType, setCurrentCurrencyType] = useState<AllPossibleCurrencyTypes>(currencyType);
   const {revealed, triggerRevealAnimation} = useFormReveal(false, formRef, detailsBlock);
-  
   const { register, formState: { errors }, watch, handleSubmit, setValue } = useForm({ 
     mode: 'onChange', 
     resolver: joiResolver(createGameSchema('wager')) , 
@@ -78,6 +77,7 @@ export const CreateDiceGameCard = ({
       wager: 1
     }
   });
+  const wagerUSDValue = useTokenUSDValue(currentCurrencyType, watch('wager')); 
   
   // approval for allowance
   const isWagerApproved = (allowance: number, wagerAmount: number) => allowance >= wagerAmount;
@@ -91,7 +91,6 @@ export const CreateDiceGameCard = ({
   const { data: userWagerBalance, isLoading: isWagerbalanceLoading } = useBalance({ 
     address: wallet?.address as HexishString,
     token: tokenAddress,
-    enabled: false,
     cacheTime: 60_000,
     onError(error) {
       console.log('Error', error)
@@ -165,7 +164,7 @@ export const CreateDiceGameCard = ({
       onSubmit={handleSubmit(handleCreateGameClick)} 
       ref={formRef}
     >
-      <CreateGameCardContainer {...rest} tw="dark:bg-[#282828] rounded-[10px]">
+      <CreateGameCardContainer {...rest}>
         {/* badge selection */}
         <ToggleWagerBadge currentCurrencyType={currentCurrencyType} setCurrentCurrencyType={setCurrentCurrencyType} />
 
@@ -180,9 +179,10 @@ export const CreateDiceGameCard = ({
               name="wager"
               render={({ message }) => <NormalText tw="text-[#E11D48]">{message}</NormalText> }
             />
-            <NormalText tw="dark:text-shinishi">00,00 USD</NormalText>
+            {/* should receive wager amount as input */}
+            <NormalText tw="dark:text-shinishi">{wagerUSDValue.loading ? 'loading...' : wagerUSDValue.value} USD</NormalText> 
             <SmallText> Balance: {
-              isWagerbalanceLoading ? "Retrieving balance..." : userWagerBalance ? userWagerBalance?.formatted + ' ' + userWagerBalance?.symbol : 0
+              isWagerbalanceLoading ? "Retrieving balance..." : userWagerBalance ? userWagerBalance?.formatted  : String(0) 
             } </SmallText> 
             {/* useBalance from wagmi can be used here */}
           </div>

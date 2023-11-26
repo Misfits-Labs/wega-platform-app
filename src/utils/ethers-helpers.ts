@@ -1,4 +1,10 @@
-import { parseEther, BigNumberish, Interface } from "ethers";
+import { 
+  parseEther, 
+  BigNumberish, 
+  Interface, 
+  toBigInt,
+  solidityPackedSha256 
+} from "ethers";
 import { Player } from '../models'
 
 export function parseIntFromBigNumber(val: BigNumberish | number) {
@@ -33,3 +39,7 @@ export function isGameCreator(
   } 
   return false;
 }
+
+export function convertBytesToNumber(bytes: string): bigint {
+  return toBigInt(solidityPackedSha256(['bytes'],["0x".concat(bytes)]));
+ }

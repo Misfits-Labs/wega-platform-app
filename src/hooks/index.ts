@@ -5,3 +5,4 @@ export { useBlockchainApiHooks } from './useBlockchainApiHooks';
 export { useNavigateTo } from './useNavigateTo';
 export { useFirebaseData } from './useFirebaseData';
 export { useCreateGameParams } from './useCreateGameParams';
+export { useTokenUSDValue } from './useTokenUSDValue';

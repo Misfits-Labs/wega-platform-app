@@ -5,7 +5,8 @@ export {
  miniWalletAddress,
  toBigIntInWei,
  parseTopicDataFromEventLog,
- interfaceIdFromAbi
+ interfaceIdFromAbi,
+ convertBytesToNumber
 } from './ethers-helpers.ts'
 export { deployed } from './deployment.ts'
 export { toastSettings } from './toast.ts'
@@ -23,3 +24,5 @@ export {
  wegaGameControllerConfig,
  wegaRandomizerControllerConfig
 } from './abis.ts'
+
+export { cryptoComparePriceApi } from './price.ts'

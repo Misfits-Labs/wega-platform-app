@@ -7,6 +7,7 @@ export const CreateGameCardContainer = styled.div`
  flex-direction: column;
  align-items: center;
  gap: 32px;
+ ${tw`dark:bg-[#282828] rounded-[10px] border border-[2px] border-[#343434]`}
 ` 
 
 export const InputBox = styled.input`
@@ -16,9 +17,7 @@ export const InputBox = styled.input`
  line-height: 68px;
  ${tw`bg-inherit focus:outline-none`}
  text-align: center;
- 
  -moz-appearance: textfield;
-
  &::-webkit-outer-spin-button, 
  &::-webkit-inner-spin-button {
     -webkit-appearance: none;

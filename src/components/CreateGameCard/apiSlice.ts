@@ -29,5 +29,4 @@ appApiSlice.enhanceEndpoints({
  addTagTypes: ['Games'], 
  endpoints: { createGame:  { invalidatesTags: [ { type: 'Games', id: 'LIST' } ]} } 
 });
-
 export const { useCreateGameMutation } = createGameApiSlice;

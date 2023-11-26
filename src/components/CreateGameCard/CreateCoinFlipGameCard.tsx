@@ -167,8 +167,7 @@ export const CreateCoinFlipGameCard = ({
       ref={formRef}
     >
       <ToggleCoinFlipSides currentCoinSide={currentCoinSide} setCurrentCoinSide={setCurrentCoinSide} tw="mb-[32px]" />
-
-      <CreateGameCardContainer {...rest} tw="dark:bg-[#282828] rounded-[10px]">
+      <CreateGameCardContainer {...rest}>
         {/* badge selection */}
         <ToggleWagerBadge currentCurrencyType={currentCurrencyType} setCurrentCurrencyType={setCurrentCurrencyType} />
         <div >
