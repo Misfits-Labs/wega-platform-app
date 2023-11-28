@@ -28,6 +28,7 @@ export type Wega = {
  requiredPlayerNum: number;
  currentTurn: number;
  gameAttributes?: WegaAttributes;
+ gameWinners?: ({ winner: HexishString })[];
  winners?: HexishString[];
 }
 

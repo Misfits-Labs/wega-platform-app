@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { styled } from "twin.macro";
 import { WegaTypesEnum, WegaTypes } from "../../models";
 
@@ -33,3 +34,10 @@ export const MinimumGameRounds: any = {
  [WegaTypes[WegaTypesEnum.DICE]]: 1,
  [WegaTypes[WegaTypesEnum.COINFLIP]]: 1,
 } 
+
+export enum PlayerCardStates {
+ CONNECTING = 'connecting',
+ CONNECTED  = 'connected',
+ IDLE  = 'idle',
+ ROLLING = 'rolling'
+}

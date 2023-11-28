@@ -23,11 +23,12 @@ const JoinGamePage = () => {
       <title>Join - {BADGE_TEXTS[game.gameType]} </title>
       </Helmet>
       <FloatingOrbs />
-      <MainContainer tw="min-h-[85vh] items-start">
+      <MainContainer tw="items-start">
         <Section 
+        tw="self-center"
         direction='col'
         hdr={
-          <SectionHeaderContainer tw='justify-center'>
+          <SectionHeaderContainer tw='justify-center self-center'>
             <SectionHeaderTitle>Match wager</SectionHeaderTitle>
           </SectionHeaderContainer>}>
           <JoinGameCard

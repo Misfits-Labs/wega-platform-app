@@ -14,12 +14,12 @@ export function useCreateGameParams({
   const [getUserUuid, setUserUuid] = useGetSet<string| undefined>(undefined);
   
   useEffect(() => {
-    if(wallet && network && user) {
+    if((wallet && network && user) && !(getTokenAddress() && getPlayerAddress() && getUserUuid())) {
      setTokenAddress(SupportedWagerTokenAddresses(network?.id as number)[CurrencyTypes[CurrencyTypesEnum.USDC]]);
      setPlayerAddress(wallet.address as HexishString);
      setUserUuid(user.uuid as string);
     }
-  }, [ wallet, network, user ]);
+  }, [ network?.id ]);
   return {
    tokenAddress: getTokenAddress() as HexishString,
    playerAddress: getPlayerAddress() as HexishString,

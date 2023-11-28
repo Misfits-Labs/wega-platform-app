@@ -79,7 +79,7 @@ const PlayGameSection: React.FC<PlayGameSectionProps> = ({
     } else {
       Comp = GAME_COMPONENTS[game.gameType.toUpperCase()];
       if(children) {
-        return gameResults() && winners ? <Comp {...{
+        return gameResults() && winners.length > 0 ? <Comp {...{
           game,
           user,
           players,
@@ -93,7 +93,7 @@ const PlayGameSection: React.FC<PlayGameSectionProps> = ({
           ...rest 
         }}>{children}</Comp> : <ComponentLoader tw="w-[100%] h-[100%]" />       
       } else {
-        return gameResults() && winners ? <Comp {...{
+        return gameResults() && winners.length ? <Comp {...{
           game,
           user,
           players,

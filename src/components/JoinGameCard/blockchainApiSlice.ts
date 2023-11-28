@@ -3,23 +3,23 @@ import { HexishString } from '../../models';
 import { ContractTypes } from '../../libs/wagmi';
 
 // Todo 
-  // write function names with type safety 
+// write function names with type safety 
 export const joinGameBlockchainApiSlice = blockchainApiSlice.injectEndpoints({
   endpoints: (builder) => ({
-   depositAndJoinDice: builder.mutation<any, { escrowHash: HexishString }>({
-     query: ({escrowHash}) => ({
+   depositAndJoinDice: builder.mutation<any, { escrowHash: HexishString, randomness: bigint[] }>({
+     query: ({escrowHash, randomness }) => ({
       functionName: 'depositOrPlay',
       contract: ContractTypes.GAMECONTROLLER,
       method: 'WRITE',
-      args: [escrowHash]
+      args: [escrowHash, randomness]
      })
     }),
-   depositAndJoinCoinflip: builder.mutation<any, { escrowHash: HexishString, playerChoices: number[] }>({
-     query: ({ escrowHash, playerChoices}) => ({
+   depositAndJoinCoinflip: builder.mutation<any, { escrowHash: HexishString, playerChoices: number[], randomness: bigint[]}>({
+     query: ({ escrowHash, playerChoices, randomness }) => ({
       functionName: 'depositOrPlay',
       contract: ContractTypes.GAMECONTROLLER,
       method: 'WRITE',
-      args: [escrowHash, playerChoices]
+      args: [escrowHash, playerChoices, randomness]
      })
     }),
   })

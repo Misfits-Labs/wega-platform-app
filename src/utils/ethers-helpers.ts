@@ -19,15 +19,15 @@ export function toBigIntInWei(value: number): bigint {
 }
 
 export const miniWalletAddress = (address: `0x${string}` | undefined) => {
-  return address?.slice(0, 6) + "..."
+  return address?.slice(0, 5) + "..." + address?.slice(address?.length - 3, address?.length)
 } 
 
 export function interfaceIdFromAbi(abi: string[]) {
   return new Interface(abi);
 }
 
-export function parseTopicDataFromEventLog(txLog: { data: string, topics: Array<string>}, eventAbi: string[]){
-  return interfaceIdFromAbi(eventAbi).parseLog(txLog)?.args.toObject();
+export function parseTopicDataFromEventLog(txLog: { data: string, topics: Array<string> }, eventAbi: string[]){
+  return interfaceIdFromAbi(eventAbi).parseLog({ data: txLog.data, topics: txLog.topics })?.args.toObject();
 }
 
 export function isGameCreator(

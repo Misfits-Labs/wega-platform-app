@@ -10,12 +10,12 @@ import { formatEther } from 'ethers';
   // write function names with type safety 
 export const createGameBlockchainApiSlice = blockchainApiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    createWagerAndDeposit: builder.mutation<any, { tokenAddress: HexishString, wagerAsBigint: bigint, gameType: AllPossibleWegaTypes }>({
-       query: ({ tokenAddress, wagerAsBigint, gameType }) => ({
+    createWagerAndDeposit: builder.mutation<any, { tokenAddress: HexishString, wagerAsBigint: bigint, gameType: AllPossibleWegaTypes, randomness: bigint[] }>({
+       query: ({ tokenAddress, wagerAsBigint, gameType, randomness }) => ({
         functionName: 'createGame',
         contract: ContractTypes.GAMECONTROLLER,
         method: 'WRITE',
-        args: [gameType, tokenAddress, wagerAsBigint]
+        args: [gameType, tokenAddress, wagerAsBigint, randomness]
        })
      }),
     approveERC20: builder.mutation<any, { tokenAddress: HexishString, spender: HexishString, wagerAsBigint: bigint }>({

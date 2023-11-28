@@ -3,6 +3,7 @@ import { ModalContainer  } from './types';
 import { GameWinnerDeclarationModal  } from './GameWinnerDeclarationModal';
 import { GameLoserDeclarationModal  } from './GameLoserDeclarationModal';
 import { ClaimModal } from './ClaimModal';
+import BounceFromTop from './BounceFromTop';
 
 export const MODAL_TYPES = {
   WINNER_DECLARATION_WINNER_MODAL: 'WINNER_DECLARATION_WINNER_MODAL',
@@ -44,8 +45,7 @@ type GlobalModalProps = {
 }
 
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-const GlobalModal: React.FC<GlobalModalProps> = () => {
-
+const GlobalModal: React.FC<GlobalModalProps> = ({ children }) => {
   const [store, setStore] = useState<ContextType['store']>({
     modalType: undefined,
     modalProps: undefined,
@@ -114,7 +114,7 @@ const GlobalModal: React.FC<GlobalModalProps> = () => {
     if (!modalType || !ModalComponent) {
       return null
     }
-    return <ModalComponent {...modalProps} />
+    return <BounceFromTop><ModalComponent {...modalProps} /></BounceFromTop>
   }
   return (
     <GlobalModalContext.Provider value={{ 
@@ -139,19 +139,7 @@ const GlobalModal: React.FC<GlobalModalProps> = () => {
           }
         </ModalContainer>
       }
-      {/* {
-        typeof (responseModalStore.responseType) === 'number' && // FOUND THE GODDAMN BUG
-        <ResponseModalContainer onClick={
-          responseModalStore.persist ? 
-          () => null : 
-          hideResponseModal 
-        }
-        >
-          {
-            renderResponseModalComponent(rType as ResponseTypes)
-          }
-        </ResponseModalContainer>
-      } */}
+      {children}
     </GlobalModalContext.Provider>
     )
 }

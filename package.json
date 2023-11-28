@@ -9,7 +9,7 @@
     }
   },
   "scripts": {
-    "dev": "export GSAP_TOKEN=$(grep 'GSAP_TOKEN=' .env | cut -d'=' -f2) && vite --mode",
+    "app": "export GSAP_TOKEN=$(grep 'GSAP_TOKEN=' .env | cut -d'=' -f2) && vite --mode",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "eslint \"src/**/*.{ts,tsx}\" --fix",
@@ -81,7 +81,8 @@
     "tailwindcss-cli": "^0.1.2",
     "twin.macro": "^3.4.0",
     "typescript": "^5.1.6",
-    "vite": "^4.4.5"
+    "vite": "^4.4.5",
+    "vite-plugin-mkcert": "^1.17.1"
   },
   "browserslist": {
     "production": [

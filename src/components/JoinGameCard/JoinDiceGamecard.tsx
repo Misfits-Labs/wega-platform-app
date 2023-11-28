@@ -28,14 +28,15 @@ import { ArrowDownIcon, StarLoaderIcon } from '../../assets/icons';
 import tw from 'twin.macro';
 import { useForm } from 'react-hook-form';
 import { useBalance } from 'wagmi';
-import { useNavigateTo } from '../../hooks';
+import { useNavigateTo, useTokenUSDValue } from '../../hooks';
 import { useDepositAndJoinDiceMutation } from './blockchainApiSlice';
 import { useAllowanceQuery, useApproveERC20Mutation } from '../CreateGameCard/blockchainApiSlice';
 import toast from 'react-hot-toast';
-import { toastSettings, escrowConfig, toBigIntInWei } from '../../utils';
+import { toastSettings, escrowConfig, toBigIntInWei, convertBytesToNumber } from '../../utils';
 import Button from '../../common/Button';
 import { useFormReveal } from '../CreateGameCard/animations';
-import { useJoinGameMutation, useUpdateGameMutation } from '../../containers/App/api';
+import { useJoinGameMutation, useUpdateGameMutation } from './apiSlice';
+import { useGetRandomNumberQuery } from '../CreateGameCard/apiSlice';
 import { JoinGameCardProps } from './'
 
 export interface JoinDiceGameCardProps extends JoinGameCardProps, React.Attributes, React.AllHTMLAttributes<HTMLDivElement> {};
@@ -62,9 +63,10 @@ const JoinGameDiceCard: React.FC<JoinDiceGameCardProps> = ({
   const [currentWagerType] = useState<AllPossibleWagerTypes>(wagerType);
   const [currentCurrencyType] = useState<AllPossibleCurrencyTypes>(currencyType);
   const {revealed, triggerRevealAnimation} = useFormReveal(false, formRef, detailsBlock);
+  const randomnessQuery = useGetRandomNumberQuery(undefined);
   
   // should go into blockchain api slice 
-  const { register, formState: { errors }, handleSubmit } = useForm({ 
+  const { register, formState: { errors }, handleSubmit, watch } = useForm({ 
     mode: 'onChange',
     resolver: joiResolver(createGameSchema('wager', wagerAmount)) , 
     reValidateMode: 'onChange',
@@ -72,6 +74,8 @@ const JoinGameDiceCard: React.FC<JoinDiceGameCardProps> = ({
       wager: wagerAmount,
     }
   });
+
+  const wagerUSDValue = useTokenUSDValue(currentCurrencyType, watch('wager'));
 
   // approval for allowance
   const isWagerApproved = (allowance: number, wagerAmount: number) => allowance >= wagerAmount;
@@ -97,7 +101,10 @@ const JoinGameDiceCard: React.FC<JoinDiceGameCardProps> = ({
       if(!isWagerApproved(allowanceQuery.data, wagerAmount)) {
         await approveERC20({ spender: escrowConfig.address[network.id as keyof typeof escrowConfig.address], wagerAsBigint: toBigIntInWei(wagerAmount), tokenAddress }).unwrap();
       }
-      await depositAndJoinDice({ escrowHash: escrowId }).unwrap();
+      await depositAndJoinDice({ 
+        escrowHash: escrowId, 
+        randomness: [convertBytesToNumber(randomnessQuery.data?.randomness)] 
+      }).unwrap();
       await joinGame({ newPlayerUuid: playerUuid, gameUuid }).unwrap();
       await updateGame({ uuid: gameUuid, state: WegaState.PLAYING }).unwrap();
       navigateToGameUi(`/${gameType.toLowerCase()}/play/${gameUuid}`, 1500, { replace: true, state: { gameId: gameId, gameUuid } });
@@ -114,7 +121,7 @@ const JoinGameDiceCard: React.FC<JoinDiceGameCardProps> = ({
   const navigateToGameUi = useNavigateTo()
   useEffect(() => {
     allowanceQuery.refetch();
-  }, [tokenAddress, wagerAmount, isWagerApproved]);
+  }, [tokenAddress, wagerAmount]);
   
   return (
     <form 
@@ -140,7 +147,7 @@ const JoinGameDiceCard: React.FC<JoinDiceGameCardProps> = ({
               name="wager"
               render={({ message }) => <NormalText tw="text-[#E11D48]">{message}</NormalText> }
             />
-            <NormalText tw="dark:text-shinishi">00,00 USD</NormalText>
+            <NormalText tw="dark:text-shinishi">{wagerUSDValue.loading ? 'loading...' : wagerUSDValue.value} USD</NormalText>
             <SmallText> Balance: {
               isWagerbalanceLoading ? "Retrieving balance..." : userWagerBalance?.formatted + ' ' + userWagerBalance?.symbol 
             } </SmallText> 

@@ -26,29 +26,31 @@ export function useFirebaseData(gameUuid: string) {
     const databaseRef = ref(database);
     onValue(databaseRef, (snapshot) => {
       const { games } = snapshot.val();
-      setGame(games[gameUuid]);
       setGamesCount(Object.keys(games).length);
-      const { players, requiredPlayerNum, currentTurn, gameAttributes, gameType } = games[gameUuid];
-      if(players.length === requiredPlayerNum) {
-        setIsGamePlayable(true);
-      } 
-      if (players) {
-        setPlayersInGame(players);
-        setGameInfo(Object.assign({}, { currentRound: (Math.floor((currentTurn - 1) / requiredPlayerNum)), rollerIndex: (currentTurn % requiredPlayerNum), currentTurn }));
-      }
-      if (gameType === WegaTypes[WegaTypesEnum.COINFLIP]) {
-        if(gameAttributes.length > 0){
-          setWegaAttributes(gameAttributes);
-          if(gameAttributes.length >= 1) {
-            setPlayerFlipChoices((s: any) => ({
-              ...s, 
-              playerOne: Number(gameAttributes.filter((a: any) => a.key === 'players[0].flipChoice')[0].value) as AllPossibleCoinSides })
-            )
-            if(gameAttributes.length === 2) {
+      if(gameUuid) {
+        setGame(games[gameUuid]);
+        const { players, requiredPlayerNum, currentTurn, gameAttributes, gameType } = games[gameUuid];
+        if(players.length === requiredPlayerNum) {
+          setIsGamePlayable(true);
+        } 
+        if (players) {
+          setPlayersInGame(players);
+          setGameInfo(Object.assign({}, { currentRound: (Math.floor((currentTurn - 1) / requiredPlayerNum)), rollerIndex: (currentTurn % requiredPlayerNum), currentTurn }));
+        }
+        if (gameType === WegaTypes[WegaTypesEnum.COINFLIP]) {
+          if(gameAttributes.length > 0){
+            setWegaAttributes(gameAttributes);
+            if(gameAttributes.length >= 1) {
               setPlayerFlipChoices((s: any) => ({
                 ...s, 
-                playerTwo: Number(gameAttributes.filter((a: any) => a.key === 'players[1].flipChoice')[0].value) as AllPossibleCoinSides })
+                playerOne: Number(gameAttributes.filter((a: any) => a.key === 'players[0].flipChoice')[0].value) as AllPossibleCoinSides })
               )
+              if(gameAttributes.length === 2) {
+                setPlayerFlipChoices((s: any) => ({
+                  ...s, 
+                  playerTwo: Number(gameAttributes.filter((a: any) => a.key === 'players[1].flipChoice')[0].value) as AllPossibleCoinSides })
+                )
+              }
             }
           }
         }

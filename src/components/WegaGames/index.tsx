@@ -12,11 +12,8 @@ export interface JoinableAndPlayableGamesProps extends React.Attributes, React.H
 }
 const filterPlayableGames = (data: Wega[], userUuid: string) => data.filter(game => game.state === WegaState.PLAYING && game.players.some(predicate => predicate.uuid === userUuid ));
 const filterJoinableGames = (data: Wega[], userUuid: string) => data.filter(game => game.state === WegaState.PENDING && game.players.every(predicate => predicate.uuid !== userUuid )); 
+const filterWaitingGames = (data: Wega[], userUuid: string) => data.filter(game => game.state === WegaState.PENDING && game.players.some(predicate => predicate.uuid === userUuid )); 
 const sortPlayableGames = (data: Wega[]) => data.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-// const filterClaimableGames = (data: Wega[], userUuid: string) => data.filter(game => game.players.some(predicate => predicate.uuid === userUuid ));
-// const attachGameWinners = (data: Wega[], winners: HexishString[]) => data.map(game => ({ ...game, winners }));
-// const filterClaimableGames = (data: Wega[], userAddress: HexishString) => data.filter(game => game.players.some(predicate => predicate.walletAddress?.toLowerCase() !== userAddress.toLowerCase())); 
-
 export const JoinableAndPlayableGames: React.FC<JoinableAndPlayableGamesProps> = ({ gamesCount, userUuid, ...rest }: JoinableAndPlayableGamesProps) => {
  const { data, isLoading, isSuccess} = useGetGamesQuery(undefined);
  const [gameIds, setGameIds] = useState<number[]>();
@@ -25,7 +22,8 @@ export const JoinableAndPlayableGames: React.FC<JoinableAndPlayableGamesProps> =
     const dataArray = data.ids.map((id: number) => data.entities[id]) as Wega[];
     const playableGames = filterPlayableGames(dataArray, userUuid);
     const joinableGames = filterJoinableGames(dataArray, userUuid);
-    const sortedGameIds = sortPlayableGames([...playableGames, ...joinableGames]).map(game => game.id);
+    const waitingGames  = filterWaitingGames(dataArray, userUuid);
+    const sortedGameIds = sortPlayableGames([...playableGames, ...joinableGames, ...waitingGames]).map(game => game.id);
     setGameIds(sortedGameIds);
   }
  }, [data, gamesCount, isSuccess]);

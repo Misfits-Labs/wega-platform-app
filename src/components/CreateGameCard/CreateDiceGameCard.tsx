@@ -33,15 +33,21 @@ import { ArrowDownIcon, StarLoaderIcon } from '../../assets/icons';
 import tw from 'twin.macro';
 import { useForm } from 'react-hook-form';
 import { useBalance } from 'wagmi';
-import { useNavigateTo, useWegaStore, useCreateGameParams, useTokenUSDValue } from '../../hooks';
-import { useCreateGameMutation } from '../../containers/App/api';
+import { useNavigateTo, useWegaStore, useCreateGameParams, useTokenUSDValue} from '../../hooks';
+import { useCreateGameMutation, useGetRandomNumberQuery } from './apiSlice';
 import { 
   useCreateWagerAndDepositMutation,
   useAllowanceQuery,
   useApproveERC20Mutation,
 } from './blockchainApiSlice';
 import toast from 'react-hot-toast';
-import { toastSettings, toBigIntInWei, escrowConfig, parseTopicDataFromEventLog } from '../../utils';
+import { 
+  toastSettings, 
+  toBigIntInWei, 
+  escrowConfig, 
+  parseTopicDataFromEventLog,
+  convertBytesToNumber 
+} from '../../utils';
 import Button from '../../common/Button';
 import { ToggleWagerBadge } from '../../common/ToggleWagerBadge';
 import { useFormReveal } from './animations';
@@ -63,6 +69,7 @@ export const CreateDiceGameCard = ({
 }: CreateGameCardInterface & React.Attributes & React.AllHTMLAttributes<HTMLDivElement> ) => {
   const { openConnectModal } = useConnectModal();
   const { wallet, user, network } = useWegaStore();
+  const randomnessQuery = useGetRandomNumberQuery(undefined);
   const {tokenAddress, playerAddress, playerUuid } = useCreateGameParams({ wallet, user, network});
   const formRef = useRef<HTMLFormElement>(null);
   const detailsBlock = useRef<HTMLDivElement>(null)
@@ -90,11 +97,7 @@ export const CreateDiceGameCard = ({
   // get token balance of user
   const { data: userWagerBalance, isLoading: isWagerbalanceLoading } = useBalance({ 
     address: wallet?.address as HexishString,
-    token: tokenAddress,
-    cacheTime: 60_000,
-    onError(error) {
-      console.log('Error', error)
-    },
+    token: tokenAddress
   })
     
   // create game 
@@ -112,8 +115,15 @@ export const CreateDiceGameCard = ({
       if(!isWagerApproved(allowanceQuery.data, wager)) {
         await approveERC20({ spender: escrowConfig.address[network?.id as keyof typeof escrowConfig.address], wagerAsBigint: toBigIntInWei(wager), tokenAddress }).unwrap();
       }
-      const receipt = await createWagerAndDeposit({ tokenAddress, wagerAsBigint: toBigIntInWei(wager), gameType }).unwrap();
-      const parsedTopicData = parseTopicDataFromEventLog(receipt.logs[3], ['event GameCreation(bytes32 indexed escrowHash, uint256 indexed nonce, address creator, string name)']);
+      const receipt = await createWagerAndDeposit({ 
+        tokenAddress, 
+        wagerAsBigint: toBigIntInWei(wager), 
+        gameType,
+        randomness: [convertBytesToNumber(randomnessQuery.data?.randomness)] 
+      }).unwrap();
+
+      const parsedTopicData = parseTopicDataFromEventLog(receipt.logs[2], ['event GameCreation(bytes32 indexed escrowHash, uint256 indexed nonce, address creator, string name)']);
+      
       await createGame({ 
         gameType, 
         players: [ { uuid: playerUuid } ],
@@ -121,10 +131,10 @@ export const CreateDiceGameCard = ({
         wager: { 
           wagerType: currentWagerType.toUpperCase() as AllPossibleWagerTypes, 
           wagerHash: parsedTopicData?.escrowHash, 
-          tokenAddress, 
+          tokenAddress,
           wagerAmount: parseEther(String(wager)).toString(), 
           wagerCurrency: currentCurrencyType,
-          nonce: parsedTopicData?.nonce.toNumber(),
+          nonce: Number(parsedTopicData?.nonce),
         }
       }).unwrap();
       toast.success('Create game success', { ...toastSettings('success', 'top-center') as any });
@@ -151,13 +161,11 @@ export const CreateDiceGameCard = ({
       }
     }
   }, [
-    watch('wager'), 
+    watch('wager'),
     tokenAddress, 
-    isWagerApproved, 
     createGameStatus, 
     createGameResponse
   ]);
-  
   return (
     <form 
       tw="w-full flex flex-row justify-center" 

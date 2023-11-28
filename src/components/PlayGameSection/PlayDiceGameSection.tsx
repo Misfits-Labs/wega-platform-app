@@ -9,6 +9,7 @@ import { useRoll } from '../Dice/animations';
 import { useUpdateGameMutation } from "./apiSlice";
 import { useGlobalModalContext, MODAL_TYPES } from "../../common/modals";
 import Button from "../../common/Button";
+import { getGameStatus, isCurrentUserGameCreator } from './utils';
 import 'twin.macro';
 
 interface PlayGameSectionProps {
@@ -35,7 +36,6 @@ const PlayDiceGameSection: React.FC<PlayGameSectionProps>= ({
   const [updateGame, ] = useUpdateGameMutation();
   const maxTurns = MinimumGameRounds[game.gameType] * game.requiredPlayerNum;
   const { showModal, hideModal } = useGlobalModalContext();
-  const [isRolling, setIsRolling] = useState<boolean>(false); 
   const [hasRolled, setHasRolled] = useState<boolean>(false); 
   const [shouldCurrentPlayerRoll, setShouldCurrentPlayerRoll] = useState<boolean>(false);
   
@@ -49,22 +49,29 @@ const PlayDiceGameSection: React.FC<PlayGameSectionProps>= ({
   }
 
   const handleOnRollClick = async (gameUuid: string, turn: number) => {
-    // should trigger the animation here
-    try {
-      return await updateGame({ uuid: gameUuid, currentTurn: turn, state: WegaState.COMPLETED }).unwrap();
-    } catch (e) {
-      console.log(e)
+    if(turn < maxTurns) {
+      try {
+        return await updateGame({ uuid: gameUuid, currentTurn: turn }).unwrap();
+      } catch (e) {
+        console.log(e)
+      }
+    } else {
+      const gameWinners = winners.map(w => ({ winner: w }));
+      try {
+        return await updateGame({ uuid: game.uuid, currentTurn: turn, state: WegaState.COMPLETED, gameWinners  }).unwrap();
+      } catch(e) {
+        console.log(e)
+      }
     }
   }
+
   // setup animation
   const diceRef = useRef<any>(null);
   const { rolled, triggerRoll } = useRoll(diceRef,
     () => {
-      setIsRolling(true);
       setHasRolled(false)
     }, // on animation begin
     () =>  {
-      setIsRolling(false);
       setHasRolled(true);
     } // on animation end
   );
@@ -123,24 +130,30 @@ const PlayDiceGameSection: React.FC<PlayGameSectionProps>= ({
     <div tw="flex gap-x-[25px] items-center justify-center">
       {/* player card */}
       <PlayGamePlayerCard
-        status={'connected'}
+        status={getGameStatus({ 
+          isGamePlayable,
+          isCurrentUserGameCreator: isCurrentUserGameCreator(game.creatorUuid, user?.uuid as string), 
+          isCurrentUserTurn: shouldCurrentPlayerRoll,
+        })}
         player={user}
         wager={game.wager}
-        isGameOver={gameInfo.currentTurn === maxTurns}
-        isRolling={isRolling && !shouldCurrentPlayerRoll}
+        isGameOver={rolled}
         shouldRoll={gameInfo.currentTurn > 0 ? hasRolled && shouldCurrentPlayerRoll : shouldCurrentPlayerRoll}
-        isGamePlayable={isGamePlayable}
+        hasAnyOneRolled={gameInfo.currentTurn > 0}
       />
       <Dice diceRef={diceRef} />
       {/* searching for opponent box */}
       <PlayGamePlayerCard
-        status={isGamePlayable ? 'connected' : 'connecting'} 
+        status={getGameStatus({ 
+          isGamePlayable,
+          isCurrentUserGameCreator: !isCurrentUserGameCreator(game.creatorUuid, user?.uuid as string),
+          isCurrentUserTurn: !shouldCurrentPlayerRoll,
+        })} 
         opponent={players.filter(player => player.uuid !== user.uuid)[0]}
         wager={game.wager}
-        isGameOver={gameInfo.currentTurn === maxTurns}
-        isRolling={isRolling && shouldCurrentPlayerRoll}
+        isGameOver={rolled}
         shouldRoll={gameInfo.currentTurn > 0 ? hasRolled && !shouldCurrentPlayerRoll : !shouldCurrentPlayerRoll}
-        isGamePlayable={isGamePlayable}
+        hasAnyOneRolled={gameInfo.currentTurn > 0}
       />
    </div>
     {

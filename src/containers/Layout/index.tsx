@@ -36,9 +36,12 @@ const Layout = () => {
        Navigating...
      </div>
      <Navigation />
-     <Outlet />
-     <GlobalModal />
-     <Footer />
+     <div tw="min-h-[100vh] flex flex-col justify-between relative z-[inherit]">
+      <GlobalModal>
+        <Outlet />
+      </GlobalModal>
+      <Footer />
+     </div>
      <ScrollRestoration getKey={getKey} />
      <Toaster />
     </>

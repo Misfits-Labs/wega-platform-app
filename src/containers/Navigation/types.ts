@@ -58,7 +58,7 @@ export const NavigationBar = styled.nav`
   right: 0;
   left: 0;
   transition: transform 500ms ease-out 100ms;
-
+  z-index: 10000;
   &.nav-show {
     transform: initial;
     &::after {
@@ -76,7 +76,7 @@ export const NavigationBar = styled.nav`
     right: 0;
     width: 100%;
     height: 100%;
-    ${tw`bg-pretu bg-opacity-90 z-[750] shadow-wega-nav`}
+    ${tw`bg-pretu bg-opacity-90 z-[7500] shadow-wega-nav`}
     // filter: blur(1rem);
     // -webkit-filter: blur(1rem);
     opacity: 0;
@@ -93,7 +93,7 @@ export const NavigationBar = styled.nav`
     opacity: 0;
     // filter: blur(1rem);
     // -webkit-filter: blur(1rem);
-    ${tw`z-[745] bg-pretu bg-opacity-95`}
+    ${tw`z-[7450] bg-pretu bg-opacity-95`}
     transition: all 500ms ease-out 60ms;
   }
   &.nav-hide {

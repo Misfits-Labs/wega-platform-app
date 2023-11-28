@@ -6,11 +6,11 @@ export const playGameApiSlice = appApiSlice.injectEndpoints({
  endpoints: (builder) => ({
   updateGame: builder.mutation<any, Partial<Wega>>({
    query: ({ uuid, ...updates }) => {
-     return ({
-       url: `/games/${uuid}`,
-       method: 'PATCH',
-       body: { uuid, ...updates }
-     })
+    return ({
+      url: `/games/${uuid}`,
+      method: 'PATCH',
+      body: { uuid, ...updates }
+    })
    },
   }),
  }),

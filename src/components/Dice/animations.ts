@@ -3,6 +3,8 @@ import { gsap } from 'gsap';
 
 // eslint-disable-next-line no-unused-vars
 type Callback = (...args: any[]) => void | null;
+// eslint-disable-next-line no-unused-vars
+// type AsyncCallback = (...args: any[]) => Promise<void | null>;
 
 export function useRoll(diceRef: any, onBegin?: Callback, onEnd?: Callback) {
   const [trigger, setStrigger] = useState<boolean>(false);

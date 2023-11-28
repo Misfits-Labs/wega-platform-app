@@ -22,6 +22,12 @@ export const createGameApiSlice = appApiSlice.injectEndpoints({
      method: 'POST',
      body: { wager, players, gameType, creatorUuid, gameAttributes }
     }),
+  }),
+  getRandomNumber: builder.query({
+   query: () => ({
+     url: '/randomness',
+     method: 'GET',
+    }),
    }),
   }),
 })
@@ -29,4 +35,4 @@ appApiSlice.enhanceEndpoints({
  addTagTypes: ['Games'], 
  endpoints: { createGame:  { invalidatesTags: [ { type: 'Games', id: 'LIST' } ]} } 
 });
-export const { useCreateGameMutation } = createGameApiSlice;
+export const { useCreateGameMutation, useGetRandomNumberQuery } = createGameApiSlice;

@@ -11,11 +11,11 @@ import { tokenConfig, escrowConfig, gameControllerConfig, wegaRandomizerControll
 
 
 const { chains, publicClient } = configureChains(
-  [localhost, polygonMumbai],
+  [polygonMumbai, localhost],
   [
     alchemyProvider({ apiKey: import.meta.env.VITE_RPC_PROVIDER_ALCHEMY as string }), 
     publicProvider()
-]
+  ]
 );
 const projectId = import.meta.env.VITE_WALLET_CONNECT_ID as string;
 const { wallets } = getDefaultWallets({
