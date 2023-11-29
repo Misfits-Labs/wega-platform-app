@@ -27,21 +27,26 @@ import {
   renderGameTypeBadge,
   BADGE_TEXTS
 } from "../../common/JoinableGameBar";
+import {
+  useConnectModal,
+} from '@rainbow-me/rainbowkit';
 import { joiResolver } from '@hookform/resolvers/joi';
 import { ErrorMessage } from '@hookform/error-message';
 import { ArrowDownIcon, StarLoaderIcon } from '../../assets/icons';
 import tw from 'twin.macro';
 import { useForm } from 'react-hook-form';
 import { useBalance } from 'wagmi';
-import { useNavigateTo } from '../../hooks';
+import { useNavigateTo, useCreateGameParams, useWegaStore, useTokenUSDValue } from '../../hooks';
 import { useDepositAndJoinCoinflipMutation } from './blockchainApiSlice';
 import { useAllowanceQuery, useApproveERC20Mutation } from '../CreateGameCard/blockchainApiSlice';
 import toast from 'react-hot-toast';
-import { toastSettings, escrowConfig, toBigIntInWei } from '../../utils';
+import { toastSettings, escrowConfig, toBigIntInWei, convertBytesToNumber } from '../../utils';
 import Button from '../../common/Button';
 import { useFormReveal } from '../CreateGameCard/animations';
-import { useJoinGameMutation, useUpdateGameMutation } from '../../containers/App/api';
+import { useJoinGameMutation, useUpdateGameMutation } from './apiSlice';
 import { ToggleCoinFlipSides } from '../../common/ToggleCoinFlipSides';
+import { useGetRandomNumberQuery } from '../CreateGameCard/apiSlice';
+
 
 
 export interface JoinCoinFlipGameCardProps extends React.Attributes, React.AllHTMLAttributes<HTMLDivElement> {
@@ -62,21 +67,20 @@ export interface JoinCoinFlipGameCardProps extends React.Attributes, React.AllHT
 const JoinCoinFlipGameCard = ({ 
   wagerType, 
   currencyType,
-  tokenAddress,
-  playerAddress,
   gameUuid,
-  playerUuid,
   gameType,
   wagerAmount,
   escrowId,
   gameId,
   gameAttributes,
-  network,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   css,
   ...rest 
 }: JoinCoinFlipGameCardProps) => {
-  
+  const { openConnectModal } = useConnectModal();
+  const { wallet, user, network } = useWegaStore();
+  const randomnessQuery = useGetRandomNumberQuery(undefined);
+  const {tokenAddress, playerAddress, playerUuid} = useCreateGameParams({ wallet, user, network}); // TODO change to generic name
   const formRef = useRef<HTMLFormElement>(null);
   const detailsBlock = useRef<HTMLDivElement>(null)
   const [currentWagerType] = useState<AllPossibleWagerTypes>(wagerType);
@@ -84,7 +88,7 @@ const JoinCoinFlipGameCard = ({
   const {revealed, triggerRevealAnimation} = useFormReveal(false, formRef, detailsBlock);
   const [currentCoinSide] = useState<AllPossibleCoinSides>(gameAttributes && Number(gameAttributes[0].value) === 1 ? 2 : 1);
 
-  const { register, formState: { errors }, handleSubmit } = useForm({ 
+  const { register, formState: { errors }, handleSubmit, watch } = useForm({ 
     mode: 'onChange',
     resolver: joiResolver(createGameSchema('wager', wagerAmount)) , 
     reValidateMode: 'onChange',
@@ -94,9 +98,10 @@ const JoinCoinFlipGameCard = ({
   });
   
   // approval for allowance
+  const wagerUSDValue = useTokenUSDValue(currentCurrencyType, watch('wager'));
   const isWagerApproved = (allowance: number, wagerAmount: number) => allowance >= wagerAmount;
   const allowanceQuery = useAllowanceQuery({ 
-    spender: escrowConfig.address[network.id as keyof typeof escrowConfig.address], 
+    spender: escrowConfig.address[network?.id as keyof typeof escrowConfig.address], 
     owner: playerAddress,
     tokenAddress,  
   });
@@ -115,10 +120,10 @@ const JoinCoinFlipGameCard = ({
   const handleDepositWagerClick = async () => {
     try {
       if(!isWagerApproved(allowanceQuery.data, wagerAmount)) {
-        await approveERC20({ spender: escrowConfig.address[network.id as keyof typeof escrowConfig.address], wagerAsBigint: toBigIntInWei(wagerAmount), tokenAddress }).unwrap();
+        await approveERC20({ spender: escrowConfig.address[network?.id as keyof typeof escrowConfig.address], wagerAsBigint: toBigIntInWei(wagerAmount), tokenAddress }).unwrap();
       }
       const playerChoices = [Number(gameAttributes[0].value), currentCoinSide];
-      await depositAndJoinCoinflip({escrowHash: escrowId, playerChoices }).unwrap();
+      await depositAndJoinCoinflip({escrowHash: escrowId, playerChoices, randomness: [convertBytesToNumber(randomnessQuery.data?.randomness)] }).unwrap();
       await joinGame({ newPlayerUuid: playerUuid, gameUuid }).unwrap();
       await updateGame({ 
         uuid: gameUuid, 
@@ -145,7 +150,10 @@ const JoinCoinFlipGameCard = ({
   const navigateToGameUi = useNavigateTo()
   useEffect(() => {
     allowanceQuery.refetch();
-  }, [tokenAddress, wagerAmount, isWagerApproved]);
+  }, [
+    tokenAddress,
+    wagerAmount
+  ]);
   
   return (
     <form 
@@ -175,7 +183,7 @@ const JoinCoinFlipGameCard = ({
               name="wager"
               render={({ message }) => <NormalText tw="text-[#E11D48]">{message}</NormalText> }
             />
-            <NormalText tw="dark:text-shinishi">00,00 USD</NormalText>
+            <NormalText tw="dark:text-shinishi">{wagerUSDValue.loading ? 'loading...' : wagerUSDValue.value} USD</NormalText>
             <SmallText> Balance: {
               isWagerbalanceLoading ? "Retrieving balance..." : userWagerBalance?.formatted + ' ' + userWagerBalance?.symbol 
             } </SmallText> 
@@ -186,6 +194,14 @@ const JoinCoinFlipGameCard = ({
         </div>
         {/* <Button buttonType="primary"><>Approve</></Button> */}
         { 
+        (!wallet && openConnectModal) ? <Button buttonType="primary" tw="flex" onClick={
+          (e: any) => { 
+            e.preventDefault();
+            openConnectModal();
+          }}>
+          {"Play game"}
+          <StarLoaderIcon loading={false} color="#151515" tw="h-[16px] w-[16px] ms-[5px]" />
+        </Button> :
           <Button type="submit" buttonType="primary" tw="flex">
           {(
             approveERC20Query.isLoading || 

@@ -1,11 +1,9 @@
 import { useEffect } from 'react';
-import { useGetSet } from 'react-use';
-import { useAppDispatch } from '../../hooks';
 import PlayDiceGameSection from './PlayDiceGameSection'; 
 import PlayCoinFlipGameSection from './PlayCoinFlipGameSection';
 import { 
   useGetGameWinnersQuery,
-  playGameBlockchainApiSlice
+  useGetGameResultsQuery,
  } from './blockchainApiSlice'
  
 import { 
@@ -52,26 +50,24 @@ const PlayGameSection: React.FC<PlayGameSectionProps> = ({
   playerFlipChoices,
   ...rest 
 }) => {
-  const dispatch = useAppDispatch();
-  const [gameResults, setGameResults] = useGetSet<number[][] | undefined>(undefined);
+  
   // TODO
     // convert to hook
   const { gameType, wager: { wagerHash: escrowHash } } = game;
-  const getGameResultsOfAllPlayers = async () => {
-    const results = (await Promise.all(players.map(async (player) => dispatch(playGameBlockchainApiSlice.endpoints.getGameResults.initiate({ 
-      gameType, 
-      escrowHash: escrowHash as HexishString, 
-      player: player.walletAddress as HexishString 
-    }))))).map((result: any) => result.data);
-    setGameResults(results as unknown as number[][]);
-  }
-  const { data: winners } = useGetGameWinnersQuery({
+  const gameResultsQuery = useGetGameResultsQuery({
+    gameType, 
+    escrowHash: escrowHash as HexishString, 
+    players: players.map(player => player?.walletAddress) as HexishString[]
+  });
+  const { data: winners, refetch: refetchGameWinners, isLoading: isWinnersQueryLoading } = useGetGameWinnersQuery({
     gameType,
     escrowHash: escrowHash as HexishString,
-  });
+  },);
   useEffect(() => {
-    getGameResultsOfAllPlayers();
+    gameResultsQuery.refetch();
+    refetchGameWinners()
   }, [players.length]);
+  
   const renderGame = () => {
     let Comp;
     if(!game) {
@@ -79,11 +75,11 @@ const PlayGameSection: React.FC<PlayGameSectionProps> = ({
     } else {
       Comp = GAME_COMPONENTS[game.gameType.toUpperCase()];
       if(children) {
-        return gameResults() && winners.length > 0 ? <Comp {...{
+        return !gameResultsQuery.isLoading && !isWinnersQueryLoading ? <Comp {...{
           game,
           user,
           players,
-          gameResults: gameResults(),
+          gameResults: gameResultsQuery.data,
           gameInfo,
           wallet,
           isGamePlayable,
@@ -93,11 +89,11 @@ const PlayGameSection: React.FC<PlayGameSectionProps> = ({
           ...rest 
         }}>{children}</Comp> : <ComponentLoader tw="w-[100%] h-[100%]" />       
       } else {
-        return gameResults() && winners.length ? <Comp {...{
+        return !gameResultsQuery.isLoading && !isWinnersQueryLoading ? <Comp {...{
           game,
           user,
           players,
-          gameResults: gameResults(),
+          gameResults: gameResultsQuery.data,
           gameInfo,
           wallet,
           isGamePlayable,

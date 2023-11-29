@@ -19,6 +19,7 @@ export type Wega = {
  id: number;
  creatorUuid: string;
  uuid: string;
+ networkId: number;
  gameType: AllPossibleWegaTypes;
  createdAt:  string;
  state: string; 

@@ -128,6 +128,7 @@ export const CreateDiceGameCard = ({
         gameType, 
         players: [ { uuid: playerUuid } ],
         creatorUuid: playerUuid,
+        networkId: network?.id as number,
         wager: { 
           wagerType: currentWagerType.toUpperCase() as AllPossibleWagerTypes, 
           wagerHash: parsedTopicData?.escrowHash, 
@@ -166,7 +167,7 @@ export const CreateDiceGameCard = ({
     createGameStatus, 
     createGameResponse
   ]);
-  return (
+  return tokenAddress && playerAddress && playerUuid && randomnessQuery.data && (
     <form 
       tw="w-full flex flex-row justify-center" 
       onSubmit={handleSubmit(handleCreateGameClick)} 

@@ -67,7 +67,7 @@ export function useFirebaseData(gameUuid: string) {
     setGameInfo,
     setWegaAttributes,
     setPlayerFlipChoices,
-    setGamesCount
+    setGamesCount,
   ]);
 
   return { 

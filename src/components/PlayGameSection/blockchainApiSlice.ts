@@ -9,14 +9,14 @@ import { ContractTypes } from '../../libs/wagmi';
   // write function names with type safety 
 export const playGameBlockchainApiSlice = blockchainApiSlice.injectEndpoints({
  endpoints: (builder) => ({
-   getGameResults: builder.query<any, { gameType: AllPossibleWegaTypes, escrowHash: HexishString, player: HexishString }>({
-      query: ({ gameType, escrowHash, player }) => ({
+   getGameResults: builder.query<any, { gameType: AllPossibleWegaTypes, escrowHash: HexishString, players: HexishString[] }>({
+      query: ({ gameType, escrowHash, players }) => ({
        functionName: 'gameResults',
        contract: ContractTypes.GAMECONTROLLER,
        method: 'READ',
-       args: [gameType.toUpperCase(), escrowHash, player]
+       args: [gameType.toUpperCase(), escrowHash, players]
       }),
-      transformResponse: (response: bigint[]) => response.map(r => Number(r))  
+      transformResponse: (response: bigint[]) => response.map(r => typeof r === 'object' ? Number(r) : [Number(r)])  
     }),
    getGameWinners: builder.query<any, { gameType: AllPossibleWegaTypes, escrowHash: HexishString }>({
       query: ({ gameType, escrowHash }) => ({

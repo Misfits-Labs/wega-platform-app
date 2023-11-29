@@ -77,7 +77,7 @@ const PlayDiceGameSection: React.FC<PlayGameSectionProps>= ({
   );
 
   useEffect(() => {
-    if(rolled){
+    if(rolled) {
       if(gameInfo.currentTurn >= maxTurns) {
         if(winners.length > 1) {
           showModal(MODAL_TYPES.WINNER_DECLARATION_WINNER_MODAL, { 
@@ -116,7 +116,7 @@ const PlayDiceGameSection: React.FC<PlayGameSectionProps>= ({
     wallet?.address, 
     gameInfo?.currentTurn,
     gameInfo?.currentRound,
-    rolled
+    rolled,
   ]);
  return players && gameInfo && <PlayGameContainer>
     {/* orbs */}
@@ -130,6 +130,7 @@ const PlayDiceGameSection: React.FC<PlayGameSectionProps>= ({
     <div tw="flex gap-x-[25px] items-center justify-center">
       {/* player card */}
       <PlayGamePlayerCard
+        gameType={game.gameType}
         status={getGameStatus({ 
           isGamePlayable,
           isCurrentUserGameCreator: isCurrentUserGameCreator(game.creatorUuid, user?.uuid as string), 
@@ -144,6 +145,7 @@ const PlayDiceGameSection: React.FC<PlayGameSectionProps>= ({
       <Dice diceRef={diceRef} />
       {/* searching for opponent box */}
       <PlayGamePlayerCard
+        gameType={game.gameType}
         status={getGameStatus({ 
           isGamePlayable,
           isCurrentUserGameCreator: !isCurrentUserGameCreator(game.creatorUuid, user?.uuid as string),

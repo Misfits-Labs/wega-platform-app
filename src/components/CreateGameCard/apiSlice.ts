@@ -10,17 +10,19 @@ import {
 
 export const createGameApiSlice = appApiSlice.injectEndpoints({ 
  endpoints: (builder) => ({
-  createGame: builder.mutation<Wega, Partial<Wega> & Pick<Wega, 'creatorUuid'> & Pick<Wega, 'wager'> & Pick<Wega, 'gameType'> & Pick<Wega, 'gameAttributes'> & Partial<Player>>({
-   query: ({ wager, players, gameType, creatorUuid, gameAttributes }: {
+  createGame: builder.mutation<Wega, 
+  Partial<Wega> & Pick<Wega, 'creatorUuid'> & Pick<Wega, 'wager'> & Pick<Wega, 'gameType'> & Pick<Wega, 'networkId'> & Pick<Wega, 'gameAttributes'> & Partial<Player>>({
+   query: ({ wager, players, gameType, creatorUuid, gameAttributes, networkId }: {
     wager: Wager,
     players: Player[],
     gameType: AllPossibleWegaTypes,
     creatorUuid: string;
     gameAttributes?: WegaAttributes;
+    networkId: number;
    }) => ({
      url: '/games',
      method: 'POST',
-     body: { wager, players, gameType, creatorUuid, gameAttributes }
+     body: { wager, players, gameType, creatorUuid, gameAttributes , networkId }
     }),
   }),
   getRandomNumber: builder.query({

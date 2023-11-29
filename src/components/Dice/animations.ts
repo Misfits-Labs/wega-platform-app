@@ -13,6 +13,7 @@ export function useRoll(diceRef: any, onBegin?: Callback, onEnd?: Callback) {
 
   
   function roll(to: string) {
+    console.log('ROLLING TO', to);
     if(onBegin) onBegin();
     const callb = () => {
      gsap.fromTo("g#all-sides", {

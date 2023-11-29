@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import Joi from 'joi';
+import {
+  useConnectModal,
+} from '@rainbow-me/rainbowkit';
 import { 
   CreateGameCardContainer, 
   InputBox, 
@@ -28,7 +31,7 @@ import { ArrowDownIcon, StarLoaderIcon } from '../../assets/icons';
 import tw from 'twin.macro';
 import { useForm } from 'react-hook-form';
 import { useBalance } from 'wagmi';
-import { useNavigateTo, useTokenUSDValue } from '../../hooks';
+import { useCreateGameParams, useWegaStore, useNavigateTo, useTokenUSDValue } from '../../hooks';
 import { useDepositAndJoinDiceMutation } from './blockchainApiSlice';
 import { useAllowanceQuery, useApproveERC20Mutation } from '../CreateGameCard/blockchainApiSlice';
 import toast from 'react-hot-toast';
@@ -39,31 +42,31 @@ import { useJoinGameMutation, useUpdateGameMutation } from './apiSlice';
 import { useGetRandomNumberQuery } from '../CreateGameCard/apiSlice';
 import { JoinGameCardProps } from './'
 
+
 export interface JoinDiceGameCardProps extends JoinGameCardProps, React.Attributes, React.AllHTMLAttributes<HTMLDivElement> {};
 
 const JoinGameDiceCard: React.FC<JoinDiceGameCardProps> = ({ 
   wagerType, 
   currencyType,
-  tokenAddress,
-  playerAddress,
   gameUuid,
-  playerUuid,
   gameType,
   wagerAmount,
   escrowId,
   gameId,
-  network,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   css,
   ...rest 
 }: JoinDiceGameCardProps) => {
-  
+  const { openConnectModal } = useConnectModal();
+  const { wallet, user, network } = useWegaStore();
+  const randomnessQuery = useGetRandomNumberQuery(undefined);
+  const {tokenAddress, playerAddress, playerUuid} = useCreateGameParams({ wallet, user, network}); // TODO change to generic name
   const formRef = useRef<HTMLFormElement>(null);
   const detailsBlock = useRef<HTMLDivElement>(null)
   const [currentWagerType] = useState<AllPossibleWagerTypes>(wagerType);
   const [currentCurrencyType] = useState<AllPossibleCurrencyTypes>(currencyType);
   const {revealed, triggerRevealAnimation} = useFormReveal(false, formRef, detailsBlock);
-  const randomnessQuery = useGetRandomNumberQuery(undefined);
+
   
   // should go into blockchain api slice 
   const { register, formState: { errors }, handleSubmit, watch } = useForm({ 
@@ -80,7 +83,7 @@ const JoinGameDiceCard: React.FC<JoinDiceGameCardProps> = ({
   // approval for allowance
   const isWagerApproved = (allowance: number, wagerAmount: number) => allowance >= wagerAmount;
   const allowanceQuery = useAllowanceQuery({ 
-    spender: escrowConfig.address[network.id as keyof typeof escrowConfig.address], 
+    spender: escrowConfig.address[network?.id as keyof typeof escrowConfig.address], 
     owner: playerAddress,
     tokenAddress,  
   });
@@ -95,11 +98,10 @@ const JoinGameDiceCard: React.FC<JoinDiceGameCardProps> = ({
   const [depositAndJoinDice, depositAndJoinQuery] = useDepositAndJoinDiceMutation();
   const [joinGame, joinGameQuery] = useJoinGameMutation();
   const [approveERC20, approveERC20Query] = useApproveERC20Mutation();
-
   const handleDepositWagerClick = async () => {
     try {
       if(!isWagerApproved(allowanceQuery.data, wagerAmount)) {
-        await approveERC20({ spender: escrowConfig.address[network.id as keyof typeof escrowConfig.address], wagerAsBigint: toBigIntInWei(wagerAmount), tokenAddress }).unwrap();
+        await approveERC20({ spender: escrowConfig.address[network?.id as keyof typeof escrowConfig.address], wagerAsBigint: toBigIntInWei(wagerAmount), tokenAddress }).unwrap();
       }
       await depositAndJoinDice({ 
         escrowHash: escrowId, 
@@ -158,6 +160,14 @@ const JoinGameDiceCard: React.FC<JoinDiceGameCardProps> = ({
         </div>
         {/* <Button buttonType="primary"><>Approve</></Button> */}
         { 
+          (!wallet && openConnectModal) ? <Button buttonType="primary" tw="flex" onClick={
+            (e: any) => { 
+              e.preventDefault();
+              openConnectModal();
+            }}>
+            {"Play game"}
+            <StarLoaderIcon loading={false} color="#151515" tw="h-[16px] w-[16px] ms-[5px]" />
+          </Button> :
           <Button type="submit" buttonType="primary" tw="flex">
           {(
             approveERC20Query.isLoading || 

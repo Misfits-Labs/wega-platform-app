@@ -12,8 +12,8 @@ import {
  PlayerFlipChoices,
  WegaState
 } from "../../models"
-import { HelpCircleIcon, ClockIcon, SparkleIcon } from "../../assets/icons"
-import { NormalText } from "../CreateGameCard/types"
+import { SparkleIcon } from "../../assets/icons"
+// import { NormalText } from "../CreateGameCard/types"
 import { PlayGameContainer } from "./types"
 import { PlayGamePlayerCard } from "../PlayGamePlayerCard"
 import { CoinFlip } from "../CoinFlip"
@@ -52,8 +52,9 @@ const PlayCoinFlipGameSection: React.FC<PlayGameSectionProps> = ({
  
  const handleOnRollClick = async (gameUuid: string, turn: number) => {
   // should trigger the animation here
+  const gameWinners = winners.map(w => ({ winner: w }));
   try {
-    await updateGame({ uuid: gameUuid, currentTurn: turn, state: WegaState.COMPLETED }).unwrap();
+    await updateGame({ uuid: gameUuid, currentTurn: turn, state: WegaState.COMPLETED, gameWinners }).unwrap();
   } catch (e) {
     console.log(e)
   }
@@ -95,30 +96,38 @@ const PlayCoinFlipGameSection: React.FC<PlayGameSectionProps> = ({
   }
   if(gameInfo && gameResults && gameInfo.currentTurn > 0) {
     const indexOfMaxValue = gameResults.reduce((iMax: any, x: any, i: any, arr: any) => x > arr[iMax] ? i : iMax, 0);
-    triggerRoll([playerFlipChoices.playerOne as AllPossibleCoinSides, playerFlipChoices.playerTwo as AllPossibleCoinSides][indexOfMaxValue], gameInfo.currentTurn >= maxTurns);
+    triggerRoll([playerFlipChoices.playerOne as AllPossibleCoinSides, playerFlipChoices.playerTwo as AllPossibleCoinSides][indexOfMaxValue]);
   }
- }, [players.length, wallet?.address, gameInfo?.currentTurn, maxTurns, rolled]);
+ }, [
+  players.length, 
+  wallet?.address, 
+  gameInfo?.currentTurn,  
+  rolled
+]);
+
  return players && playerFlipChoices && (<PlayGameContainer>
    {/* orbs */}
    {/* timer icon row */}
-   <div tw="flex flex-row justify-center gap-x-[10px] items-center">
+   {/* <div tw="flex flex-row justify-center gap-x-[10px] items-center">
     <ClockIcon tw="w-[24px] h-[24px]" />
     <NormalText tw="text-shinishi">2:30</NormalText>
     <HelpCircleIcon tw="cursor-pointer" />
-   </div>
+   </div> */}
    {/* plage game ui */}
    <div tw="flex gap-x-[25px] items-center justify-center">
     
     {/* player card */}
     <PlayGamePlayerCard
+      tw="gap-y-[24px]"
       status={"connected"}
       player={user}
       wager={game.wager}
-      shouldRoll={gameInfo.rollerIndex === 0}
       coinFlipChoice={isPlayerOne ? playerFlipChoices.playerOne : playerFlipChoices.playerTwo}
-      isRolling={false}
-      isGameOver={gameInfo.currentTurn >= maxTurns}
-      isGamePlayable={isGamePlayable}
+      isGamePlayable={players.length > 1}
+      isGameOver={rolled && gameInfo.currentTurn === maxTurns}
+      isPlayerOne={true}
+      isWinner={winners.some((w: HexishString) => wallet.address.toLowerCase() === w.toLocaleLowerCase())}
+      gameType={game.gameType}
     />
     <CoinFlip coinRef={coinRef} />
     {/* searching for opponent box */}
@@ -126,11 +135,13 @@ const PlayCoinFlipGameSection: React.FC<PlayGameSectionProps> = ({
       status={isGamePlayable ? "connected" : "connecting"}
       opponent={players.filter((player) => player.uuid !== user.uuid)[0]}
       wager={game.wager}
-      shouldRoll={gameInfo.rollerIndex !== 0}
-      isGameOver={gameInfo.currentTurn >= maxTurns}
-      isRolling={false}
+      isGameOver={rolled && gameInfo.currentTurn === maxTurns}
+      isGamePlayable={players.length > 1}
       coinFlipChoice={isPlayerOne ? playerFlipChoices.playerTwo : playerFlipChoices.playerOne}
-      isGamePlayable={isGamePlayable}
+      isPlayerOne={false}
+      isWinner={winners.some((w: HexishString) => players.filter((player) => player.uuid !== user.uuid)[0].walletAddress?.toLowerCase() === w.toLocaleLowerCase())}
+      gameType={game.gameType}
+
     />
    </div>
    {
@@ -140,8 +151,7 @@ const PlayCoinFlipGameSection: React.FC<PlayGameSectionProps> = ({
      disabled={!isGamePlayable || (gameInfo.currentTurn >= maxTurns) ? true : false}
      tw="w-[25%] flex justify-center items-center"
     >
-     <SparkleIcon tw="h-[16px] w-[16px] me-[5px]" />
-     Roll
+     <SparkleIcon tw="h-[16px] w-[16px] me-[5px]" />Flip
     </Button>
    }
   </PlayGameContainer>
