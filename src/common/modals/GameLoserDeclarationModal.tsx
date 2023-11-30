@@ -4,7 +4,7 @@ import {  NormalText, LargeText } from '../../components/CreateGameCard/types';
 import { StarLoaderIcon, RestartIcon, SadEmojiIcon } from '../../assets/icons';
 import Button from '../Button';
 import { AllPossibleWegaTypes} from '../../models';
-import { DiceWinnerLogo, DiceLoserLogo } from './DiceModalImages'
+import { DiceWinnerLogo, DiceLoserLogo } from './GameResultionImages'
 
 import 'twin.macro';
 

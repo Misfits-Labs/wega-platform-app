@@ -8,7 +8,7 @@ import 'twin.macro';
 import { AllPossibleCurrencyTypes, AllPossibleWagerTypes, AllPossibleWegaTypes} from '../../models';
 import { BigNumberish, formatEther } from 'ethers';
 import { Link } from 'react-router-dom';
-import { DiceWinnerLogo, DiceLoserLogo } from './DiceModalImages'
+import { DiceWinnerLogo, DiceLoserLogo } from './GameResultionImages'
 
 export interface GameWinnerDeclarationModalProps {
   gameType: AllPossibleWegaTypes,
