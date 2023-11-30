@@ -19,7 +19,7 @@ export function useCreateGameParams({
      setPlayerAddress(wallet.address as HexishString);
      setUserUuid(user.uuid as string);
     }
-  }, [ network?.id ]);
+  }, [network?.id, wallet?.address, user?.uuid]);
   return {
    tokenAddress: getTokenAddress() as HexishString,
    playerAddress: getPlayerAddress() as HexishString,

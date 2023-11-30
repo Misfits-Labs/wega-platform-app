@@ -31,6 +31,7 @@ export type Wega = {
  gameAttributes?: WegaAttributes;
  gameWinners?: ({ winner: HexishString })[];
  winners?: HexishString[];
+ transactionHash?: HexishString;
 }
 
 export type GameInfoType = { currentRound: number, rollerIndex: number, currentTurn: number };

@@ -36,7 +36,7 @@ const PlayDiceGameSection: React.FC<PlayGameSectionProps>= ({
   const [updateGame, ] = useUpdateGameMutation();
   const maxTurns = MinimumGameRounds[game.gameType] * game.requiredPlayerNum;
   const { showModal, hideModal } = useGlobalModalContext();
-  const [hasRolled, setHasRolled] = useState<boolean>(false); 
+  // const [hasRolled, setHasRolled] = useState<boolean>(false); 
   const [shouldCurrentPlayerRoll, setShouldCurrentPlayerRoll] = useState<boolean>(false);
   
   const getShouldPlayerRoll = (players: any, gameInfo: any, wallet: any) => {
@@ -47,6 +47,20 @@ const PlayDiceGameSection: React.FC<PlayGameSectionProps>= ({
       setShouldCurrentPlayerRoll(false);
     }
   }
+  
+  // const isPlayerOne = players && wallet.address.toLowerCase() === players[0]?.walletAddress?.toLowerCase();
+
+  const getWinnerAndLoserResults = (): { winnerFinalResult: number, loserFinalResult: number } => {
+    let winnerFinalResult: number = -1, loserFinalResult: number = -1;
+    players.forEach((player, i) => {
+      if (player.walletAddress?.toLowerCase() === winners[0].toLowerCase()) {
+        winnerFinalResult = gameResults[i][gameResults[i].length -1]
+      } else {
+        loserFinalResult = gameResults[i][gameResults[i].length -1];
+      }
+    });
+    return { winnerFinalResult, loserFinalResult };
+  } 
 
   const handleOnRollClick = async (gameUuid: string, turn: number) => {
     if(turn < maxTurns) {
@@ -69,10 +83,10 @@ const PlayDiceGameSection: React.FC<PlayGameSectionProps>= ({
   const diceRef = useRef<any>(null);
   const { rolled, triggerRoll } = useRoll(diceRef,
     () => {
-      setHasRolled(false)
+      // setHasRolled(false)
     }, // on animation begin
     () =>  {
-      setHasRolled(true);
+      // setHasRolled(true);
     } // on animation end
   );
 
@@ -85,6 +99,7 @@ const PlayDiceGameSection: React.FC<PlayGameSectionProps>= ({
             wagerType: game.wager.wagerType, 
             wagerAmount: game.wager.wagerAmount,
             gameType: game.gameType,
+            results: getWinnerAndLoserResults(),
             hide: hideModal,
           });
         } else {
@@ -94,11 +109,13 @@ const PlayDiceGameSection: React.FC<PlayGameSectionProps>= ({
               wagerType: game.wager.wagerType, 
               wagerAmount: game.wager.wagerAmount,
               gameType: game.gameType,
+              results: getWinnerAndLoserResults(),
               hide: hideModal,
             });
           } else {
             showModal(MODAL_TYPES.WINNER_DECLARATION_LOSER_MODAL, { 
               gameType: game.gameType,
+              results: getWinnerAndLoserResults(),
               hide: hideModal,
             });
           }
@@ -139,7 +156,6 @@ const PlayDiceGameSection: React.FC<PlayGameSectionProps>= ({
         player={user}
         wager={game.wager}
         isGameOver={rolled}
-        shouldRoll={gameInfo.currentTurn > 0 ? hasRolled && shouldCurrentPlayerRoll : shouldCurrentPlayerRoll}
         hasAnyOneRolled={gameInfo.currentTurn > 0}
       />
       <Dice diceRef={diceRef} />
@@ -154,7 +170,6 @@ const PlayDiceGameSection: React.FC<PlayGameSectionProps>= ({
         opponent={players.filter(player => player.uuid !== user.uuid)[0]}
         wager={game.wager}
         isGameOver={rolled}
-        shouldRoll={gameInfo.currentTurn > 0 ? hasRolled && !shouldCurrentPlayerRoll : !shouldCurrentPlayerRoll}
         hasAnyOneRolled={gameInfo.currentTurn > 0}
       />
    </div>

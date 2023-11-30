@@ -16,7 +16,8 @@ export const playGameBlockchainApiSlice = blockchainApiSlice.injectEndpoints({
        method: 'READ',
        args: [gameType.toUpperCase(), escrowHash, players]
       }),
-      transformResponse: (response: bigint[]) => response.map(r => typeof r === 'object' ? Number(r) : [Number(r)])  
+      transformResponse: (response: bigint[][]) => response.map((r:bigint[]) => r.map((r: bigint) => Number(r)))
+       
     }),
    getGameWinners: builder.query<any, { gameType: AllPossibleWegaTypes, escrowHash: HexishString }>({
       query: ({ gameType, escrowHash }) => ({

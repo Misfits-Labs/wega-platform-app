@@ -14,7 +14,8 @@ import {
  import { 
  GameTypeBadgeWrapper,
 } from '../../common/JoinableGameBar/types';
-import { 
+import {
+  HexishString, 
   AllPossibleCurrencyTypes, 
   AllPossibleWagerTypes, 
   AllPossibleWegaTypes,
@@ -48,6 +49,8 @@ import { ToggleCoinFlipSides } from '../../common/ToggleCoinFlipSides';
 import {
   useConnectModal,
 } from '@rainbow-me/rainbowkit';
+import { ComponentLoader } from '../../common/loaders'
+
 
 export interface CreateGameCardInterface {
   wagerType: AllPossibleWagerTypes;
@@ -68,7 +71,6 @@ export const CreateCoinFlipGameCard = ({
   const formRef = useRef<HTMLFormElement>(null);
   const detailsBlock = useRef<HTMLDivElement>(null)
   const randomnessQuery = useGetRandomNumberQuery(undefined);
-
   const [currentWagerType] = useState<AllPossibleWagerTypes>(wagerType);
   const [currentCurrencyType, setCurrentCurrencyType] = useState<AllPossibleCurrencyTypes>(currencyType);
   const [currentCoinSide, setCurrentCoinSide] = useState<AllPossibleCoinSides>(CoinSideTypes[CoinSideTypesEnum.HEADS]);
@@ -123,6 +125,7 @@ export const CreateCoinFlipGameCard = ({
         players: [ { uuid: playerUuid } ],
         creatorUuid: playerUuid,
         networkId: network?.id as number,
+        transactionHash: receipt.transactionHash as HexishString,
         wager: { 
           wagerType: currentWagerType.toUpperCase() as AllPossibleWagerTypes, 
           wagerHash: parsedTopicData?.escrowHash, 
@@ -148,7 +151,6 @@ export const CreateCoinFlipGameCard = ({
 
   const navigateToGameUi = useNavigateTo()
   useEffect(() => {
-    console.log(gameType);
     if(wallet){
       allowanceQuery.refetch();
       randomnessQuery.refetch();
@@ -164,7 +166,7 @@ export const CreateCoinFlipGameCard = ({
     createGameResponse
   ]);
   
-  return tokenAddress && playerAddress && playerUuid && randomnessQuery.data && (
+  return randomnessQuery.data ? (
     <form 
       tw="w-full flex flex-col justify-center items-center" 
       onSubmit={handleSubmit(handleCreateGameClick)} 
@@ -222,7 +224,7 @@ export const CreateCoinFlipGameCard = ({
         </div>
         {/* <Button buttonType="primary"><>Approve</></Button> */}
         {
-          (!wallet && openConnectModal) ? <Button buttonType="primary" tw="flex" onClick={
+          (!tokenAddress && !playerAddress && !playerUuid && openConnectModal) ? <Button buttonType="primary" tw="flex" onClick={
             (e: any) => { 
               e.preventDefault();
               openConnectModal();
@@ -271,7 +273,7 @@ export const CreateCoinFlipGameCard = ({
         </div>
       </CreateGameCardContainer>
     </form>
-  )
+  ) :  <ComponentLoader tw="min-w-[559px]" />
 }
 
 export const createGameSchema = (fieldName: string) => {

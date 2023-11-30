@@ -30,5 +30,3 @@ export const DiceWrapper = styled.div`
  background-repeat:no-repeat;
 `
 // eslint-disable-next-line no-unused-vars
-export enum DiceSides { MINUS_ONE, ONE, TWO, THREE, FOUR, FIVE, SIX } 
-

@@ -36,3 +36,4 @@ export { default as CoinSideTailsIcon } from './CoinSideTailsIcon';
 export { default as CoinSideHeadsIconWithCircle } from './CoinSideHeadsIconWithCircle';
 export { default as CoinSideTailsIconWithCircle } from './CoinSideTailsIconWithCircle';
 export { default as WhitepaperIcon } from './WhitePaperIcon.tsx';
+export { default as SadEmojiIcon } from './SadEmojiIcon.tsx';

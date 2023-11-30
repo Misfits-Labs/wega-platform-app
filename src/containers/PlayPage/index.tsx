@@ -42,8 +42,8 @@ const PlayPage = () => {
             <RaffleGameCard />
           </div>
         </Section>
-        { user?.uuid ? <JoinableAndPlayableGames tw="md:w-[978px]" gamesCount={gamesCount} userUuid={user?.uuid} />  : <ComponentLoader tw="mt-20 w-full" /> }
-        {/* { user?.uuid ? <JoinableAndPlayableGames tw="md:w-[978px]" gamesCount={gamesCount} userUuid={user?.uuid} /> : gamesCount && !user.uuid ? <></> : <ComponentLoader tw="mt-20 w-full" /> } */}
+        {/* { user?.uuid ? <JoinableAndPlayableGames tw="md:w-[978px]" gamesCount={gamesCount} userUuid={user?.uuid} />  : <ComponentLoader tw="mt-20 w-full" /> } */}
+        { user?.uuid ? <JoinableAndPlayableGames tw="md:w-[978px]" gamesCount={gamesCount} userUuid={user?.uuid} /> : gamesCount && !user.uuid ? <></> : <ComponentLoader tw="mt-20 w-full" /> }
       </MainContainer>
     </>
   )

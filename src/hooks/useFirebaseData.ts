@@ -25,6 +25,8 @@ export function useFirebaseData(gameUuid: string) {
   const startListeningFirebase = () => {
     const databaseRef = ref(database);
     onValue(databaseRef, (snapshot) => {
+      if(snapshot.val()){
+
       const { games } = snapshot.val();
       setGamesCount(Object.keys(games).length);
       if(gameUuid) {
@@ -55,6 +57,7 @@ export function useFirebaseData(gameUuid: string) {
           }
         }
       };
+      }
     });
   };
 

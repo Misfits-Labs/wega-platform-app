@@ -16,9 +16,7 @@ export interface PlayGamePlayerCardProps extends React.Attributes, React.AllHTML
  wager: any;
  player?: User;
  opponent?: Player;
- shouldRoll?: boolean;
  isGameOver: boolean;
- isRolling?: boolean;
  coinFlipChoice?: AllPossibleCoinSides;
  hasAnyOneRolled?: boolean;  
  isGamePlayable?: boolean;

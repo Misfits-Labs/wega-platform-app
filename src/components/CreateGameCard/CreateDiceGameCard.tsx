@@ -51,6 +51,8 @@ import {
 import Button from '../../common/Button';
 import { ToggleWagerBadge } from '../../common/ToggleWagerBadge';
 import { useFormReveal } from './animations';
+import { ComponentLoader } from '../../common/loaders'
+
 
 
 export interface CreateGameCardInterface {
@@ -87,7 +89,7 @@ export const CreateDiceGameCard = ({
   const wagerUSDValue = useTokenUSDValue(currentCurrencyType, watch('wager')); 
   
   // approval for allowance
-  const isWagerApproved = (allowance: number, wagerAmount: number) => allowance >= wagerAmount;
+  const isWagerApproved = (allowance: number, wagerAmount: number) => allowance >= toBigIntInWei(wagerAmount);
   const allowanceQuery = useAllowanceQuery({ 
     spender: escrowConfig.address[network?.id as keyof typeof escrowConfig.address], 
     owner: playerAddress,
@@ -123,12 +125,12 @@ export const CreateDiceGameCard = ({
       }).unwrap();
 
       const parsedTopicData = parseTopicDataFromEventLog(receipt.logs[2], ['event GameCreation(bytes32 indexed escrowHash, uint256 indexed nonce, address creator, string name)']);
-      
       await createGame({ 
         gameType, 
         players: [ { uuid: playerUuid } ],
         creatorUuid: playerUuid,
         networkId: network?.id as number,
+        transactionHash: receipt.transactionHash as HexishString,
         wager: { 
           wagerType: currentWagerType.toUpperCase() as AllPossibleWagerTypes, 
           wagerHash: parsedTopicData?.escrowHash, 
@@ -167,7 +169,7 @@ export const CreateDiceGameCard = ({
     createGameStatus, 
     createGameResponse
   ]);
-  return tokenAddress && playerAddress && playerUuid && randomnessQuery.data && (
+  return randomnessQuery.data ? (
     <form 
       tw="w-full flex flex-row justify-center" 
       onSubmit={handleSubmit(handleCreateGameClick)} 
@@ -226,7 +228,7 @@ export const CreateDiceGameCard = ({
         </div>
         {/* <Button buttonType="primary"><>Approve</></Button> */}
         {
-          (!wallet && openConnectModal) ? <Button buttonType="primary" tw="flex" onClick={
+          (!tokenAddress && !playerAddress && !playerUuid && openConnectModal) ? <Button buttonType="primary" tw="flex" onClick={
             (e: any) => { 
               e.preventDefault();
               openConnectModal();
@@ -274,7 +276,7 @@ export const CreateDiceGameCard = ({
         </div>
       </CreateGameCardContainer>
     </form>
-  )
+  ) : <ComponentLoader tw="min-w-[559px]" />
 }
 
 export const createGameSchema = (fieldName: string) => {
