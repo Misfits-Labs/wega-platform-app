@@ -48,8 +48,6 @@ const PlayDiceGameSection: React.FC<PlayGameSectionProps>= ({
     }
   }
   
-  // const isPlayerOne = players && wallet.address.toLowerCase() === players[0]?.walletAddress?.toLowerCase();
-
   const getWinnerAndLoserResults = (): { winnerFinalResult: number, loserFinalResult: number } => {
     let winnerFinalResult: number = -1, loserFinalResult: number = -1;
     players.forEach((player, i) => {
@@ -94,7 +92,7 @@ const PlayDiceGameSection: React.FC<PlayGameSectionProps>= ({
     if(rolled) {
       if(gameInfo.currentTurn >= maxTurns) {
         if(winners.length > 1) {
-          showModal(MODAL_TYPES.WINNER_DECLARATION_WINNER_MODAL, { 
+          showModal(MODAL_TYPES.DICE_WINNER_MODAL, { 
             wagerCurrency: game.wager.wagerCurrency, 
             wagerType: game.wager.wagerType, 
             wagerAmount: game.wager.wagerAmount,
@@ -104,7 +102,7 @@ const PlayDiceGameSection: React.FC<PlayGameSectionProps>= ({
           });
         } else {
           if(winners[0].toLowerCase() === wallet.address.toLowerCase()) {
-            showModal(MODAL_TYPES.WINNER_DECLARATION_WINNER_MODAL, { 
+            showModal(MODAL_TYPES.DICE_WINNER_MODAL, { 
               wagerCurrency: game.wager.wagerCurrency, 
               wagerType: game.wager.wagerType, 
               wagerAmount: game.wager.wagerAmount,
@@ -113,7 +111,7 @@ const PlayDiceGameSection: React.FC<PlayGameSectionProps>= ({
               hide: hideModal,
             });
           } else {
-            showModal(MODAL_TYPES.WINNER_DECLARATION_LOSER_MODAL, { 
+            showModal(MODAL_TYPES.DICE_LOSER_MODAL, { 
               gameType: game.gameType,
               results: getWinnerAndLoserResults(),
               hide: hideModal,

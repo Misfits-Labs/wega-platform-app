@@ -10,7 +10,7 @@ import { BigNumberish, formatEther } from 'ethers';
 import { Link } from 'react-router-dom';
 import { DiceWinnerLogo, DiceLoserLogo } from './GameResolutionImages'
 
-export interface GameWinnerDeclarationModalProps {
+export interface DiceWinnerModalProps {
   gameType: AllPossibleWegaTypes,
   wagerCurrency: AllPossibleCurrencyTypes,
   wagerType: AllPossibleWagerTypes,
@@ -18,14 +18,14 @@ export interface GameWinnerDeclarationModalProps {
   results: any,
   hide: any,
 }
-export const GameWinnerDeclarationModal = ({ 
+const DiceWinnerModal = ({ 
   hide, 
   wagerCurrency, 
   wagerType, 
   wagerAmount, 
   gameType,
   results, 
-  }: GameWinnerDeclarationModalProps) => {
+  }: DiceWinnerModalProps) => {
   
   return (
    <WinnerDeclarationContainer tw="items-center min-w-[546px]">
@@ -73,3 +73,4 @@ export const GameWinnerDeclarationModal = ({
    </WinnerDeclarationContainer>
   )
 }
+export default DiceWinnerModal

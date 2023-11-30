@@ -28,12 +28,13 @@ export const JoinableAndPlayableGames: React.FC<JoinableAndPlayableGamesProps> =
   }
  }, [data, gamesCount, isSuccess]);
 
- return (<Section hdr="Join matches instantly" direction="col" tw="gap-2 mt-[35px] w-full" { ...rest }>
+ return (<Section hdr="Join matches instantly" direction="col" tw="gap-2 mt-[35px] " { ...rest }>
   <JoinableGamesHeaderBar>
    <span>Date created</span>
    <span>Game</span>
    <span>Wager</span>
    <span>Escrow</span>
+   <span tw="invisible"></span>
   </JoinableGamesHeaderBar>
     {
       !isLoading && gameIds && gameIds.map((gameId: number) => (<GameBar gameId={gameId} key={`joinable-and-playable-game-bar${gameId}`} tw="dark:bg-[#1C1C1C] py-2 px-3 rounded-[5px]" /> )) 
@@ -53,7 +54,7 @@ export const JoinableGames: React.FC<JoinableAndPlayableGamesProps> = ({ gamesCo
     setGameIds(sortedGameIds ?? []);
   }
  }, [data, gamesCount]);
- return (<Section hdr="Available Matches" direction="col" className="gap-2" { ...rest } >
+ return (<Section hdr="Available Matches" direction="col" tw="gap-2" { ...rest } >
   <JoinableGamesHeaderBar>
    <span>Date created</span>
    <span>Game</span>

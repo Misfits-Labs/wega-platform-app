@@ -11,6 +11,7 @@ export const DateColumn = styled.span`
 export const BarWrapper = styled.div`
  align-items: center;
  align-self: stretch;
+ width: fit-content;
 `
 
 export const GameTypeBadgeWrapper = styled.div`

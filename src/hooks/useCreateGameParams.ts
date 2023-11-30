@@ -1,25 +1,34 @@
 import {useEffect} from 'react'
 import { useGetSet } from 'react-use';
-import { Wallet, Network, User, HexishString, CurrencyTypes, CurrencyTypesEnum } from '../models'
+import { Wallet, Network, User, HexishString,  AllPossibleCurrencyTypes } from '../models'
 import { SupportedWagerTokenAddresses } from '../models/constants';
 export function useCreateGameParams({
- wallet, user, network
+ wallet, user, network,currencyType 
 }: {
  wallet?: Wallet,
  network?: Network,
- user?: User
+ user?: User,
+ currencyType: AllPossibleCurrencyTypes
 }) {
   const [getTokenAddress, setTokenAddress] = useGetSet<HexishString | undefined>(undefined);
   const [getPlayerAddress, setPlayerAddress] = useGetSet<HexishString | undefined>(undefined);
   const [getUserUuid, setUserUuid] = useGetSet<string| undefined>(undefined);
   
   useEffect(() => {
-    if((wallet && network && user) && !(getTokenAddress() && getPlayerAddress() && getUserUuid())) {
-     setTokenAddress(SupportedWagerTokenAddresses(network?.id as number)[CurrencyTypes[CurrencyTypesEnum.USDC]]);
-     setPlayerAddress(wallet.address as HexishString);
-     setUserUuid(user.uuid as string);
+    if(wallet && wallet.isConnected && user && network) {
+      if(!(getTokenAddress() && getPlayerAddress() && getUserUuid())) {
+        setTokenAddress(SupportedWagerTokenAddresses(network?.id as number)[currencyType]);
+        setPlayerAddress(wallet.address as HexishString);
+        setUserUuid(user.uuid as string);
+      }
+    } else {
+      if(getTokenAddress() && getPlayerAddress() && getUserUuid()) {
+        setTokenAddress(SupportedWagerTokenAddresses(network?.id as number)[currencyType]);
+        setPlayerAddress(undefined);
+        setUserUuid(undefined);
+      }
     }
-  }, [network?.id, wallet?.address, user?.uuid]);
+  }, [network?.id, wallet?.isConnected, user?.uuid, currencyType]);
   return {
    tokenAddress: getTokenAddress() as HexishString,
    playerAddress: getPlayerAddress() as HexishString,

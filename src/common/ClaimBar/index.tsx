@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { formatEther } from 'ethers';
 import { 
  GameTypeBadgeWrapper, 
@@ -21,11 +20,16 @@ import {
 } from '../../models';
 import { dateFromTs, parseBarCount } from '../../utils';
 import { Count } from './types'
-import{ BarDiceIcon, BarCoinIcon, USDCIcon, USDTIcon} from '../../assets/icons';
+import{ BarDiceIcon, BarCoinIcon, USDCIcon, USDTIcon, ArrowTrSquareIcon} from '../../assets/icons';
 import { selectGameById } from '../../containers/App/api';
 import { useSelector } from 'react-redux' 
-import { useWegaStore, useBlockchainApiHooks } from '../../hooks'
+import { useWegaStore } from '../../hooks'
 import { ButtonForClaiming } from '../ButtonForClaiming';
+import { constructBlockExplorerHash } from '../GameBar/utils';
+import { Link } from 'react-router-dom'
+import { 
+  NormalText, 
+} from "../../components/CreateGameCard/types";
 import 'twin.macro';
 
 export const BADGE_TEXTS: any = {
@@ -46,36 +50,42 @@ function ClaimBar({
   ...rest
 }: { gameId: number, count: number  } & React.Attributes & Partial<React.AllHTMLAttributes<HTMLDivElement>> & ClaimBarProps) {
   const game = useSelector(state => selectGameById(state, gameId));
-  const { user, wallet } = useWegaStore();
-  const { useGetWinnersQuery } = useBlockchainApiHooks;
-  const { getWinners, data: winners } = useGetWinnersQuery();
-  
-  useEffect(() => {
-   if(game && !winners && game.wager && game.gameType && game.wager.wagerHash ) getWinners(game.gameType, game.wager.wagerHash as HexishString);
-  }, [winners, game?.wager, game?.gameType, game?.wager?.wagerHash])
+  const { user, wallet, network } = useWegaStore();  
 
-  return game && wallet?.address && user?.uuid && winners && (winners.includes(wallet.address) || winners.includes(wallet.address)) ? (
-   <BarWrapper tw="flex justify-between gap-[25px]" {...rest}>
-    <Count>{parseBarCount(count)}</Count>
+  return game && wallet?.address && user?.uuid && network?.id && (
+   <BarWrapper tw="grid grid-cols-10 w-[50vw] justify-between" {...rest}>
+    <Count tw="w-[fit-content]">{parseBarCount(count)}</Count>
     {/* date */}
     <DateColumn>{dateFromTs(new Date(game.createdAt as string).getTime() * 1000)}</DateColumn>
     
-    <GameTypeBadgeWrapper>
-     {renderGameTypeBadge(game.gameType)}
-     <BadgeText>{BADGE_TEXTS[game.gameType]}</BadgeText>
-    </GameTypeBadgeWrapper>
-    
-    <WagerTypeBadgeWrapper>
+    <WagerTypeBadgeWrapper tw="col-span-3 w-[fit-content]">
       <BadgeText>{formatEther(game.wager.wagerAmount)}</BadgeText>
       <BadgeIcon>{renderWagerBadge(game.wager.wagerType, game.wager.wagerCurrency)}</BadgeIcon>
       <BadgeText>{game.wager.wagerCurrency}</BadgeText>
     </WagerTypeBadgeWrapper>
-    {/* escrow link button */}
+
+
+    <div tw="col-span-2">
+      <GameTypeBadgeWrapper tw="w-[fit-content]">
+      {renderGameTypeBadge(game.gameType)}
+      <BadgeText>{BADGE_TEXTS[game.gameType]}</BadgeText>
+      </GameTypeBadgeWrapper>
+    </div>
     
-    {/* render for a joinable game */}
-      <ButtonForClaiming  game={game} />
+
+    {/* escrow link button */}
+    <div tw="col-span-3">
+      <div tw="flex items-center justify-end gap-x-[24px]">
+        <div tw="flex gap-x-[8px] ">
+          <NormalText>view on explorer</NormalText>
+          <Link to={constructBlockExplorerHash(network.id as number, game.transactionHash as HexishString)} target="_blank" rel="noreferrer"><ArrowTrSquareIcon /></Link>
+        </div>
+        {/* render for a joinable game */}
+        <ButtonForClaiming  game={game} />
+      </div>
+    </div>
    </BarWrapper>
-  ) : <></>
+  )
 }
 
 export default ClaimBar;

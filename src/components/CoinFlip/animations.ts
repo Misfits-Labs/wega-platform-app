@@ -4,7 +4,7 @@ import { gsap } from 'gsap';
 // eslint-disable-next-line no-unused-vars
 type Callback = (...args: any[]) => void | null;
 
-export function useRoll(coinRef: any) {
+export function useRoll(coinRef: any, gameOver: boolean) {
   const [trigger, setStrigger] = useState<boolean>(false);
   const [rolled, setRolled] = useState<boolean>(false);
   const [animationTarget, setAnimationTarget] = useState<string | undefined>(undefined);
@@ -17,7 +17,6 @@ export function useRoll(coinRef: any) {
         duration: 0.5,
         y: "0",
       }, {y: to})
-      setTimeout(() =>  setRolled(true), 2000);
     }
     const tl = gsap.timeline({ repeatDelay: 0, onComplete: callb })
     tl.to("g#all-sides", {
@@ -36,9 +35,12 @@ export function useRoll(coinRef: any) {
     if(animationTarget) {
        roll(animationTarget);
      }
+     if(gameOver) {
+      setTimeout(() =>  setRolled(true), 2000);
+     }
     }, coinRef);
     return () => ctx.revert();
-  }, [trigger]);
+  }, [trigger, gameOver]);
   return {
     triggerRoll,
     rolled

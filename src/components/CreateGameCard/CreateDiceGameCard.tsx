@@ -33,8 +33,8 @@ import { ArrowDownIcon, StarLoaderIcon } from '../../assets/icons';
 import tw from 'twin.macro';
 import { useForm } from 'react-hook-form';
 import { useBalance } from 'wagmi';
-import { useNavigateTo, useWegaStore, useCreateGameParams, useTokenUSDValue} from '../../hooks';
-import { useCreateGameMutation, useGetRandomNumberQuery } from './apiSlice';
+import { useNavigateTo, useWegaStore, useCreateGameParams, useTokenUSDValue, useDrand} from '../../hooks';
+import { useCreateGameMutation } from './apiSlice';
 import { 
   useCreateWagerAndDepositMutation,
   useAllowanceQuery,
@@ -71,12 +71,12 @@ export const CreateDiceGameCard = ({
 }: CreateGameCardInterface & React.Attributes & React.AllHTMLAttributes<HTMLDivElement> ) => {
   const { openConnectModal } = useConnectModal();
   const { wallet, user, network } = useWegaStore();
-  const randomnessQuery = useGetRandomNumberQuery(undefined);
-  const {tokenAddress, playerAddress, playerUuid } = useCreateGameParams({ wallet, user, network});
+  const randomness = useDrand();
   const formRef = useRef<HTMLFormElement>(null);
   const detailsBlock = useRef<HTMLDivElement>(null)
   const [currentWagerType] = useState<AllPossibleWagerTypes>(wagerType);
   const [currentCurrencyType, setCurrentCurrencyType] = useState<AllPossibleCurrencyTypes>(currencyType);
+  const {tokenAddress, playerAddress, playerUuid } = useCreateGameParams({ wallet, user, network, currencyType: currentCurrencyType});
   const {revealed, triggerRevealAnimation} = useFormReveal(false, formRef, detailsBlock);
   const { register, formState: { errors }, watch, handleSubmit, setValue } = useForm({ 
     mode: 'onChange', 
@@ -121,7 +121,7 @@ export const CreateDiceGameCard = ({
         tokenAddress, 
         wagerAsBigint: toBigIntInWei(wager), 
         gameType,
-        randomness: [convertBytesToNumber(randomnessQuery.data?.randomness)] 
+        randomness: [convertBytesToNumber(randomness.randomness)] 
       }).unwrap();
 
       const parsedTopicData = parseTopicDataFromEventLog(receipt.logs[2], ['event GameCreation(bytes32 indexed escrowHash, uint256 indexed nonce, address creator, string name)']);
@@ -169,7 +169,7 @@ export const CreateDiceGameCard = ({
     createGameStatus, 
     createGameResponse
   ]);
-  return randomnessQuery.data ? (
+  return randomness ? (
     <form 
       tw="w-full flex flex-row justify-center" 
       onSubmit={handleSubmit(handleCreateGameClick)} 
@@ -228,7 +228,7 @@ export const CreateDiceGameCard = ({
         </div>
         {/* <Button buttonType="primary"><>Approve</></Button> */}
         {
-          (!tokenAddress && !playerAddress && !playerUuid && openConnectModal) ? <Button buttonType="primary" tw="flex" onClick={
+          (!(tokenAddress && playerAddress && playerUuid) && openConnectModal) ? <Button buttonType="primary" tw="flex" onClick={
             (e: any) => { 
               e.preventDefault();
               openConnectModal();

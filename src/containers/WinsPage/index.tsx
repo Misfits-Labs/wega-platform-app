@@ -2,6 +2,7 @@ import {Helmet} from 'react-helmet-async'
 import 'twin.macro';
 import Section from '../../common/Section';
 import ClaimWinsTokenSection from '../../components/ClaimTokenWinsSection';
+import ClaimNFTWinsSection from '../../components/ClaimNFTWinsSection';
 import { useGetGamesQuery } from '../App/api';
 import { ComponentLoader } from '../../common/loaders';
 import MainContainer from '../../components/MainContainer';
@@ -41,7 +42,14 @@ const WinsPage = () => {
         }
         >
         </Section>
-        { !isLoading && wallet && wallet?.address && user?.uuid ? <ClaimWinsTokenSection gameIds={[ ...claimableGameIds ]} /> : <ComponentLoader tw="w-full" /> }
+        { 
+          !isLoading && wallet && wallet?.address && user?.uuid ? 
+          <>
+            <ClaimWinsTokenSection gameIds={[ ...claimableGameIds ]} /> 
+            <ClaimNFTWinsSection gameIds={[ ...claimableGameIds ]} />
+          </>
+          : <ComponentLoader tw="w-full" /> 
+        }
       </MainContainer>
     </>
   )

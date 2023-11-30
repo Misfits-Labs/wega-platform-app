@@ -8,25 +8,26 @@ import 'twin.macro';
 import { AllPossibleCurrencyTypes, AllPossibleWagerTypes, AllPossibleWegaTypes} from '../../models';
 import { BigNumberish, formatEther } from 'ethers';
 import { Link } from 'react-router-dom';
-import { DiceWinnerLogo, DiceLoserLogo } from './GameResolutionImages'
+import { CoinflipWinnerLogo, CoinflipLoserLogo } from './GameResolutionImages'
 
-export interface GameWinnerDeclarationModalProps {
-  gameType: AllPossibleWegaTypes,
-  wagerCurrency: AllPossibleCurrencyTypes,
-  wagerType: AllPossibleWagerTypes,
-  wagerAmount: BigNumberish,
-  results: any,
-  hide: any,
+export interface CoinflipWinnerModalProps {
+  gameType: AllPossibleWegaTypes;
+  wagerCurrency: AllPossibleCurrencyTypes;
+  wagerType: AllPossibleWagerTypes;
+  wagerAmount: BigNumberish;
+  winnerFlipChoice: number;
+  loserFlipChoice: number;
+  hide: any;
 }
-export const GameWinnerDeclarationModal = ({ 
+const CoinflipWinnerModal = ({ 
   hide, 
   wagerCurrency, 
   wagerType, 
   wagerAmount, 
   gameType,
-  results, 
-  }: GameWinnerDeclarationModalProps) => {
-  
+  winnerFlipChoice,
+  loserFlipChoice }: CoinflipWinnerModalProps) => {
+  console.log(winnerFlipChoice, loserFlipChoice)
   return (
    <WinnerDeclarationContainer tw="items-center min-w-[546px]">
     <div tw="flex justify-end w-full">
@@ -36,14 +37,12 @@ export const GameWinnerDeclarationModal = ({
       <div tw="flex flex-col items-center gap-y-[24px]">
         <div tw="flex flex-col items-center">
           <CrownIcon />
-          <DiceWinnerLogo side={results.winnerFinalResult} />
+          <CoinflipWinnerLogo side={winnerFlipChoice} />
         </div>
         <div tw="flex flex-col items-center gap-y-[8px]">
           <div tw="flex flex-row">
-            <NormalText tw="font-[17px] text-shinishi font-[300] leading-[22px] tracking-[-0.408px] font-primary mr-[8px]">{
-            results.winnerFinalResult === results.loserFinalResult ? 'Opponent rolled:' : 'Loser rolled:'
-            }</NormalText>
-            <DiceLoserLogo side={results.loserFinalResult} tw="w-[15.852px] h-[15.852px]"/>
+            <NormalText tw="font-[17px] text-shinishi font-[300] leading-[22px] tracking-[-0.408px] font-primary mr-[8px]">Loser: </NormalText>
+            <CoinflipLoserLogo side={loserFlipChoice} tw="w-[20px] h-[20px]"/>
           </div>
           <ExtraLargeText>You won!</ExtraLargeText>
         </div>
@@ -73,3 +72,4 @@ export const GameWinnerDeclarationModal = ({
    </WinnerDeclarationContainer>
   )
 }
+export default CoinflipWinnerModal;

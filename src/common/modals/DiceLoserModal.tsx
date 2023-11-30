@@ -8,17 +8,17 @@ import { DiceWinnerLogo, DiceLoserLogo } from './GameResolutionImages'
 
 import 'twin.macro';
 
-export interface GameLoserDeclarationModal {
+export interface DiceLoserModalProps {
   gameType: AllPossibleWegaTypes,
   results: any
   hide: any,
 }
 
-export const GameLoserDeclarationModal = ({ 
+const DiceLoserModal = ({ 
   gameType,
   results,
   hide
-}: GameLoserDeclarationModal ) => {
+}: DiceLoserModalProps) => {
   return ( <WinnerDeclarationContainer tw="items-center min-w-[546px]">
     <div tw="flex justify-end w-full">
       <button tw="w-[fit-content]" onClick={hide}><NormalText tw="text-right text-blanc">Close</NormalText></button>
@@ -55,3 +55,4 @@ export const GameLoserDeclarationModal = ({
    </WinnerDeclarationContainer>
   )
 }
+export default DiceLoserModal

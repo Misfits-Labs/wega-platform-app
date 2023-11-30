@@ -4,21 +4,18 @@ import {  NormalText, LargeText } from '../../components/CreateGameCard/types';
 import { StarLoaderIcon, RestartIcon, SadEmojiIcon } from '../../assets/icons';
 import Button from '../Button';
 import { AllPossibleWegaTypes} from '../../models';
-import { DiceWinnerLogo, DiceLoserLogo } from './GameResolutionImages'
+import { CoinflipWinnerLogo, CoinflipLoserLogo } from './GameResolutionImages'
 
 import 'twin.macro';
 
-export interface GameLoserDeclarationModal {
-  gameType: AllPossibleWegaTypes,
-  results: any
-  hide: any,
+export interface CoinflipLoserModalProps {
+  gameType: AllPossibleWegaTypes;
+  winnerFlipChoice: any;
+  loserFlipChoice: any;
+  hide: any;
 }
 
-export const GameLoserDeclarationModal = ({ 
-  gameType,
-  results,
-  hide
-}: GameLoserDeclarationModal ) => {
+const CoinflipLoserModal = ({ gameType, winnerFlipChoice, loserFlipChoice, hide}: CoinflipLoserModalProps) => {
   return ( <WinnerDeclarationContainer tw="items-center min-w-[546px]">
     <div tw="flex justify-end w-full">
       <button tw="w-[fit-content]" onClick={hide}><NormalText tw="text-right text-blanc">Close</NormalText></button>
@@ -27,12 +24,12 @@ export const GameLoserDeclarationModal = ({
       <div tw="flex flex-col w-full items-center gap-y-[24px]">
         <div tw="flex flex-col items-center gap-y-[16px]">
           <SadEmojiIcon />
-          <DiceLoserLogo side={results.loserFinalResult} />
+          <CoinflipLoserLogo side={loserFlipChoice}  />
         </div>
         <div tw="flex flex-col items-center gap-y-[8px]">
           <div tw="flex flex-row">
             <NormalText tw="font-[17px] text-shinishi font-[300] leading-[22px] tracking-[-0.408px] font-primary mr-[8px]">Winner rolled: </NormalText>
-            <DiceWinnerLogo side={results.winnerFinalResult} tw="w-[15.852px] h-[15.852px]" />
+            <CoinflipWinnerLogo side={winnerFlipChoice} tw="w-[20px] h-[20px]" />
           </div>
           <LargeText>You Lost, Try again!</LargeText>
         </div>
@@ -55,3 +52,4 @@ export const GameLoserDeclarationModal = ({
    </WinnerDeclarationContainer>
   )
 }
+export default CoinflipLoserModal;

@@ -49,7 +49,6 @@ const PlayCoinFlipGameSection: React.FC<PlayGameSectionProps> = ({
  const [updateGame] = useUpdateGameMutation()
  const maxTurns = 1;
  const { showModal, hideModal } = useGlobalModalContext();
- 
  const handleOnRollClick = async (gameUuid: string, turn: number) => {
   // should trigger the animation here
   const gameWinners = winners.map(w => ({ winner: w }));
@@ -63,35 +62,41 @@ const PlayCoinFlipGameSection: React.FC<PlayGameSectionProps> = ({
  // setup the animation
  const coinRef = useRef<any>(null)
  const isPlayerOne = players && wallet.address.toLowerCase() === players[0]?.walletAddress?.toLowerCase();
- const { triggerRoll, rolled } = useRoll(coinRef);
+ const { triggerRoll, rolled } = useRoll(coinRef, gameInfo.currentTurn >= maxTurns);
  
  useEffect(() => {
   if(rolled) {
     if (gameInfo.currentTurn >= maxTurns) {
-     if (winners.length > 1) {
-      showModal(MODAL_TYPES.WINNER_DECLARATION_WINNER_MODAL, {
-       wagerCurrency: game.wager.wagerCurrency,
-       wagerType: game.wager.wagerType,
-       wagerAmount: game.wager.wagerAmount,
-       gameType: game.gameType,
-       hide: hideModal
-      })
-     } else {
-      if (winners[0].toLowerCase() === wallet.address.toLowerCase()) {
-       showModal(MODAL_TYPES.WINNER_DECLARATION_WINNER_MODAL, {
+      const indexOfMaxValue = gameResults.reduce((iMax: any, x: any, i: any, arr: any) => x > arr[iMax] ? i : iMax, 0);
+      if (winners.length > 1) {
+      showModal(MODAL_TYPES.COINFLIP_WINNER_MODAL, {
         wagerCurrency: game.wager.wagerCurrency,
         wagerType: game.wager.wagerType,
         wagerAmount: game.wager.wagerAmount,
         gameType: game.gameType,
+        playerFlipChoices,
         hide: hideModal
-       })
+      })
+    } else {
+      if (winners[0].toLowerCase() === wallet.address.toLowerCase()) {
+        showModal(MODAL_TYPES.COINFLIP_WINNER_MODAL, {
+          wagerCurrency: game.wager.wagerCurrency,
+          wagerType: game.wager.wagerType,
+          wagerAmount: game.wager.wagerAmount,
+          gameType: game.gameType,
+          winnerFlipChoice: [playerFlipChoices.playerOne as AllPossibleCoinSides, playerFlipChoices.playerTwo as AllPossibleCoinSides][indexOfMaxValue],
+          loserFlipChoice: [playerFlipChoices.playerOne as AllPossibleCoinSides, playerFlipChoices.playerTwo as AllPossibleCoinSides][indexOfMaxValue === 1 ? 0 : 1],
+          hide: hideModal
+        })
       } else {
-       showModal(MODAL_TYPES.WINNER_DECLARATION_LOSER_MODAL, {
-        gameType: game.gameType,
-        hide: hideModal
-       })
+        showModal(MODAL_TYPES.COINFLIP_LOSER_MODAL, {
+            gameType: game.gameType,
+            winnerFlipChoice: [playerFlipChoices.playerOne as AllPossibleCoinSides, playerFlipChoices.playerTwo as AllPossibleCoinSides][indexOfMaxValue],
+            loserFlipChoice: [playerFlipChoices.playerOne as AllPossibleCoinSides, playerFlipChoices.playerTwo as AllPossibleCoinSides][indexOfMaxValue === 1 ? 0 : 1],
+            hide: hideModal
+          })
+        }
       }
-     }
     }
   }
   if(gameInfo && gameResults && gameInfo.currentTurn > 0) {

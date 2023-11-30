@@ -36,7 +36,7 @@ import { ArrowDownIcon, StarLoaderIcon } from '../../assets/icons';
 import tw from 'twin.macro';
 import { useForm } from 'react-hook-form';
 import { useBalance } from 'wagmi';
-import { useNavigateTo, useCreateGameParams, useWegaStore, useTokenUSDValue } from '../../hooks';
+import { useNavigateTo, useCreateGameParams, useWegaStore, useTokenUSDValue, useDrand } from '../../hooks';
 import { useDepositAndJoinCoinflipMutation } from './blockchainApiSlice';
 import { useAllowanceQuery, useApproveERC20Mutation } from '../CreateGameCard/blockchainApiSlice';
 import toast from 'react-hot-toast';
@@ -45,7 +45,7 @@ import Button from '../../common/Button';
 import { useFormReveal } from '../CreateGameCard/animations';
 import { useJoinGameMutation, useUpdateGameMutation } from './apiSlice';
 import { ToggleCoinFlipSides } from '../../common/ToggleCoinFlipSides';
-import { useGetRandomNumberQuery } from '../CreateGameCard/apiSlice';
+import { ComponentLoader } from '../../common/loaders'
 
 
 
@@ -79,14 +79,15 @@ const JoinCoinFlipGameCard = ({
 }: JoinCoinFlipGameCardProps) => {
   const { openConnectModal } = useConnectModal();
   const { wallet, user, network } = useWegaStore();
-  const randomnessQuery = useGetRandomNumberQuery(undefined);
-  const {tokenAddress, playerAddress, playerUuid} = useCreateGameParams({ wallet, user, network}); // TODO change to generic name
+  const drand = useDrand();
+
   const formRef = useRef<HTMLFormElement>(null);
   const detailsBlock = useRef<HTMLDivElement>(null)
   const [currentWagerType] = useState<AllPossibleWagerTypes>(wagerType);
   const [currentCurrencyType] = useState<AllPossibleCurrencyTypes>(currencyType);
   const {revealed, triggerRevealAnimation} = useFormReveal(false, formRef, detailsBlock);
   const [currentCoinSide] = useState<AllPossibleCoinSides>(gameAttributes && Number(gameAttributes[0].value) === 1 ? 2 : 1);
+  const {tokenAddress, playerAddress, playerUuid} = useCreateGameParams({ wallet, user, network, currencyType: currentCurrencyType }); // TODO change to generic name
 
   const { register, formState: { errors }, handleSubmit, watch } = useForm({ 
     mode: 'onChange',
@@ -123,7 +124,7 @@ const JoinCoinFlipGameCard = ({
         await approveERC20({ spender: escrowConfig.address[network?.id as keyof typeof escrowConfig.address], wagerAsBigint: toBigIntInWei(wagerAmount), tokenAddress }).unwrap();
       }
       const playerChoices = [Number(gameAttributes[0].value), currentCoinSide];
-      await depositAndJoinCoinflip({escrowHash: escrowId, playerChoices, randomness: [convertBytesToNumber(randomnessQuery.data?.randomness)] }).unwrap();
+      await depositAndJoinCoinflip({escrowHash: escrowId, playerChoices, randomness: [convertBytesToNumber(drand.randomness)] }).unwrap();
       await joinGame({ newPlayerUuid: playerUuid, gameUuid }).unwrap();
       await updateGame({ 
         uuid: gameUuid, 
@@ -155,7 +156,7 @@ const JoinCoinFlipGameCard = ({
     wagerAmount
   ]);
   
-  return (
+  return drand ? (
     <form 
       tw="w-full flex flex-col justify-center items-center" 
       onSubmit={handleSubmit(handleDepositWagerClick)} 
@@ -194,7 +195,7 @@ const JoinCoinFlipGameCard = ({
         </div>
         {/* <Button buttonType="primary"><>Approve</></Button> */}
         { 
-        (!wallet && openConnectModal) ? <Button buttonType="primary" tw="flex" onClick={
+        (!(tokenAddress && playerAddress && playerUuid) && openConnectModal) ? <Button buttonType="primary" tw="flex" onClick={
           (e: any) => { 
             e.preventDefault();
             openConnectModal();
@@ -241,7 +242,7 @@ const JoinCoinFlipGameCard = ({
         </div>
       </CreateGameCardContainer>
     </form>
-  )
+  ) : <ComponentLoader tw="min-w-[559px]" />
 }
 export default JoinCoinFlipGameCard;
 

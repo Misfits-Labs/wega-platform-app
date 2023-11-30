@@ -31,7 +31,7 @@ import { ArrowDownIcon, StarLoaderIcon } from '../../assets/icons';
 import tw from 'twin.macro';
 import { useForm } from 'react-hook-form';
 import { useBalance } from 'wagmi';
-import { useCreateGameParams, useWegaStore, useNavigateTo, useTokenUSDValue } from '../../hooks';
+import { useCreateGameParams, useWegaStore, useNavigateTo, useTokenUSDValue, useDrand } from '../../hooks';
 import { useDepositAndJoinDiceMutation } from './blockchainApiSlice';
 import { useAllowanceQuery, useApproveERC20Mutation } from '../CreateGameCard/blockchainApiSlice';
 import toast from 'react-hot-toast';
@@ -39,9 +39,8 @@ import { toastSettings, escrowConfig, toBigIntInWei, convertBytesToNumber } from
 import Button from '../../common/Button';
 import { useFormReveal } from '../CreateGameCard/animations';
 import { useJoinGameMutation, useUpdateGameMutation } from './apiSlice';
-import { useGetRandomNumberQuery } from '../CreateGameCard/apiSlice';
 import { JoinGameCardProps } from './'
-
+import { ComponentLoader } from '../../common/loaders'
 
 export interface JoinDiceGameCardProps extends JoinGameCardProps, React.Attributes, React.AllHTMLAttributes<HTMLDivElement> {};
 
@@ -59,12 +58,12 @@ const JoinGameDiceCard: React.FC<JoinDiceGameCardProps> = ({
 }: JoinDiceGameCardProps) => {
   const { openConnectModal } = useConnectModal();
   const { wallet, user, network } = useWegaStore();
-  const randomnessQuery = useGetRandomNumberQuery(undefined);
-  const {tokenAddress, playerAddress, playerUuid} = useCreateGameParams({ wallet, user, network}); // TODO change to generic name
+  const drand = useDrand();
   const formRef = useRef<HTMLFormElement>(null);
   const detailsBlock = useRef<HTMLDivElement>(null)
   const [currentWagerType] = useState<AllPossibleWagerTypes>(wagerType);
   const [currentCurrencyType] = useState<AllPossibleCurrencyTypes>(currencyType);
+  const {tokenAddress, playerAddress, playerUuid} = useCreateGameParams({ wallet, user, network, currencyType: currentCurrencyType }); // TODO change to generic name
   const {revealed, triggerRevealAnimation} = useFormReveal(false, formRef, detailsBlock);
 
   
@@ -105,7 +104,7 @@ const JoinGameDiceCard: React.FC<JoinDiceGameCardProps> = ({
       }
       await depositAndJoinDice({ 
         escrowHash: escrowId, 
-        randomness: [convertBytesToNumber(randomnessQuery.data?.randomness)] 
+        randomness: [convertBytesToNumber(drand.randomness)] 
       }).unwrap();
       await joinGame({ newPlayerUuid: playerUuid, gameUuid }).unwrap();
       await updateGame({ uuid: gameUuid, state: WegaState.PLAYING }).unwrap();
@@ -118,14 +117,12 @@ const JoinGameDiceCard: React.FC<JoinDiceGameCardProps> = ({
     }
   }
 
-
-  
   const navigateToGameUi = useNavigateTo()
   useEffect(() => {
     allowanceQuery.refetch();
   }, [tokenAddress, wagerAmount]);
   
-  return (
+  return drand ?  (
     <form 
       tw="w-full flex flex-row justify-center" 
       onSubmit={handleSubmit(handleDepositWagerClick)} 
@@ -160,7 +157,7 @@ const JoinGameDiceCard: React.FC<JoinDiceGameCardProps> = ({
         </div>
         {/* <Button buttonType="primary"><>Approve</></Button> */}
         { 
-          (!wallet && openConnectModal) ? <Button buttonType="primary" tw="flex" onClick={
+          (!(tokenAddress && playerAddress && playerUuid) && openConnectModal) ? <Button buttonType="primary" tw="flex" onClick={
             (e: any) => { 
               e.preventDefault();
               openConnectModal();
@@ -207,7 +204,7 @@ const JoinGameDiceCard: React.FC<JoinDiceGameCardProps> = ({
         </div>
       </CreateGameCardContainer>
     </form>
-  )
+  ) : <ComponentLoader tw="min-w-[559px]" />
 }
 export default JoinGameDiceCard;
 

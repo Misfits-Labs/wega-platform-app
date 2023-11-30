@@ -34,13 +34,13 @@ import { ErrorMessage } from '@hookform/error-message';
 import { ArrowDownIcon, StarLoaderIcon } from '../../assets/icons';
 import tw from 'twin.macro';
 import { useForm } from 'react-hook-form';
-import { useCreateGameParams, useNavigateTo, useWegaStore, useTokenUSDValue } from '../../hooks';
+import { useCreateGameParams, useNavigateTo, useWegaStore, useTokenUSDValue, useDrand } from '../../hooks';
 import { 
   useCreateWagerAndDepositMutation,
   useAllowanceQuery,
   useApproveERC20Mutation,
 } from './blockchainApiSlice';
-import { useCreateGameMutation, useGetRandomNumberQuery } from './apiSlice';
+import { useCreateGameMutation } from './apiSlice';
 import { toastSettings, toBigIntInWei, escrowConfig, parseTopicDataFromEventLog, convertBytesToNumber } from '../../utils';
 import Button from '../../common/Button';
 import { ToggleWagerBadge } from '../../common/ToggleWagerBadge';
@@ -70,13 +70,13 @@ export const CreateCoinFlipGameCard = ({
   const { wallet, network, user} = useWegaStore();
   const formRef = useRef<HTMLFormElement>(null);
   const detailsBlock = useRef<HTMLDivElement>(null)
-  const randomnessQuery = useGetRandomNumberQuery(undefined);
+  const drand = useDrand();
   const [currentWagerType] = useState<AllPossibleWagerTypes>(wagerType);
   const [currentCurrencyType, setCurrentCurrencyType] = useState<AllPossibleCurrencyTypes>(currencyType);
   const [currentCoinSide, setCurrentCoinSide] = useState<AllPossibleCoinSides>(CoinSideTypes[CoinSideTypesEnum.HEADS]);
   const {revealed, triggerRevealAnimation} = useFormReveal(false, formRef, detailsBlock);
   const { playerAddress, tokenAddress, playerUuid} = useCreateGameParams({
-    wallet, network, user
+    wallet, network, user, currencyType: currentCurrencyType
   });
   
   const { register, formState: { errors }, watch, handleSubmit, setValue } = useForm({ 
@@ -118,7 +118,7 @@ export const CreateCoinFlipGameCard = ({
         await approveERC20({ 
           spender: escrowConfig.address[network?.id as keyof typeof escrowConfig.address], wagerAsBigint: toBigIntInWei(wager), tokenAddress }).unwrap();
       }
-      const receipt = await createWagerAndDeposit({ tokenAddress, wagerAsBigint: toBigIntInWei(wager), gameType, randomness: [convertBytesToNumber(randomnessQuery.data?.randomness)] }).unwrap();
+      const receipt = await createWagerAndDeposit({ tokenAddress, wagerAsBigint: toBigIntInWei(wager), gameType, randomness: [convertBytesToNumber(drand.randomness)] }).unwrap();
       const parsedTopicData = parseTopicDataFromEventLog(receipt.logs[2], ['event GameCreation(bytes32 indexed escrowHash, uint256 indexed nonce, address creator, string name)']);
       await createGame({ 
         gameType, 
@@ -148,12 +148,12 @@ export const CreateCoinFlipGameCard = ({
     e.preventDefault();
     setValue("wager", wagerAmount);
   }
-
+  
   const navigateToGameUi = useNavigateTo()
   useEffect(() => {
     if(wallet){
       allowanceQuery.refetch();
-      randomnessQuery.refetch();
+      
       if(createGameStatus === 'fulfilled' && createGameResponse) {
         navigateToGameUi(`/${gameType.toLowerCase()}/play/${createGameResponse.uuid}`, 1500, { replace: true,
           state: { gameId: createGameResponse.id, gameUuid: createGameResponse.uuid } });
@@ -166,7 +166,7 @@ export const CreateCoinFlipGameCard = ({
     createGameResponse
   ]);
   
-  return randomnessQuery.data ? (
+  return drand ? (
     <form 
       tw="w-full flex flex-col justify-center items-center" 
       onSubmit={handleSubmit(handleCreateGameClick)} 
@@ -189,7 +189,7 @@ export const CreateCoinFlipGameCard = ({
             />
             <NormalText tw="dark:text-shinishi">{wagerUSDValue.loading ? 'loading...' : wagerUSDValue.value} USD</NormalText> 
             <SmallText> Balance: {
-              isWagerbalanceLoading ? "Retrieving balance..." : userWagerBalance?.formatted + ' ' + userWagerBalance?.symbol 
+              isWagerbalanceLoading ? "Retrieving balance..." : userWagerBalance?.formatted  
             } </SmallText> 
             {/* useBalance from wagmi can be used here */}
           </div>
@@ -224,7 +224,7 @@ export const CreateCoinFlipGameCard = ({
         </div>
         {/* <Button buttonType="primary"><>Approve</></Button> */}
         {
-          (!tokenAddress && !playerAddress && !playerUuid && openConnectModal) ? <Button buttonType="primary" tw="flex" onClick={
+          (!(tokenAddress && playerAddress && playerUuid) && openConnectModal) ? <Button buttonType="primary" tw="flex" onClick={
             (e: any) => { 
               e.preventDefault();
               openConnectModal();

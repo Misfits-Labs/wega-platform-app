@@ -1,19 +1,25 @@
 import React, { useState, createContext, useContext } from 'react'
 import { ModalContainer  } from './types';
-import { GameWinnerDeclarationModal  } from './GameWinnerDeclarationModal';
-import { GameLoserDeclarationModal  } from './GameLoserDeclarationModal';
+import CoinflipWinnerModal  from './CoinflipWinnerModal';
+import CoinflipLoserModal  from './CoinflipLoserModal';
+import DiceLoserModal  from './DiceLoserModal';
+import DiceWinnerModal  from './DiceWinnerModal';
 import { ClaimModal } from './ClaimModal';
 import BounceFromTop from './BounceFromTop';
 
 export const MODAL_TYPES = {
-  WINNER_DECLARATION_WINNER_MODAL: 'WINNER_DECLARATION_WINNER_MODAL',
-  WINNER_DECLARATION_LOSER_MODAL: 'WINNER_DECLARATION_LOSER_MODAL',
+  COINFLIP_WINNER_MODAL: 'COINFLIP_WINNER_MODAL',
+  COINFLIP_LOSER_MODAL: 'COINFLIP_LOSER_MODAL',
+  DICE_WINNER_MODAL: 'DICE_WINNER_MODAL',
+  DICE_LOSER_MODAL: 'DICE_LOSER_MODAL',
   CLAIM_MODAL: 'CLAIM_MODAL',
  }
  
 const MODAL_COMPONENTS: any = {
-  [MODAL_TYPES.WINNER_DECLARATION_WINNER_MODAL]: GameWinnerDeclarationModal,
-  [MODAL_TYPES.WINNER_DECLARATION_LOSER_MODAL]: GameLoserDeclarationModal,
+  [MODAL_TYPES.COINFLIP_WINNER_MODAL]: CoinflipWinnerModal,
+  [MODAL_TYPES.COINFLIP_LOSER_MODAL]: CoinflipLoserModal,
+  [MODAL_TYPES.DICE_WINNER_MODAL]: DiceWinnerModal,  
+  [MODAL_TYPES.DICE_LOSER_MODAL]: DiceLoserModal,
   [MODAL_TYPES.CLAIM_MODAL]: ClaimModal,
 }
  

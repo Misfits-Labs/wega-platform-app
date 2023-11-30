@@ -15,17 +15,23 @@ import {
  CurrencyTypes,
  CurrencyTypesEnum,
  AllPossibleCurrencyTypes,
- AllPossibleWagerTypes 
+ AllPossibleWagerTypes,
+ HexishString
 } from '../../models';
 import { useSelector } from 'react-redux'; 
 import { dateFromTs } from '../../utils';
-import { BarDiceIcon, BarCoinIcon, USDCIcon, USDTIcon } from '../../assets/icons';
+import { BarDiceIcon, BarCoinIcon, USDCIcon, USDTIcon, ArrowTrSquareIcon } from '../../assets/icons';
 import { selectGameById } from '../../components/WegaGames/apiSlice';
 import { GameBarLoadingSkeleton } from '../GameBar/GameBarLoadingSkeleton';
 import { formatEther } from 'ethers';
 import { ButtonForJoinableGame } from '../ButtonForJoinableGame';
 import { ButtonForWaitingGame } from '../ButtonForWaitingGame';
 import { useWegaStore } from '../../hooks'
+import { constructBlockExplorerHash } from './utils';
+import { 
+  NormalText, 
+} from "../../components/CreateGameCard/types";
+import { Link } from 'react-router-dom';
 import 'twin.macro';
 
 export const BADGE_TEXTS: any = {
@@ -44,13 +50,13 @@ function GameBar({
   ...rest
 }: { gameId: number } & React.Attributes & Partial<React.AllHTMLAttributes<HTMLDivElement>> & GameBarProps) {
   const game = useSelector(state => selectGameById(state, gameId));
-  const { user } = useWegaStore();
-  return game && user?.uuid ? (
-   <BarWrapper tw="grid grid-cols-4" {...rest}>
+  const { user, network } = useWegaStore();
+  return game && user?.uuid && network ? (
+   <BarWrapper tw="w-full grid grid-cols-5 " {...rest}>
     {/* date */}
     <DateColumn tw="max-w-[max-content]">{dateFromTs(new Date(game.createdAt as string).getTime() * 1000)}</DateColumn>
     
-    <GameTypeBadgeWrapper tw="w-[7.5rem]" >
+    <GameTypeBadgeWrapper tw="w-[fit-content]" >
      {renderGameTypeBadge(game.gameType)}
      <BadgeText >{BADGE_TEXTS[game.gameType]}</BadgeText>
     </GameTypeBadgeWrapper>
@@ -63,18 +69,25 @@ function GameBar({
     {/* escrow link button */}
     
     {/* render for a joinable game */}
-    {
-      game.creatorUuid !== user.uuid && <div tw="flex justify-end">
-        <ButtonForJoinableGame gameType={game.gameType} gameId={game.id} gameUuid={game.uuid} />
-      </div>
-    }
 
-    {/* playable game button */}
-    {  
-      game.creatorUuid === user.uuid && <div tw="flex justify-end">
-        <ButtonForWaitingGame gameType={game.gameType} gameId={game.id} gameUuid={game.uuid} />  
+    {/* tx hash */}
+    <div tw="flex items-center justify-between gap-x-[8px] col-span-2">
+      <div tw="flex gap-x-[8px] ">
+        <NormalText>view on explorer</NormalText>
+        <Link to={constructBlockExplorerHash(network.id as number, game.transactionHash as HexishString)} target="_blank" rel="noreferrer"><ArrowTrSquareIcon /></Link>
       </div>
-    }
+      {/* playable game button */}
+      {
+        game.creatorUuid !== user.uuid && <div tw="flex justify-end">
+          <ButtonForJoinableGame gameType={game.gameType} gameId={game.id} gameUuid={game.uuid} />
+        </div>
+      }
+      {  
+        game.creatorUuid === user.uuid && <div tw="flex justify-end">
+          <ButtonForWaitingGame gameType={game.gameType} gameId={game.id} gameUuid={game.uuid} />  
+        </div>
+      }
+    </div>
    </BarWrapper>
   ) : <GameBarLoadingSkeleton />
 }

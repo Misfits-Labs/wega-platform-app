@@ -20,7 +20,7 @@ import coinWinnerTails from './images/coinflip-tails-winner.png'
 interface DiceModalLogoProps extends React.AllHTMLAttributes<HTMLImageElement> {
  side: number; 
 }
-interface TailsModalLogoProps extends DiceModalLogoProps {}   
+interface CoinflipModalLogoProps extends DiceModalLogoProps {}   
 export const DiceWinnerLogo: React.FC<DiceModalLogoProps> = ({ side, ...rest }: DiceModalLogoProps) => { 
  const diceImages = new Map([
   [1, winnerOne],
@@ -45,19 +45,19 @@ export const DiceLoserLogo: React.FC<DiceModalLogoProps> = ({ side, ...rest }: D
  ]);
  return (<img src={diceImages.get(side)} alt="loser" {...rest} />)
 }
-export const TailsWinnerLogo: React.FC<TailsModalLogoProps> = ({ side, ...rest }: TailsModalLogoProps) => { 
+export const CoinflipWinnerLogo: React.FC<CoinflipModalLogoProps> = ({ side, ...rest }: CoinflipModalLogoProps) => { 
  const coinImages = new Map([
-  [0, coinWinnerHeads],
-  [1, coinWinnerTails],
+  [1, coinWinnerHeads],
+  [2, coinWinnerTails],
  ]);
  return (<img src={coinImages.get(side)} alt="winner" { ...rest} />)
 }
 
 
-export const TailsLoserLogo: React.FC<TailsModalLogoProps> = ({ side, ...rest }: TailsModalLogoProps) => {
+export const CoinflipLoserLogo: React.FC<CoinflipModalLogoProps> = ({ side, ...rest }: CoinflipModalLogoProps) => {
  const coinImages = new Map([
-  [0, coinLoserHeads],
-  [1, coinLoserTails],
+  [1, coinLoserHeads],
+  [2, coinLoserTails],
  ]);
  return (<img src={coinImages.get(side)} alt="loser" {...rest} />)
 }
