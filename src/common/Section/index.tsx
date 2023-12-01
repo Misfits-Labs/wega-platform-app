@@ -31,11 +31,11 @@ const Section: React.FC<SectionProps & Partial<SectionContainerProps>> = ({
     const HeaderComp: React.FC<CustomHeaderProps> = (props: CustomHeaderProps) => {
       const Comp = () => hdr as React.ReactNode;
       if(props.children){
-        <Comp>
+        return (<Comp>
           {children}
-        </Comp>
+        </Comp>)
       } else {
-        return <Comp { ...props } /> 
+        return (<Comp { ...props } /> )
       }
     };
     // const CustomHeaderComp:  = (props: CustomHeaderType) => <HeaderComp { ...props} />;
@@ -49,7 +49,6 @@ const Section: React.FC<SectionProps & Partial<SectionContainerProps>> = ({
 }
 
 export default Section;
-
 
 
 

@@ -1,13 +1,21 @@
 import { defineConfig, loadEnv } from 'vite'
+import { resolve } from 'path';
 import react from '@vitejs/plugin-react';
-import mkcert from 'vite-plugin-mkcert'
 
 // https://vitejs.dev/config/
 export default ({ mode }) => {
-
+  console.log(mode)
   process.env = { ...process.env, ...loadEnv(mode, process.cwd())};
   return defineConfig({
-    server: { https: true },
+    // server: { https: true },
+    build: {
+      outDir: "./dist", 
+      rollupOptions: {
+        input: {
+          main: resolve(__dirname, 'index.html'),
+        },
+      },
+    },
     optimizeDeps: {
       esbuildOptions: {
         target: 'es2020',
@@ -23,7 +31,6 @@ export default ({ mode }) => {
           plugins: ['babel-plugin-macros', 'babel-plugin-styled-components']
         }
       }),
-      mkcert()
     ],
   })
   
