@@ -1,19 +1,15 @@
-import Section from '../../common/Section';
-import ClaimBar from '../../common/ClaimBar';
 import 'twin.macro';
-interface ClaimTokenWinsSectionProps extends React.Attributes {
- gameIds: number[]
+import { ClaimableGames } from '../WegaGames';
+import { HexishString } from '../../models';
+
+interface ClaimTokenWinsSectionProps extends React.AllHTMLAttributes<HTMLDivElement> {
+  userWalletAddress: HexishString;
+  gamesCount: number;
+  networkId: number;
 }
 
-function ClaimTokenWinsSection({ gameIds , ...rest }: ClaimTokenWinsSectionProps) {
+function ClaimTokenWinsSection({ networkId, userWalletAddress, gamesCount, ...rest }: ClaimTokenWinsSectionProps) {
   // filter out the games of which the user is not the winner
-  return (
-    <Section hdr="Tokens won" direction="col" tw="gap-2" { ...rest } >
-      {
-        gameIds.map(
-        (dg, i) => ( <ClaimBar count={i + 1} gameId={dg} key={`claim-wins-bar-${i}`} className="dark:bg-[#1C1C1C] py-2 px-3 rounded-[5px]"/> ))
-      }
-    </Section>
-  )
+  return ( <ClaimableGames userWalletAddress={userWalletAddress} gamesCount={gamesCount} {...rest} networkId={networkId} /> )
 }
 export default ClaimTokenWinsSection;

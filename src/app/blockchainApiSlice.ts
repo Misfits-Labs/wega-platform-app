@@ -3,7 +3,7 @@ import { createApi  } from '@reduxjs/toolkit/query/react';
 import { customBlockchainBaseQuery } from '../libs/rtk';
 import { BlockchainAPIBase } from '../libs/wagmi';
 
-const baseUrl = 'wega-blockchain-api'
+const baseUrl = 'wegaBlockchainApi'
 const baseQuery = customBlockchainBaseQuery({ baseUrl }, BlockchainAPIBase);
 export const blockchainApiSlice = createApi({
   baseQuery,

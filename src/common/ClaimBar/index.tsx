@@ -17,13 +17,13 @@ import {
  AllPossibleCurrencyTypes,
  AllPossibleWagerTypes,
  HexishString,
+ Wega
 } from '../../models';
 import { dateFromTs, parseBarCount } from '../../utils';
 import { Count } from './types'
 import{ BarDiceIcon, BarCoinIcon, USDCIcon, USDTIcon, ArrowTrSquareIcon} from '../../assets/icons';
-import { selectGameById } from '../../containers/App/api';
+import { selectGameById } from '../../components/WegaGames/apiSlice';
 import { useSelector } from 'react-redux' 
-import { useWegaStore } from '../../hooks'
 import { ButtonForClaiming } from '../ButtonForClaiming';
 import { constructBlockExplorerHash } from '../GameBar/utils';
 import { Link } from 'react-router-dom'
@@ -40,35 +40,37 @@ export const BADGE_TEXTS: any = {
 interface ClaimBarProps {
   gameId: number;
   count: number;
+  networkId: number;
+  game: Wega;
 }
 
 function ClaimBar({ 
   gameId,
+  networkId,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  css, 
+  css,
+  game, 
   count,
   ...rest
 }: { gameId: number, count: number  } & React.Attributes & Partial<React.AllHTMLAttributes<HTMLDivElement>> & ClaimBarProps) {
-  const game = useSelector(state => selectGameById(state, gameId));
-  const { user, wallet, network } = useWegaStore();  
-
-  return game && wallet?.address && user?.uuid && network?.id && (
-   <BarWrapper tw="grid grid-cols-10 w-[50vw] justify-between" {...rest}>
+  const claimableGame = useSelector(state => selectGameById(state, gameId)) ?? game;
+  return (
+   <BarWrapper tw="grid grid-cols-10 w-full justify-between" {...rest}>
     <Count tw="w-[fit-content]">{parseBarCount(count)}</Count>
     {/* date */}
-    <DateColumn>{dateFromTs(new Date(game.createdAt as string).getTime() * 1000)}</DateColumn>
+    <DateColumn>{dateFromTs(new Date(claimableGame.createdAt as string).getTime() * 1000)}</DateColumn>
     
     <WagerTypeBadgeWrapper tw="col-span-3 w-[fit-content]">
-      <BadgeText>{formatEther(game.wager.wagerAmount)}</BadgeText>
-      <BadgeIcon>{renderWagerBadge(game.wager.wagerType, game.wager.wagerCurrency)}</BadgeIcon>
-      <BadgeText>{game.wager.wagerCurrency}</BadgeText>
+      <BadgeText>{formatEther(claimableGame.wager.wagerAmount)}</BadgeText>
+      <BadgeIcon>{renderWagerBadge(claimableGame.wager.wagerType, claimableGame.wager.wagerCurrency)}</BadgeIcon>
+      <BadgeText>{claimableGame.wager.wagerCurrency}</BadgeText>
     </WagerTypeBadgeWrapper>
 
 
     <div tw="col-span-2">
       <GameTypeBadgeWrapper tw="w-[fit-content]">
-      {renderGameTypeBadge(game.gameType)}
-      <BadgeText>{BADGE_TEXTS[game.gameType]}</BadgeText>
+      {renderGameTypeBadge(claimableGame.gameType)}
+      <BadgeText>{BADGE_TEXTS[claimableGame.gameType]}</BadgeText>
       </GameTypeBadgeWrapper>
     </div>
     
@@ -78,7 +80,7 @@ function ClaimBar({
       <div tw="flex items-center justify-end gap-x-[24px]">
         <div tw="flex gap-x-[8px] ">
           <NormalText>view on explorer</NormalText>
-          <Link to={constructBlockExplorerHash(network.id as number, game.transactionHash as HexishString)} target="_blank" rel="noreferrer"><ArrowTrSquareIcon /></Link>
+          <Link to={constructBlockExplorerHash(networkId, claimableGame.transactionHash as HexishString)} target="_blank" rel="noreferrer"><ArrowTrSquareIcon /></Link>
         </div>
         {/* render for a joinable game */}
         <ButtonForClaiming  game={game} />

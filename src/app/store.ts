@@ -1,25 +1,22 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import appReducer from '../containers/App/AppSlice'
-import { appApiSlice } from '../containers/App/api';
+import walletConnectionReducer from '../components/RainBowConnectButton/connectionSlice'
 import { blockchainApiSlice } from './blockchainApiSlice';
-import { appApiSlice as newAppApiSlice } from './apiSlice';
+import { appApiSlice } from './apiSlice';
 import intlReducer from '../containers/LanguageProvider/intlSlice'
 import blockchainReducer from '../api/blockchain/blockchainSlice'
 
 export const store = configureStore({
   reducer: {
+    connection: walletConnectionReducer,
     [appApiSlice.reducerPath]: appApiSlice.reducer,
-    [newAppApiSlice.reducerPath]: newAppApiSlice.reducer,
     [blockchainApiSlice.reducerPath]: blockchainApiSlice.reducer,
     blockchain: blockchainReducer,
-    app: appReducer,
     language: intlReducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({
     serializableCheck: false
   }).concat(
     appApiSlice.middleware,
-    newAppApiSlice.middleware,
     blockchainApiSlice.middleware
   ),
   devTools: import.meta.env.VITE_REDUX_DEBUG === "true" ? true : false

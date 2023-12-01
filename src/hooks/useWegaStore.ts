@@ -3,7 +3,7 @@ import {
  selectNetwork,
  selectUser,
  selectWallet,
-} from '../containers/App/AppSlice';
+} from '../components/RainBowConnectButton/connectionSlice';
 
 
 export function useWegaStore(){

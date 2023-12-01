@@ -2,34 +2,29 @@ import {Helmet} from 'react-helmet-async'
 import 'twin.macro';
 import Section from '../../common/Section';
 import ClaimWinsTokenSection from '../../components/ClaimTokenWinsSection';
+import ClaimWinsDisconnectedUserSection from '../../components/ClaimWinsDisconnectedUserSection'
+import ClaimOnOtherNetworkSection from '../../components/ClaimOnOtherNetworkSection'
 import ClaimNFTWinsSection from '../../components/ClaimNFTWinsSection';
-import { useGetGamesQuery } from '../App/api';
-import { ComponentLoader } from '../../common/loaders';
 import MainContainer from '../../components/MainContainer';
 import {
  SectionHeaderTitle,
  SectionHeaderSubtitle,
  SectionHeaderContainer
 } from "../../common/Section/types"
-import { useWegaStore } from '../../hooks' 
+import { useWegaStore, useFirebaseData } from '../../hooks' 
 
 const WinsPage = () => {
-  const { user, wallet } = useWegaStore();
-  const { claimableGameIds, isLoading } = useGetGamesQuery(undefined, {
-    selectFromResult: ({ data, isLoading }) => ({
-      claimableGameIds: data ? Object.entries(data.entities)
-      .filter(([, game]: any) => game.players.filter((player: any) => player.walletAddress.toLowerCase() === wallet?.address.toLowerCase()).length > 0)
-      .map(([id,]: any) => Number(id)) : [],
-      isLoading,
-    })
-  })
+  const { wallet, network } = useWegaStore();
+  const { gamesCount } = useFirebaseData('');
 
+  // TODO
+    // create claimwins disconnected user section for nft claims section 
   return (
     <>
       <Helmet>
       <title>Claim</title>
       </Helmet>
-      <MainContainer tw="min-h-[100vh]">
+      <MainContainer tw="min-h-[100vh] w-[50vw]">
        <Section
         direction='col' 
         hdr={
@@ -43,12 +38,18 @@ const WinsPage = () => {
         >
         </Section>
         { 
-          !isLoading && wallet && wallet?.address && user?.uuid ? 
-          <>
-            <ClaimWinsTokenSection gameIds={[ ...claimableGameIds ]} /> 
-            <ClaimNFTWinsSection gameIds={[ ...claimableGameIds ]} />
-          </>
-          : <ComponentLoader tw="w-full" /> 
+          wallet && wallet?.isConnected && network && network.id ?   
+          (<div tw="flex flex-col gap-y-[80px]">
+            <ClaimWinsTokenSection networkId={network.id} userWalletAddress={wallet?.address} gamesCount={gamesCount ?? 0} tw="w-full"/> 
+            <ClaimNFTWinsSection gameIds={[]} tw="w-full" />
+            <ClaimOnOtherNetworkSection tw="w-full"/>
+          </div>)
+          : (
+            <>
+              <ClaimWinsDisconnectedUserSection  gameIds={[]}/> 
+              <ClaimNFTWinsSection gameIds={[]} tw="mt-[80px] w-full" /> 
+            </>
+          )
         }
       </MainContainer>
     </>

@@ -3,7 +3,10 @@ import 'twin.macro';
 import { 
  LargeText, 
 } from "../../components/CreateGameCard/types";
-interface ClaimNFTWinsSection extends React.Attributes {
+import {
+  SectionHeader,
+ } from "../../common/Section/types"
+interface ClaimNFTWinsSection extends React.AllHTMLAttributes<HTMLDivElement> {
  gameIds: number[]
 }
 
@@ -11,8 +14,10 @@ interface ClaimNFTWinsSection extends React.Attributes {
 function ClaimNFTWinsSection({ gameIds , ...rest }: ClaimNFTWinsSection) {
   // filter out the games of which the user is not the winner
   return (
-    <Section hdr="NFTs won" direction="col" tw="gap-y-[5rem]" { ...rest } >
-      <LargeText tw="text-shinishi">Coming soon.</LargeText>
+    <Section hdr={
+      <SectionHeader tw="w-full self-start">NFTs won</SectionHeader>
+    } direction="col" tw="gap-y-[24px]" { ...rest } >
+      <LargeText tw="text-shinishi text-center">Coming soon.</LargeText>
     </Section>
   )
 }

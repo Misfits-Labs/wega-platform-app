@@ -10,6 +10,6 @@ const baseQuery = fetchBaseQuery({
 
 export const appApiSlice = createApi({
   baseQuery,
-  reducerPath: 'wega-api',
+  reducerPath: 'wegaApi',
   endpoints: () => ({})
 });

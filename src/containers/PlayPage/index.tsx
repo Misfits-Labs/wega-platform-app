@@ -42,7 +42,7 @@ const PlayPage = () => {
           </div>
         </Section>
         {/* { user?.uuid ? <JoinableAndPlayableGames tw="md:w-[978px]" gamesCount={gamesCount} userUuid={user?.uuid} />  : <ComponentLoader tw="mt-20 w-full" /> } */}
-        { user?.uuid ? <JoinableAndPlayableGames tw="md:w-[978px]" gamesCount={gamesCount} userUuid={user?.uuid} /> : gamesCount && !user.uuid ? <></> : <></> }
+        { user?.uuid ? <JoinableAndPlayableGames tw="md:w-[978px]" gamesCount={gamesCount ?? 0} userUuid={user?.uuid} /> : gamesCount && !user.uuid ? <></> : <></> }
       </MainContainer>
     </>
   )

@@ -3,10 +3,10 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { ConnectionInformation, Balance, Chain, AvatarWrapper } from './types';
 import Button from '../../common/Button';
 import WalletAvatar from '../../common/WalletAvatar';
-import { resetWallet, resetNetwork, setNetworkUnsupported, setWallet, setNetwork } from '../../containers/App/AppSlice';
+import { resetWallet, resetNetwork, setNetworkUnsupported, setWallet, setNetwork } from './connectionSlice';
 import { useAppDispatch } from '../../hooks';
 import { useAccount } from 'wagmi';
-import { useCreatePlayerMutation } from '../../containers/App/api'; 
+import { useCreatePlayerMutation } from './apiSlice'; 
 
 import 'twin.macro';
 
