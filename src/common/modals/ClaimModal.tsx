@@ -69,11 +69,9 @@ export const ClaimModal = ({ hide, game, wallet
        </div>
       </div>
      </div>
-
      <div tw="w-full flex justify-center">
       <img src={arrowDown} alt="arrow" />
      </div>
-
      {/* bottom */}
      <div tw="flex flex-col gap-y-[8px] min-w-[150px] w-full">
       <NormalText tw="text-shinishi">Destination</NormalText>
