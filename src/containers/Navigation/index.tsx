@@ -24,7 +24,7 @@ const Navigation = () => {
 
   return (
     <NavigationBar tw="font-primary">
-      <div tw="relative z-[9950] container dark:text-blanc flex w-full py-[20px] px-[20px] justify-center items-end">
+      <div tw="relative z-[950] container dark:text-blanc flex w-full py-[20px] px-[20px] justify-center items-end">
         <NavigationLinksContainer tw="box-border flex w-full gap-x-[30px]">
           <BrandContainer tw="mb-[4px]">
             <div tw="mr-5">

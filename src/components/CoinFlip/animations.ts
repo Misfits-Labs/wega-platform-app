@@ -20,7 +20,7 @@ export function useRoll(coinRef: any, gameOver: boolean) {
     }
     const tl = gsap.timeline({ repeatDelay: 0, onComplete: callb })
     tl.to("g#all-sides", {
-      repeat: 10,
+      repeat: 5,
       ease: "none",
       y: "300",
     })
@@ -36,14 +36,14 @@ export function useRoll(coinRef: any, gameOver: boolean) {
        roll(animationTarget);
      }
      if(gameOver) {
-      setTimeout(() =>  setRolled(true), 2000);
+      setTimeout(() =>  setRolled(true), 4000);
      }
     }, coinRef);
     return () => ctx.revert();
   }, [trigger, gameOver]);
   return {
     triggerRoll,
-    rolled
+    rolled,
   }
 }
 

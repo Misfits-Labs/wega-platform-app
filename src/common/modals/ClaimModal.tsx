@@ -2,14 +2,17 @@ import { formatEther } from 'ethers';
 import tw, { styled } from 'twin.macro';
 import { WinnerDeclarationContainer } from './types';
 import { NormalText, SmallText } from '../../components/CreateGameCard/types';
-import { ArrowDownIconV2, DownloadIcon } from '../../assets/icons';
+import { DownloadIcon } from '../../assets/icons';
+import arrowDown from '../../assets/icons/arrow-down-icon.png';
 import { BadgeIcon, renderWagerBadge } from "../GameBar";
-import { HexishString, Wega } from '../../models';
-import { useBlockchainApiHooks, useTokenUSDValue } from '../../hooks';
-import { miniWalletAddress, capitalize } from '../../utils';
+import { HexishString, Wega, WegaState} from '../../models';
+import { useTokenUSDValue } from '../../hooks';
+import { useWithdrawMutation, useGetClaimAmountQuery } from './blockchainApiSlice'; 
+import { useUpdateGameMutation } from '../../components/PlayGameSection/apiSlice'; 
+import { miniWalletAddress, capitalize, toastSettings } from '../../utils';
 import Button from '../Button';
 import WalletAvatar from "../../common/WalletAvatar";
-
+import toast from 'react-hot-toast';
 
 // TODO add gas costs
 
@@ -19,15 +22,25 @@ export interface ClaimModalProps {
   wallet: any;
 }
 
+
 export const ClaimModal = ({ hide, game, wallet
 }: ClaimModalProps) => {
-  const {useClaimMutation} = useBlockchainApiHooks;
-  const {claim, isLoading: isClaimingLoading} = useClaimMutation();
+  const [feeAmountIndex, sendAmountIndex] = [0, 1]
+  const [claim, claimQuery] = useWithdrawMutation();
+  const [updateGame, ] = useUpdateGameMutation();
+
+  const calculateFeesQuery = useGetClaimAmountQuery({ 
+    escrowHash: game.wager.wagerHash as HexishString,
+    account: wallet.address
+  });
   const handleClaimClick = async () => { 
-    await claim(game.wager.wagerHash as HexishString).unwrap();
-    hide(); 
+    await claim({ escrowHash: game.wager.wagerHash as HexishString }).unwrap();
+    await updateGame({ uuid: game.uuid, state: WegaState.SETTLED  }).unwrap();
+    toast.success('Withdraw success', { ...toastSettings('success', 'top-center') as any });
+    return hide(); 
   };
   const wagerUSDValue = useTokenUSDValue(game.wager.wagerCurrency, Number(formatEther(game.wager.wagerAmount)));
+  // console.log(feeTaker)
   // console.log(game.wager)
   return (
    <WinnerDeclarationContainer tw="items-start p-[24px] gap-y-[16px] min-w-[340px]">
@@ -58,9 +71,7 @@ export const ClaimModal = ({ hide, game, wallet
      </div>
 
      <div tw="w-full flex justify-center">
-      <div tw="rounded-[100%] dark:bg-[#414141] flex justify-center">
-        <ArrowDownIconV2 />
-      </div>
+      <img src={arrowDown} alt="arrow" />
      </div>
 
      {/* bottom */}
@@ -94,7 +105,11 @@ export const ClaimModal = ({ hide, game, wallet
      </div>
      <div tw="flex flex-row items-end justify-between w-full">
       <NormalText tw="dark:text-shinishi">Total claim before fees</NormalText>
-      <NormalText>{formatEther(game.wager.wagerAmount)} {game.wager.wagerCurrency}</NormalText>
+      {
+        !calculateFeesQuery.data ? 'calculating...' : <NormalText>{
+          Number(formatEther(calculateFeesQuery.data[feeAmountIndex])) + Number(formatEther(calculateFeesQuery.data[sendAmountIndex])) 
+        } {game.wager.wagerCurrency}</NormalText>
+      }
      </div>
 
      {/* <div tw="flex flex-row items-end justify-between w-full">
@@ -107,23 +122,35 @@ export const ClaimModal = ({ hide, game, wallet
       <div tw="w-full rounded-[4px] border border-[1px] border-shinishi p-[12px]">
         <div tw="flex flex-row items-end justify-between w-full">
           <NormalText tw="dark:text-shinishi">Platform fee (5%)</NormalText>
-          <NormalText>00.00 {game.wager.wagerCurrency}</NormalText>
+          {
+            !calculateFeesQuery.data ? 'calculating...' : <NormalText>{
+              formatEther(calculateFeesQuery.data[feeAmountIndex])
+            } {game.wager.wagerCurrency}</NormalText>
+          }
         </div>
       </div>
     </div>  
     
-    <div tw="self-start flex flex-row items-center gap-[10px] py-[8px] px-[5px]">
+    <div tw="w-full self-start flex flex-row items-center justify-between gap-[10px] py-[8px] px-[5px]">
       <NormalText tw="dark:text-shinishi">You pay</NormalText>
-      <NormalText>{formatEther(game.wager.wagerAmount)} {game.wager.wagerCurrency}</NormalText>
+      {
+        !calculateFeesQuery.data ? 'calculating...' : <NormalText>{
+          formatEther(calculateFeesQuery.data[feeAmountIndex])
+        } {game.wager.wagerCurrency}</NormalText>
+      }
     </div>
 
     <div tw="self-start flex flex-row items-center justify-between gap-[10px] rounded-[5px] dark:bg-[#414141] py-[8px] px-[5px] w-full">
       <NormalText tw="dark:text-shinishi">You receive</NormalText>
-      <NormalText>{formatEther(game.wager.wagerAmount)} {game.wager.wagerCurrency}</NormalText>
+      {
+        !calculateFeesQuery.data ? 'calculating...' : <NormalText>{
+          formatEther(calculateFeesQuery.data[sendAmountIndex])
+        } {game.wager.wagerCurrency}</NormalText>
+      }
     </div>
 
     <Button buttonType="primary" className="flex items-center justify-center w-full" onClick={() => handleClaimClick()} >
-     { isClaimingLoading ? "Loading..." : "Claim" }
+     { claimQuery.isLoading ? "Loading..." : "Claim" }
      <DownloadIcon tw="h-[16px] w-[16px] ms-[5px] dark:stroke-blanc" />
     </Button> 
    </WinnerDeclarationContainer>

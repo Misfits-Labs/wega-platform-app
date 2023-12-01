@@ -3,14 +3,12 @@ import walletConnectionReducer from '../components/RainBowConnectButton/connecti
 import { blockchainApiSlice } from './blockchainApiSlice';
 import { appApiSlice } from './apiSlice';
 import intlReducer from '../containers/LanguageProvider/intlSlice'
-import blockchainReducer from '../api/blockchain/blockchainSlice'
 
 export const store = configureStore({
   reducer: {
     connection: walletConnectionReducer,
     [appApiSlice.reducerPath]: appApiSlice.reducer,
     [blockchainApiSlice.reducerPath]: blockchainApiSlice.reducer,
-    blockchain: blockchainReducer,
     language: intlReducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({

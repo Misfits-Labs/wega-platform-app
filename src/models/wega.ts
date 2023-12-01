@@ -42,7 +42,8 @@ export const WegaState = {
  'PLAYING': 'PLAYING', 
  'PENDING': 'PENDING', 
  'COMPLETED': 'COMPLETED', 
- 'CANCELED': 'CANCELED'
+ 'CANCELED': 'CANCELED',
+ 'SETTLED': 'SETTLED'
 } as const;
 
 export type AllPossibleWegaStates = typeof WegaState[keyof typeof WegaState];

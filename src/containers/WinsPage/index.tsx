@@ -27,6 +27,7 @@ const WinsPage = () => {
       <MainContainer tw="min-h-[100vh] w-[50vw]">
        <Section
         direction='col' 
+        tw="w-full"
         hdr={
          <SectionHeaderContainer tw="flex-col items-center">
          <SectionHeaderTitle>Claim wins</SectionHeaderTitle>
@@ -39,14 +40,14 @@ const WinsPage = () => {
         </Section>
         { 
           wallet && wallet?.isConnected && network && network.id ?   
-          (<div tw="flex flex-col gap-y-[80px]">
+          (<div tw="flex flex-col gap-y-[80px] w-full">
             <ClaimWinsTokenSection networkId={network.id} userWalletAddress={wallet?.address} gamesCount={gamesCount ?? 0} tw="w-full"/> 
             <ClaimNFTWinsSection gameIds={[]} tw="w-full" />
             <ClaimOnOtherNetworkSection tw="w-full"/>
           </div>)
           : (
             <>
-              <ClaimWinsDisconnectedUserSection  gameIds={[]}/> 
+              <ClaimWinsDisconnectedUserSection  gameIds={[]} tw="w-full"/> 
               <ClaimNFTWinsSection gameIds={[]} tw="mt-[80px] w-full" /> 
             </>
           )

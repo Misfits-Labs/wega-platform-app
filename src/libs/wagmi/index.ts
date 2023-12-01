@@ -7,6 +7,7 @@ import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 import { HexishString } from '../../models';
 import { tokenConfig, escrowConfig, gameControllerConfig, wegaRandomizerControllerConfig } from "../../utils";
+import { feeManagerConfig } from '../../utils/abis';
 
 
 
@@ -52,7 +53,8 @@ export const ContractTypes = {
   'TOKEN': 'wegaErc20Dummy', 
   'ERC20ESCROW': 'wegaErc20Escrow',
   'GAMECONTROLLER': 'wegaGameController',
-  'RADNOMIZER_CONTROLLER': 'wegaRandomizerController'
+  'RADNOMIZER_CONTROLLER': 'wegaRandomizerController',
+  'FEE_MANAGER': 'feeManager'
 } as const;
 
 export const ContractConfig = {
@@ -63,6 +65,7 @@ export const ContractConfig = {
   },
   [ContractTypes.GAMECONTROLLER]: gameControllerConfig,
   [ContractTypes.RADNOMIZER_CONTROLLER]: wegaRandomizerControllerConfig,
+  [ContractTypes.FEE_MANAGER]: feeManagerConfig,
 } as const; 
 
 export type AllContractTypes = typeof ContractTypes[keyof typeof ContractTypes];

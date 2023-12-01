@@ -17,13 +17,13 @@ export function useCreateGameParams({
   useEffect(() => {
     if(wallet && wallet.isConnected && user && network) {
       if(!(getTokenAddress() && getPlayerAddress() && getUserUuid())) {
-        setTokenAddress(SupportedWagerTokenAddresses(network?.id as number)[currencyType]);
+        setTokenAddress(SupportedWagerTokenAddresses[currencyType][network?.id as number] as HexishString);
         setPlayerAddress(wallet.address as HexishString);
         setUserUuid(user.uuid as string);
       }
     } else {
       if(getTokenAddress() && getPlayerAddress() && getUserUuid()) {
-        setTokenAddress(SupportedWagerTokenAddresses(network?.id as number)[currencyType]);
+        setTokenAddress(SupportedWagerTokenAddresses[currencyType][network?.id as number] as HexishString);
         setPlayerAddress(undefined);
         setUserUuid(undefined);
       }

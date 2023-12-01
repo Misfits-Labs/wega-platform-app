@@ -7,6 +7,8 @@ import './themes/index.css'
 import GlobalStyles  from "./themes/GlobalStyles.tsx";
 import WalletProvider from './containers/WalletProvider/index.tsx' 
 
+// TODO
+  // remove old api files
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ReduxProvider store={store}>
