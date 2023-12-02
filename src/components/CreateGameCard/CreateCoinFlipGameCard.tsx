@@ -41,7 +41,7 @@ import {
   useApproveERC20Mutation,
 } from './blockchainApiSlice';
 import { useCreateGameMutation } from './apiSlice';
-import { toastSettings, toBigIntInWei, escrowConfig, parseTopicDataFromEventLog, convertBytesToNumber } from '../../utils';
+import { toastSettings, toBigIntInWei, escrowConfig, parseTopicDataFromEventLog, convertBytesToNumber, parseError } from '../../utils';
 import Button from '../../common/Button';
 import { ToggleWagerBadge } from '../../common/ToggleWagerBadge';
 import { useFormReveal } from './animations';
@@ -139,7 +139,7 @@ export const CreateCoinFlipGameCard = ({
       toast.success('Create game success', { ...toastSettings('success', 'top-center') as any });
     } catch (e: any){
       console.log(e);
-      const message = e?.message ?? 'Create game error'
+      const message = parseError(e, 'Create game error')
       toast.error(message, { ...toastSettings('error', 'bottom-center') as any });
     }
   }

@@ -9,7 +9,7 @@ import { HexishString, Wega, WegaState} from '../../models';
 import { useTokenUSDValue } from '../../hooks';
 import { useWithdrawMutation, useGetClaimAmountQuery } from './blockchainApiSlice'; 
 import { useUpdateGameMutation } from '../../components/PlayGameSection/apiSlice'; 
-import { miniWalletAddress, capitalize, toastSettings } from '../../utils';
+import { miniWalletAddress, capitalize, toastSettings, parseError } from '../../utils';
 import Button from '../Button';
 import WalletAvatar from "../../common/WalletAvatar";
 import toast from 'react-hot-toast';
@@ -34,10 +34,15 @@ export const ClaimModal = ({ hide, game, wallet
     account: wallet.address
   });
   const handleClaimClick = async () => { 
-    await claim({ escrowHash: game.wager.wagerHash as HexishString }).unwrap();
-    await updateGame({ uuid: game.uuid, state: WegaState.SETTLED  }).unwrap();
-    toast.success('Withdraw success', { ...toastSettings('success', 'top-center') as any });
-    return hide(); 
+    try {
+      await claim({ escrowHash: game.wager.wagerHash as HexishString }).unwrap();
+      await updateGame({ uuid: game.uuid, state: WegaState.SETTLED  }).unwrap();
+      toast.success('Withdraw success', { ...toastSettings('success', 'top-center') as any });
+      return hide(); 
+    } catch (e) {
+      const message = parseError(e, 'Claim error');
+      toast.error(message, { ...toastSettings('error', 'bottom-center') as any });      
+    }
   };
   const wagerUSDValue = useTokenUSDValue(game.wager.wagerCurrency, Number(formatEther(game.wager.wagerAmount)));
   // console.log(feeTaker)

@@ -27,7 +27,6 @@ const CoinflipWinnerModal = ({
   gameType,
   winnerFlipChoice,
   loserFlipChoice }: CoinflipWinnerModalProps) => {
-  console.log(winnerFlipChoice, loserFlipChoice)
   return (
    <WinnerDeclarationContainer tw="items-center min-w-[546px]">
     <div tw="flex justify-end w-full">

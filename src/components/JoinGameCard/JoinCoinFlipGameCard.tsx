@@ -40,7 +40,7 @@ import { useNavigateTo, useCreateGameParams, useWegaStore, useTokenUSDValue, use
 import { useDepositAndJoinCoinflipMutation } from './blockchainApiSlice';
 import { useAllowanceQuery, useApproveERC20Mutation } from '../CreateGameCard/blockchainApiSlice';
 import toast from 'react-hot-toast';
-import { toastSettings, escrowConfig, toBigIntInWei, convertBytesToNumber } from '../../utils';
+import { toastSettings, escrowConfig, toBigIntInWei, convertBytesToNumber, parseError } from '../../utils';
 import Button from '../../common/Button';
 import { useFormReveal } from '../CreateGameCard/animations';
 import { useJoinGameMutation, useUpdateGameMutation } from './apiSlice';
@@ -143,7 +143,7 @@ const JoinCoinFlipGameCard = ({
         } });
     } catch (e: any){
       console.log(e)
-      const message = e?.message ?? 'Deposit error'
+      const message = parseError(e, 'Deposit error');
       toast.error(message, { ...toastSettings('error', 'bottom-center') as any });
     }
   }

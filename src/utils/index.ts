@@ -27,3 +27,4 @@ export {
 } from './abis.ts'
 
 export { cryptoComparePriceApi } from './price.ts'
+export { parseError } from './errors.ts'
