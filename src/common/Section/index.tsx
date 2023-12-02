@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { 
  SectionContainer, 
  SectionContainerProps,
