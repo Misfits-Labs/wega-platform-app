@@ -2,20 +2,22 @@ import '@rainbow-me/rainbowkit/styles.css';
 import { getDefaultWallets, connectorsForWallets } from '@rainbow-me/rainbowkit';
 import { configureChains, createConfig } from 'wagmi';
 import { getNetwork, Chain, waitForTransaction, writeContract, readContract, prepareWriteContract } from '@wagmi/core';
-import { localhost, polygonMumbai } from 'wagmi/chains';
+import { polygonMumbai } from 'wagmi/chains';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 import { HexishString } from '../../models';
 import { tokenConfig, escrowConfig, gameControllerConfig, wegaRandomizerControllerConfig } from "../../utils";
 import { feeManagerConfig } from '../../utils/abis';
+import { defaultNetwork } from '../../models/constants';
 
 
 
 const { chains, publicClient } = configureChains(
-  [polygonMumbai, localhost],
+  [defaultNetwork, polygonMumbai],
   [
     alchemyProvider({ apiKey: import.meta.env.VITE_RPC_PROVIDER_ALCHEMY as string }), 
-    publicProvider()
+    alchemyProvider({ apiKey: import.meta.env.VITE_RPC_PROVIDER_ALCHEMY_MUMBAI as string }), 
+    publicProvider(),
   ]
 );
 const projectId = import.meta.env.VITE_WALLET_CONNECT_ID as string;
