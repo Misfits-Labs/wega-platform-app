@@ -1,6 +1,6 @@
 import { RainbowKitProvider, darkTheme, lightTheme } from '@rainbow-me/rainbowkit';
 import wagmiConfig, { chains } from '../../libs/wagmi'
-import { polygonMumbai } from 'wagmi/chains';
+import {defaultNetwork } from '../../models/constants'
 import { WagmiConfig } from 'wagmi';
 import WalletAvatar from '../../common/WalletAvatar';
 import 'twin.macro';
@@ -9,13 +9,14 @@ export interface WalletConnectorProps {
   children: React.ReactElement | React.ReactElement[];
 }
 
-const WalletProvider = (props: WalletConnectorProps) => {   
+
+const WalletProvider = (props: WalletConnectorProps) => {
   return (
     <WagmiConfig config={wagmiConfig}>
       <RainbowKitProvider
         theme={props.isDark ? darkTheme() : lightTheme()}
         chains={chains}
-        initialChain={polygonMumbai}
+        initialChain={defaultNetwork}
         avatar={WalletAvatar}
       >
         <div tw="relative z-[1]">

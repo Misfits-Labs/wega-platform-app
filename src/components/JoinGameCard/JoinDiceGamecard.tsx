@@ -108,7 +108,7 @@ const JoinGameDiceCard: React.FC<JoinDiceGameCardProps> = ({
       }).unwrap();
       await joinGame({ newPlayerUuid: playerUuid, gameUuid }).unwrap();
       await updateGame({ uuid: gameUuid, state: WegaState.PLAYING }).unwrap();
-      navigateToGameUi(`/${gameType.toLowerCase()}/play/${gameUuid}`, 1500, { replace: true, state: { gameId: gameId, gameUuid } });
+      navigateToGameUi(`/play/${gameType.toLowerCase()}/${gameUuid}`, 1500, { replace: true, state: { gameId: gameId, gameUuid } });
       toast.success('Deposit success', { ...toastSettings('success', 'top-center') as any });
     } catch (e: any){
       console.log(e)

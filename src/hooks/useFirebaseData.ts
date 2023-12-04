@@ -27,8 +27,9 @@ export function useFirebaseData(gameUuid: string) {
     onValue(databaseRef, (snapshot) => {
       if(snapshot.val()){
 
-      const { games } = snapshot.val();
+      const { games } = snapshot.val();  // this should retrigger refetch
       setGamesCount(Object.keys(games).length);
+      
       if(gameUuid) {
         setGame(games[gameUuid]);
         const { players, requiredPlayerNum, currentTurn, gameAttributes, gameType } = games[gameUuid];

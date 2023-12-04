@@ -42,8 +42,21 @@ export const SectionHeaderTitle = styled.span`
   line-height: calc(var(--font-size) * 1.5);
   justify-content: center;
 `
+
+export const SectionHeaderTitleLarge = styled.span`
+  --font-size: 67px;
+  font-style: normal;
+  font-weight: 600;
+  text-align: center;
+  font-size: var(--font-size);
+  line-height: calc(var(--font-size) * 1.5);
+  justify-content: center;
+`
+
 export const SectionHeaderContainer = styled.div`
   margin-bottom: 48px;
   height: calc(var(--font-size) * 1.5);
   display: flex;
 `
+
+

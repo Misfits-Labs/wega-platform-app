@@ -1,3 +1,4 @@
+// TODO name config
 import { CurrencyTypes, CurrencyTypesEnum  } from ".";
 import { tokenConfig } from "../utils";
 import { polygon, polygonMumbai } from "wagmi/chains";
@@ -17,3 +18,7 @@ export const SupportedBlockExplorers = new Map([
  [polygon.id ?? 137, 'https://polygonscan.com/tx/'],
  [polygonMumbai.id ?? 80001, 'https://mumbai.polygonscan.com/tx/']
 ])
+
+export const windowIsCurrentlyMobileQuery = '(max-width: 639px)';
+
+export const  defaultNetwork = polygonMumbai;

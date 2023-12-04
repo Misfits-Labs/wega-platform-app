@@ -6,7 +6,10 @@ import PlayPage  from '../PlayPage';
 import CreateGamePage  from '../CreateGamePage';
 import JoinGamePage  from '../JoinGamePage';
 import PlayGamePage  from '../PlayGamePage';
+import ErrorPage from '../ErrorPage';
 import WinsPage from '../WinsPage';
+import { GlobalModal } from '../../common/modals';
+
 
 declare global  {
  interface Window{
@@ -17,41 +20,55 @@ declare global  {
 const router = createHashRouter([
  {
   path: '/',
+  element: <GlobalModal><Layout /></GlobalModal>,
+  children: [
+   {
+    index: true,
+    element: <PlayPage />,
+    errorElement: <ErrorPage />,
+   },
+   {
+    path: 'create/:gameType',
+    element: <CreateGamePage />,
+    errorElement: <ErrorPage />,
+   },
+   {
+    path: 'join/:gameType/:id',
+    element: <JoinGamePage />,
+    errorElement: <ErrorPage />,
+   },
+   {
+    path: 'play/:gameType/:id',
+    element: <PlayGamePage />,
+    errorElement: <ErrorPage />,
+   },
+   {
+    path: 'wins',
+    element: <WinsPage />,
+    errorElement: <ErrorPage />,
+   },
+   {
+    path: '*',
+    element: <ErrorPage />, 
+   },
+  ]
+ },
+])
+
+export const mobileRouter = createHashRouter([
+ {
+  path: '/',
   element: <Layout />,
   children: [
    {
     index: true,
-    element: <PlayPage />
+    element: <PlayPage />,
+    errorElement:<ErrorPage /> 
    },
    {
-    path: ':gameType',
-    children: [
-     {
-      index: true,
-      element: <PlayPage />, 
-     },
-     {
-      path: 'create',
-      element: <CreateGamePage />,
-     },
-     {
-      path: 'join/:id',
-      element: <JoinGamePage />
-     },
-     {
-      path: 'play/:id',
-      element: <PlayGamePage />
-     }
-    ]
+    path: "*",
+    element:<ErrorPage /> 
    },
-   {
-    path: 'swap',
-    element: <div>This is the homepage of swap</div>
-   },
-   {
-    path: 'wins',
-    element: <WinsPage />
-   }
   ]
  }
 ])

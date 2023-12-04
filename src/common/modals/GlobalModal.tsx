@@ -4,6 +4,7 @@ import CoinflipWinnerModal  from './CoinflipWinnerModal';
 import CoinflipLoserModal  from './CoinflipLoserModal';
 import DiceLoserModal  from './DiceLoserModal';
 import DiceWinnerModal  from './DiceWinnerModal';
+import WebAppInBetaModal  from './WebAppInBetaModal';
 import { ClaimModal } from './ClaimModal';
 import BounceFromTop from './BounceFromTop';
 
@@ -13,6 +14,7 @@ export const MODAL_TYPES = {
   DICE_WINNER_MODAL: 'DICE_WINNER_MODAL',
   DICE_LOSER_MODAL: 'DICE_LOSER_MODAL',
   CLAIM_MODAL: 'CLAIM_MODAL',
+  WARN_IN_BETA_MODAL: 'WARN_IN_BETA_MODAL',
  }
  
 const MODAL_COMPONENTS: any = {
@@ -21,6 +23,7 @@ const MODAL_COMPONENTS: any = {
   [MODAL_TYPES.DICE_WINNER_MODAL]: DiceWinnerModal,  
   [MODAL_TYPES.DICE_LOSER_MODAL]: DiceLoserModal,
   [MODAL_TYPES.CLAIM_MODAL]: ClaimModal,
+  [MODAL_TYPES.WARN_IN_BETA_MODAL]: WebAppInBetaModal,
 }
  
 type ContextType = {
@@ -72,6 +75,7 @@ const GlobalModal: React.FC<GlobalModalProps> = ({ children }) => {
     modalProps: any,
     persist?: boolean,
     ) => {
+      console.log(modalType)
     setStore({
       ...store,
       modalType,

@@ -24,12 +24,12 @@ export const ButtonForJoinableGame = ({ gameType, gameId, gameUuid }: ButtonForJ
       >
       Join
       <StarLoaderIcon className="dark:fill-blanc h-[16px] w-[16px] ms-[5px]" />
-    </Button> : !isGamePlayable ? <Link to={`/${gameType.toLowerCase()}/join/${gameUuid}`} state={{ gameUuid, gameId }}>
+    </Button> : !isGamePlayable ? <Link to={`/join/${gameType.toLowerCase()}/${gameUuid}`} state={{ gameUuid, gameId }}>
       <Button buttonType="secondary" className="flex items-center">
         Join
       <StarLoaderIcon className="dark:fill-blanc h-[16px] w-[16px] ms-[5px]" />
       </Button>
-    </Link> : <Link to={`/${gameType.toLowerCase()}/play/${gameUuid}`} state={{ gameUuid, gameId }}>
+    </Link> : <Link to={`/play/${gameType.toLowerCase()}/${gameUuid}`} state={{ gameUuid, gameId }}>
       <Button buttonType="secondary" className="flex items-center">
         Play
       <StarLoaderIcon className="dark:fill-blanc h-[16px] w-[16px] ms-[5px]" />

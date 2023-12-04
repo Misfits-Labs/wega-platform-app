@@ -155,7 +155,7 @@ export const CreateCoinFlipGameCard = ({
       allowanceQuery.refetch();
       
       if(createGameStatus === 'fulfilled' && createGameResponse) {
-        navigateToGameUi(`/${gameType.toLowerCase()}/play/${createGameResponse.uuid}`, 1500, { replace: true,
+        navigateToGameUi(`/play/${gameType.toLowerCase()}/${createGameResponse.uuid}`, 1500, { replace: true,
           state: { gameId: createGameResponse.id, gameUuid: createGameResponse.uuid } });
       }
     }

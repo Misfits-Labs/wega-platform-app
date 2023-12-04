@@ -9,19 +9,23 @@ import {
 import Navigation from '../Navigation'
 import Footer from '../Footer';
 import { Toaster } from 'react-hot-toast';
-import { GlobalModal } from '../../common/modals';
+import { useMediaQuery, useWarnAppInBeta } from '../../hooks';
+import NavigationMobile from '../NavigationMobile';
+import FooterMobile from '../FooterMobile';
 import 'twin.macro';
 
 const Layout = () => {
- const navigation = useNavigation();
- const getKey = useCallback(
-  (location: Location, matches: ReturnType<typeof useMatches>) => {
-    const match = matches.find((m) => (m.handle as any)?.scrollMode);
-    if ((match?.handle as any)?.scrollMode === "pathname") {
-      return location.pathname;
-    }
-    return location.key;
-  },
+  useWarnAppInBeta();
+  const navigation = useNavigation();
+  const { windowIsCurrentlyMobile } = useMediaQuery();
+  const getKey = useCallback(
+    (location: Location, matches: ReturnType<typeof useMatches>) => {
+      const match = matches.find((m) => (m.handle as any)?.scrollMode);
+      if ((match?.handle as any)?.scrollMode === "pathname") {
+        return location.pathname;
+      }
+      return location.key;
+    },
   []
  );
 
@@ -35,15 +39,14 @@ const Layout = () => {
      >
        Navigating...
      </div>
-     <Navigation />
-     <div tw="min-h-[100vh] flex flex-col justify-between relative z-[inherit]">
-      <GlobalModal>
+     { windowIsCurrentlyMobile ? <NavigationMobile /> : <Navigation /> }
+     <div tw="min-h-[100vh] flex flex-col sm:mt-0 justify-between relative z-[inherit]">
         <Outlet />
-      </GlobalModal>
-      <Footer />
+      { windowIsCurrentlyMobile ? <FooterMobile /> : <Footer /> }
      </div>
      <ScrollRestoration getKey={getKey} />
      <Toaster />
+     <div id="wega-overlay" tw="absolute top-[-10rem] h-[450vh] w-full bg-pretu bg-opacity-60 z-[701] hidden"></div>
     </>
   )
 }

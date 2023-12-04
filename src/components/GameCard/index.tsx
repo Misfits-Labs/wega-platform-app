@@ -74,7 +74,7 @@ export const DiceGameCard = () => {
         Roll the dice, the player with the highest number wins.
       </GameCardDescription>
       {
-        <Link to="/dice/create" tw="w-[75%]" state={{ gameType: WegaTypes[WegaTypesEnum.DICE] }}><Button buttonType="primary" content='Create Game' tw="w-[100%]" /></Link>
+        <Link to="/create/dice" tw="w-[75%]" state={{ gameType: WegaTypes[WegaTypesEnum.DICE] }}><Button buttonType="primary" content='Create Game' tw="w-[100%]" /></Link>
       }
       </GameCardBody>
     </GameCardContainer>
@@ -85,7 +85,6 @@ export const CoinFlipGameCard = () => {
   const iconRef = useRef<SVGSVGElement>(null);
   const orbRef = useRef<SVGSVGElement>(null);
   const [hovering, setHovering] = useState<boolean>();
-  
   useEffect(() => {    
     const ctx = gsap.context(() => {
       const duration = 0.65;
@@ -134,9 +133,8 @@ export const CoinFlipGameCard = () => {
      <GameCardDescription>
       Flip the coin, the player that receives their side wins.
      </GameCardDescription>
-
      {
-      <Link to="/coinflip/create" tw="w-[75%]" state={ { gameType: WegaTypes[WegaTypesEnum.COINFLIP] }} ><Button buttonType="primary" content='Create Game' tw="w-[100%]" /></Link>
+      <Link to="/create/coinflip" tw="w-[75%]" state={ { gameType: WegaTypes[WegaTypesEnum.COINFLIP] }} ><Button buttonType="primary" content='Create Game' tw="w-[100%]"/></Link>
      }
     </GameCardBody>
    </GameCardContainer>

@@ -45,7 +45,8 @@ export default {
         '90': '0.9'
       },
       boxShadow: {
-        'wega-nav': '0px 0px 50px 50px #151515',
+        'wega-nav': '0rem -3.5rem 1.5rem 5rem #151515',
+        'primary-button': '0px 10.74153px 16.52542px 0px rgba(0, 0, 0, 0.30)'
       },
       animation: {
         'rotate-orbs': 'rotate-orbs 10s linear 5s infinite',
@@ -55,6 +56,9 @@ export default {
           'from': { 	transform: "rotate(0deg) translateX(100px) rotate(360deg)" },
           'to':   {  transform: "rotate(360deg) translateX(100px) rotate(0deg)" }
         }
+      },
+      transitionProperty: {
+        'wega-nav': 'translate 500ms ease-out 60ms',
       }
     },
     container: {

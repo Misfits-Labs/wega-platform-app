@@ -23,11 +23,12 @@ interface ButtonProps {
 
 export const PrimaryButton = styled(BaseButton)<ButtonProps>(
   ({disabled}) => !disabled ? [
-    tw`dark:text-pretu dark:bg-gradient-to-r from-oranjo-blanc to-oranjo hover:outline hover:outline-blanc`,
+    tw`dark:text-pretu dark:bg-gradient-to-r from-oranjo-blanc to-oranjo`,
     `
     box-shadow: 0px 1px 5px 0px #090300;
     &:hover {
-      outline-width: 1.5px;
+      outline: 1.5px solid #FDFDFD;
+      --webkit-outline: 1.5px solid #FDFDFD;
     }
     `
   ] : [

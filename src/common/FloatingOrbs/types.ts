@@ -25,9 +25,13 @@ export const FloatingOrbBlurContainerWithoutBackdrop = styled.div`
   ${tw`z-[-21] bg-pretu bg-opacity-[0.01]`}
   -webkit-overflow: clip;
 `
-
-export const Orb = styled.div`
-  ${tw`pointer-events-none absolute w-[350px] h-[350px] rounded-[100%] blur-[75px]`}
-  filter: blur(75px);
-  -webkit-filter: blur(75px);
-`
+export interface OrbProps {
+  blur?: number;
+}
+export const Orb = styled.div<OrbProps>((props: OrbProps) => [`
+--orb-blur: ${props.blur ?? 75}px;
+  position: absolute;
+  pointer-events: none;
+  filter: blur(var(--orb-blur));
+  -webkit-filter: blur(var(--orb-blur));
+`])

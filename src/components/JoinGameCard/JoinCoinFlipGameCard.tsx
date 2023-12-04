@@ -136,7 +136,7 @@ const JoinCoinFlipGameCard = ({
         }
       ).unwrap();
       toast.success('Deposit success', { ...toastSettings('success', 'top-center') as any });
-      navigateToGameUi(`/${gameType.toLowerCase()}/play/${gameUuid}`, 1500, { 
+      navigateToGameUi(`/play/${gameType.toLowerCase()}/${gameUuid}`, 1500, { 
         replace: true, 
         state: { 
           gameId, gameUuid 
