@@ -21,4 +21,4 @@ export const SupportedBlockExplorers = new Map([
 
 export const windowIsCurrentlyMobileQuery = '(max-width: 639px)';
 
-export const  defaultNetwork = polygonMumbai;
+export const  defaultNetwork = polygon;

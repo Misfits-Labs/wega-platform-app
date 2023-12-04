@@ -136,13 +136,13 @@ export const ClaimModal = ({ hide, game, wallet
         </div>
       </div>
     </div> 
-    <GradientDiv tw="h-[max-content] flex justify-between gap-[10px]  dark:bg-[#414141] py-[8px] px-[5px]">
-        <NormalText tw="dark:text-shinishi">Net winnings</NormalText>
-        {
-          !calculateFeesQuery.data ? 'calculating...' : <NormalText>{
-            formatEther(calculateFeesQuery.data[sendAmountIndex])
-          } {game.wager.wagerCurrency}</NormalText>
-        }
+    <GradientDiv tw="h-[max-content] flex justify-between gap-[10px] dark:bg-[#414141] py-[8px] px-[5px]">
+      <NormalText tw="dark:text-shinishi">Net winnings</NormalText>
+      {
+        !calculateFeesQuery.data ? 'calculating...' : <NormalText>{
+          formatEther(calculateFeesQuery.data[sendAmountIndex])
+        } {game.wager.wagerCurrency}</NormalText>
+      }
     </GradientDiv>
     <div tw="flex flex-col w-full items-center gap-y-[8px]">
       <SmallText tw="text-center font-[14px] font-[400] leading-[15px]">Why is withdrawal amount higher on block explorer?</SmallText>
