@@ -123,25 +123,21 @@ export const ClaimModal = ({ hide, game, wallet
     <div tw="w-full flex flex-col items-center justify-center gap-y-[8px]">
       <NormalText tw="dark:text-shinishi text-center">Fee details</NormalText>
       <div tw="w-full rounded-[4px] border border-[1px] border-shinishi p-[12px]">
-        <div tw="flex flex-row items-end justify-between w-full">
-          <NormalText tw="dark:text-shinishi">Platform fee (5%)</NormalText>
+        <NormalText tw="dark:text-shinishi text-center w-full">Platform fee (2%)</NormalText>
+        <div tw="h-[1px] w-[90%] bg-[#3A3A3A] my-[8px]"></div>
+        <div tw="w-full flex justify-between">
+          <NormalText tw="dark:text-shinishi">You pay</NormalText>
           {
             !calculateFeesQuery.data ? 'calculating...' : <NormalText>{
-              formatEther(calculateFeesQuery.data[feeAmountIndex])
+              Number(Number(formatEther(calculateFeesQuery.data[feeAmountIndex])) / 2)
             } {game.wager.wagerCurrency}</NormalText>
           }
         </div>
       </div>
     </div>  
     
-    <div tw="w-full self-start flex flex-row items-center justify-between gap-[10px] py-[8px] px-[5px]">
-      <NormalText tw="dark:text-shinishi">You pay</NormalText>
-      {
-        !calculateFeesQuery.data ? 'calculating...' : <NormalText>{
-          formatEther(calculateFeesQuery.data[feeAmountIndex])
-        } {game.wager.wagerCurrency}</NormalText>
-      }
-    </div>
+    {/* <div tw="w-full self-start flex flex-row items-center justify-between gap-[10px] py-[8px] px-[5px]">
+    </div> */}
 
     <div tw="self-start flex flex-row items-center justify-between gap-[10px] rounded-[5px] dark:bg-[#414141] py-[8px] px-[5px] w-full">
       <NormalText tw="dark:text-shinishi">You receive</NormalText>
