@@ -1,6 +1,6 @@
 import { formatEther } from 'ethers';
 import tw, { styled } from 'twin.macro';
-import { WinnerDeclarationContainer } from './types';
+import { WinnerDeclarationContainer, GradientDiv } from './types';
 import { NormalText, SmallText } from '../../components/CreateGameCard/types';
 import { DownloadIcon } from '../../assets/icons';
 import arrowDown from '../../assets/icons/arrow-down-icon.png';
@@ -120,34 +120,34 @@ export const ClaimModal = ({ hide, game, wallet
       <NormalText>0.0020 MATIC</NormalText>
     </div> */}
     </div>
-    <div tw="w-full flex flex-col items-center justify-center gap-y-[8px]">
+    <div tw="w-full flex flex-col justify-center gap-y-[8px]">
       <NormalText tw="dark:text-shinishi text-center">Fee details</NormalText>
-      <div tw="w-full rounded-[4px] border border-[1px] border-shinishi p-[12px]">
-        <NormalText tw="dark:text-shinishi text-center w-full">Platform fee (2%)</NormalText>
+      <div tw="flex flex-col w-full rounded-[4px] p-[12px]">
+        
+        <NormalText tw="dark:text-shinishi text-center">Platform fee (2%)</NormalText>
         <div tw="h-[1px] w-[90%] bg-[#3A3A3A] my-[8px]"></div>
         <div tw="w-full flex justify-between">
           <NormalText tw="dark:text-shinishi">You pay</NormalText>
           {
             !calculateFeesQuery.data ? 'calculating...' : <NormalText>{
-              Number(Number(formatEther(calculateFeesQuery.data[feeAmountIndex])) / 2)
+              parseFloat(formatEther(calculateFeesQuery.data[feeAmountIndex])).toFixed(2)
             } {game.wager.wagerCurrency}</NormalText>
           }
         </div>
       </div>
-    </div>  
-    
-    {/* <div tw="w-full self-start flex flex-row items-center justify-between gap-[10px] py-[8px] px-[5px]">
-    </div> */}
-
-    <div tw="self-start flex flex-row items-center justify-between gap-[10px] rounded-[5px] dark:bg-[#414141] py-[8px] px-[5px] w-full">
-      <NormalText tw="dark:text-shinishi">You receive</NormalText>
-      {
-        !calculateFeesQuery.data ? 'calculating...' : <NormalText>{
-          formatEther(calculateFeesQuery.data[sendAmountIndex])
-        } {game.wager.wagerCurrency}</NormalText>
-      }
+    </div> 
+    <GradientDiv tw="h-[max-content] flex justify-between gap-[10px]  dark:bg-[#414141] py-[8px] px-[5px]">
+        <NormalText tw="dark:text-shinishi">Net winnings</NormalText>
+        {
+          !calculateFeesQuery.data ? 'calculating...' : <NormalText>{
+            formatEther(calculateFeesQuery.data[sendAmountIndex])
+          } {game.wager.wagerCurrency}</NormalText>
+        }
+    </GradientDiv>
+    <div tw="flex flex-col w-full items-center gap-y-[8px]">
+      <SmallText tw="text-center font-[14px] font-[400] leading-[15px]">Why is withdrawal amount higher on block explorer?</SmallText>
+      <SmallText tw="text-shinishi text-center font-[12px] font-[300] leading-[15px]" >When claiming a win you also claim back your initial wager deposit.</SmallText>
     </div>
-
     <Button buttonType="primary" className="flex items-center justify-center w-full" onClick={() => handleClaimClick()} >
      { claimQuery.isLoading ? "Loading..." : "Claim" }
      <DownloadIcon tw="h-[16px] w-[16px] ms-[5px] dark:stroke-blanc" />
