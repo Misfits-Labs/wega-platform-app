@@ -25,27 +25,22 @@ const router = createHashRouter([
    {
     index: true,
     element: <PlayPage />,
-    errorElement: <ErrorPage />,
    },
    {
     path: 'create/:gameType',
     element: <CreateGamePage />,
-    errorElement: <ErrorPage />,
    },
    {
     path: 'join/:gameType/:id',
     element: <JoinGamePage />,
-    errorElement: <ErrorPage />,
    },
    {
     path: 'play/:gameType/:id',
     element: <PlayGamePage />,
-    errorElement: <ErrorPage />,
    },
    {
     path: 'wins',
     element: <WinsPage />,
-    errorElement: <ErrorPage />,
    },
    {
     path: '*',

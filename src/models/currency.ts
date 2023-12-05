@@ -5,4 +5,5 @@ export const CurrencyTypes = {
  [CurrencyTypesEnum.USDT]: 'USDT',
 } as const;
 
+
 export type AllPossibleCurrencyTypes = typeof CurrencyTypes[keyof typeof CurrencyTypes];

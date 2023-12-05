@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { Wega, HexishString, GameInfoType, User, Player, Wallet, WegaState } from "../../models"
-import { HelpCircleIcon, ClockIcon, SparkleIcon } from '../../assets/icons';
-import { NormalText } from '../CreateGameCard/types';
+import { SparkleIcon } from '../../assets/icons';
+// import { NormalText } from '../CreateGameCard/types';
 import { PlayGameContainer, MinimumGameRounds } from './types';
 import { PlayGamePlayerCard } from "../PlayGamePlayerCard";
 import { Dice } from "../Dice";
@@ -136,11 +136,11 @@ const PlayDiceGameSection: React.FC<PlayGameSectionProps>= ({
  return players && gameInfo && <PlayGameContainer>
     {/* orbs */}
     {/* timer icon row */}
-    <div tw="flex flex-row justify-center gap-x-[10px] items-center">
+    {/* <div tw="flex flex-row justify-center gap-x-[10px] items-center">
       <ClockIcon tw="w-[24px] h-[24px]" />
       <NormalText tw="text-shinishi">2:30</NormalText>
       <HelpCircleIcon tw="cursor-pointer" />
-    </div>
+    </div> */}
     {/* plage game ui */}
     <div tw="flex gap-x-[25px] items-center justify-center">
       {/* player card */}
@@ -155,6 +155,7 @@ const PlayDiceGameSection: React.FC<PlayGameSectionProps>= ({
         wager={game.wager}
         isGameOver={rolled}
         hasAnyOneRolled={gameInfo.currentTurn > 0}
+        networkId={game.networkId}
       />
       <Dice diceRef={diceRef} />
       {/* searching for opponent box */}
@@ -169,6 +170,7 @@ const PlayDiceGameSection: React.FC<PlayGameSectionProps>= ({
         wager={game.wager}
         isGameOver={rolled}
         hasAnyOneRolled={gameInfo.currentTurn > 0}
+        networkId={game.networkId}
       />
    </div>
     {

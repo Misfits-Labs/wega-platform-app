@@ -3,7 +3,9 @@ import {
   BigNumberish, 
   Interface, 
   toBigInt,
-  solidityPackedSha256 
+  solidityPackedSha256,
+  parseUnits,
+  formatUnits,
 } from "ethers";
 import { Player } from '../models'
 
@@ -13,9 +15,23 @@ export function parseIntFromBigNumber(val: BigNumberish | number) {
  }
  return val;
 }
+export function exponentialToBigintInWei(val: number): bigint {
+ return toBigIntInWei(Number.parseFloat(String(val)).toFixed(18) as string);
+}
 
-export function toBigIntInWei(value: number): bigint {
-  return parseEther(String(value))
+export function formatLowerDecimalTokenValue(value: number, tokenDecimals: number) {
+  // format(toBigIntInWei(Number.parseFloat(String(wagerAmount)).toFixed(18) as string), 6))
+  return tokenDecimals !== 18 ? Math.floor(Number(format(exponentialToBigintInWei(value), tokenDecimals))) : Math.floor(Number(format(toBigIntInWei(String(value)), 18)))
+}
+
+export function toBigIntInWei(value: string, decimals?: number): bigint {
+  if(decimals) return parseUnits(value, decimals);
+  return parseEther(value)
+}
+
+export function format(value: BigNumberish, decimals: number): string {
+  if(decimals < 18) return formatUnits(value, decimals); // shall parse based on token decimals
+  return formatUnits(value) // shall parse as if 1 ether
 }
 
 export const miniWalletAddress = (address: `0x${string}` | undefined) => {

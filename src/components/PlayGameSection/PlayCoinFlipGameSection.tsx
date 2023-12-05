@@ -133,6 +133,7 @@ const PlayCoinFlipGameSection: React.FC<PlayGameSectionProps> = ({
       isPlayerOne={true}
       isWinner={winners.some((w: HexishString) => wallet.address.toLowerCase() === w.toLocaleLowerCase())}
       gameType={game.gameType}
+      networkId={game.networkId}
     />
     <CoinFlip coinRef={coinRef} />
     {/* searching for opponent box */}
@@ -146,7 +147,7 @@ const PlayCoinFlipGameSection: React.FC<PlayGameSectionProps> = ({
       isPlayerOne={false}
       isWinner={winners.some((w: HexishString) => players.filter((player) => player.uuid !== user.uuid)[0].walletAddress?.toLowerCase() === w.toLocaleLowerCase())}
       gameType={game.gameType}
-
+      networkId={game.networkId}
     />
    </div>
    {

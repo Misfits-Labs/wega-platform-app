@@ -1,19 +1,22 @@
-import { User, Player, HexishString, AllPossibleCoinSides, AllPossibleWegaTypes, WegaTypesEnum, WegaTypes } from "../../models";
+import { User, Player, HexishString, AllPossibleCoinSides, AllPossibleWegaTypes, WegaTypesEnum, WegaTypes, Wager  } from "../../models";
+import { SupportedWagerTokenAddresses } from "../../models/constants";
 import WalletAvatar from "../../common/WalletAvatar";
 import { PlayerCardContainer, PlayerAvatarWrapper } from './types';
 import { NormalText } from '../CreateGameCard/types';
-import { miniWalletAddress } from '../../utils'
+import { miniWalletAddress, format } from '../../utils'
 import { WagerTypeBadgeWrapper, BadgeText} from "../../common/GameBar/types";
 import { BadgeIcon, renderWagerBadge } from "../../common/GameBar";
 import { WaitForPlayerConnectCard } from '../../components/WaitForPlayerConnectCard';
 import CoinSide from "../../common/CoinSide";
-import { formatEther } from 'ethers';
 import 'twin.macro';
+
+
 
 export interface PlayGamePlayerCardProps extends React.Attributes, React.AllHTMLAttributes<HTMLDivElement> {
  status: 'connecting' | 'connected' | 'idle' | 'rolling';
+ networkId: number;
  gameType: AllPossibleWegaTypes;
- wager: any;
+ wager: Wager;
  player?: User;
  opponent?: Player;
  isGameOver: boolean;
@@ -22,6 +25,7 @@ export interface PlayGamePlayerCardProps extends React.Attributes, React.AllHTML
  isGamePlayable?: boolean;
  isWinner?: boolean;
  isPlayerOne?: boolean;
+ tokenDecimals?: number;
 }
 export const PlayGamePlayerCard = ({ 
   status, 
@@ -35,8 +39,11 @@ export const PlayGamePlayerCard = ({
   isPlayerOne,
   isGamePlayable,
   gameType,
+  networkId,
   ...rest
 }: PlayGamePlayerCardProps) => {
+  const tokenDecimals: number = SupportedWagerTokenAddresses[wager.wagerCurrency][networkId as number].decimals as number;
+
   return status !== 'connecting' ? (
     <PlayerCardContainer tw="gap-y-[32px]" {...rest}>
       {
@@ -51,6 +58,7 @@ export const PlayGamePlayerCard = ({
             isPlayerOne={isPlayerOne}
             isGamePlayable={isGamePlayable}
             coinFlipChoice={coinFlipChoice}
+            tokenDecimals={tokenDecimals}
           />
         ) : (
         <DicePlayerCard 
@@ -60,6 +68,7 @@ export const PlayGamePlayerCard = ({
           isGameOver={isGameOver} 
           hasAnyOneRolled={hasAnyOneRolled} 
           status={status}
+          tokenDecimals={tokenDecimals}
           />
         )
       }
@@ -73,14 +82,16 @@ Pick<PlayGamePlayerCardProps, 'opponent'>,
 Pick<PlayGamePlayerCardProps, 'wager'>, 
 Pick<PlayGamePlayerCardProps, 'isGameOver'>, 
 Pick<PlayGamePlayerCardProps, 'hasAnyOneRolled'>, 
-Pick<PlayGamePlayerCardProps, 'status'> {}
+Pick<PlayGamePlayerCardProps, 'status'>, 
+Pick<PlayGamePlayerCardProps, 'tokenDecimals'> {}
 const DicePlayerCard: React.FC<DicePlayerCardProps> = ({
   player,
   opponent,
   wager,
   isGameOver,
   status,
-  hasAnyOneRolled
+  hasAnyOneRolled,
+  tokenDecimals
 }: DicePlayerCardProps) => (
   <>
     { 
@@ -100,7 +111,7 @@ const DicePlayerCard: React.FC<DicePlayerCardProps> = ({
     <div tw="flex flex-col gap-y-[16px] items-center">
       <NormalText>Wager: </NormalText>
       <WagerTypeBadgeWrapper>
-        <BadgeText>{formatEther(wager.wagerAmount)}</BadgeText>
+        <BadgeText>{format(wager.wagerAmount, tokenDecimals as number)}</BadgeText>
         <BadgeIcon>{renderWagerBadge(wager.wagerType, wager.wagerCurrency)}</BadgeIcon>
         <BadgeText>{wager.wagerCurrency}</BadgeText>
       </WagerTypeBadgeWrapper>
@@ -128,6 +139,7 @@ Pick<PlayGamePlayerCardProps, 'isGamePlayable'>,
 Pick<PlayGamePlayerCardProps, 'status'>,
 Pick<PlayGamePlayerCardProps, 'isPlayerOne'>,
 Pick<PlayGamePlayerCardProps, 'isWinner'>,
+Pick<PlayGamePlayerCardProps, 'tokenDecimals'>,
 Pick<PlayGamePlayerCardProps, 'coinFlipChoice'> {}
 const CoinFlipPlayerCard: React.FC<CoinflipPlayerCardProps> = ({
   player,
@@ -138,7 +150,8 @@ const CoinFlipPlayerCard: React.FC<CoinflipPlayerCardProps> = ({
   isGamePlayable,
   isPlayerOne,
   coinFlipChoice,
-  isWinner
+  isWinner,
+  tokenDecimals
 }: CoinflipPlayerCardProps) => (
   <>
   <div tw="flex flex-col gap-y-[8px]">
@@ -166,7 +179,7 @@ const CoinFlipPlayerCard: React.FC<CoinflipPlayerCardProps> = ({
     <div tw="flex flex-col gap-y-[16px] items-center">
       <NormalText>Wager: </NormalText>
       <WagerTypeBadgeWrapper>
-        <BadgeText>{formatEther(wager.wagerAmount)}</BadgeText>
+        <BadgeText>{format(wager.wagerAmount, tokenDecimals as number)}</BadgeText>
         <BadgeIcon>{renderWagerBadge(wager.wagerType, wager.wagerCurrency)}</BadgeIcon>
         <BadgeText>{wager.wagerCurrency}</BadgeText>
       </WagerTypeBadgeWrapper>

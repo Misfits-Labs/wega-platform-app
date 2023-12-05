@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 import Joi from 'joi';
-import { parseEther } from 'ethers';
 import { useBalance } from 'wagmi';
 import toast from 'react-hot-toast';
 import { 
@@ -75,7 +74,7 @@ export const CreateCoinFlipGameCard = ({
   const [currentCurrencyType, setCurrentCurrencyType] = useState<AllPossibleCurrencyTypes>(currencyType);
   const [currentCoinSide, setCurrentCoinSide] = useState<AllPossibleCoinSides>(CoinSideTypes[CoinSideTypesEnum.HEADS]);
   const {revealed, triggerRevealAnimation} = useFormReveal(false, formRef, detailsBlock);
-  const { playerAddress, tokenAddress, playerUuid} = useCreateGameParams({
+  const { playerAddress, tokenAddress, playerUuid, tokenDecimals } = useCreateGameParams({
     wallet, network, user, currencyType: currentCurrencyType
   });
   
@@ -90,7 +89,11 @@ export const CreateCoinFlipGameCard = ({
   
   // approval for allowance
   const wagerUSDValue = useTokenUSDValue(currentCurrencyType, watch('wager')); 
-  const isWagerApproved = (allowance: number, wagerAmount: number) => allowance >= wagerAmount;
+  const isWagerApproved = (allowance: string, wagerAmount: number, withDecimals?: boolean ) => {
+    if(withDecimals) return toBigIntInWei(allowance, tokenDecimals) >= toBigIntInWei(String(wagerAmount), tokenDecimals);
+    return toBigIntInWei(allowance) >= toBigIntInWei(String(wagerAmount), tokenDecimals); // if decimals then the correct wei amount will be returned
+  };
+
   const allowanceQuery = useAllowanceQuery({ 
     spender: escrowConfig.address[network?.id as keyof typeof escrowConfig.address], 
     owner: playerAddress,
@@ -116,9 +119,12 @@ export const CreateCoinFlipGameCard = ({
     try {
       if(!isWagerApproved(allowanceQuery.data, wager)) {
         await approveERC20({ 
-          spender: escrowConfig.address[network?.id as keyof typeof escrowConfig.address], wagerAsBigint: toBigIntInWei(wager), tokenAddress }).unwrap();
+          spender: escrowConfig.address[network?.id as keyof typeof escrowConfig.address], 
+          wagerAsBigint: toBigIntInWei(String(wager), tokenDecimals), 
+          tokenAddress 
+      }).unwrap();
       }
-      const receipt = await createWagerAndDeposit({ tokenAddress, wagerAsBigint: toBigIntInWei(wager), gameType, randomness: [convertBytesToNumber(drand.randomness)] }).unwrap();
+      const receipt = await createWagerAndDeposit({ tokenAddress, wagerAsBigint: toBigIntInWei(String(wager), tokenDecimals), gameType, randomness: [convertBytesToNumber(drand.randomness)] }).unwrap();
       const parsedTopicData = parseTopicDataFromEventLog(receipt.logs[2], ['event GameCreation(bytes32 indexed escrowHash, uint256 indexed nonce, address creator, string name)']);
       await createGame({ 
         gameType, 
@@ -130,7 +136,7 @@ export const CreateCoinFlipGameCard = ({
           wagerType: currentWagerType.toUpperCase() as AllPossibleWagerTypes, 
           wagerHash: parsedTopicData?.escrowHash, 
           tokenAddress, 
-          wagerAmount: parseEther(String(wager)).toString(), 
+          wagerAmount: toBigIntInWei(String(wager), tokenDecimals).toString(), 
           wagerCurrency: currentCurrencyType,
           nonce: Number(parsedTopicData?.nonce),
         },
@@ -153,7 +159,6 @@ export const CreateCoinFlipGameCard = ({
   useEffect(() => {
     if(wallet){
       allowanceQuery.refetch();
-      
       if(createGameStatus === 'fulfilled' && createGameResponse) {
         navigateToGameUi(`/play/${gameType.toLowerCase()}/${createGameResponse.uuid}`, 1500, { replace: true,
           state: { gameId: createGameResponse.id, gameUuid: createGameResponse.uuid } });

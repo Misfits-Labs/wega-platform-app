@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import { parseEther } from 'ethers';
 import Joi from 'joi';
 import {
   useConnectModal,
@@ -19,7 +18,7 @@ import {
   AllPossibleCurrencyTypes, 
   AllPossibleWagerTypes, 
   HexishString,
-  AllPossibleWegaTypes,
+  AllPossibleWegaTypes
 } from "../../models";
 import { 
   BadgeIcon, 
@@ -77,7 +76,7 @@ export const CreateDiceGameCard = ({
   const detailsBlock = useRef<HTMLDivElement>(null)
   const [currentWagerType] = useState<AllPossibleWagerTypes>(wagerType);
   const [currentCurrencyType, setCurrentCurrencyType] = useState<AllPossibleCurrencyTypes>(currencyType);
-  const {tokenAddress, playerAddress, playerUuid } = useCreateGameParams({ wallet, user, network, currencyType: currentCurrencyType});
+  const {tokenAddress, playerAddress, playerUuid, tokenDecimals } = useCreateGameParams({ wallet, user, network, currencyType: currentCurrencyType});
   const {revealed, triggerRevealAnimation} = useFormReveal(false, formRef, detailsBlock);
   const { register, formState: { errors }, watch, handleSubmit, setValue } = useForm({ 
     mode: 'onChange', 
@@ -87,10 +86,14 @@ export const CreateDiceGameCard = ({
       wager: 1
     }
   });
-  const wagerUSDValue = useTokenUSDValue(currentCurrencyType, watch('wager')); 
   
   // approval for allowance
-  const isWagerApproved = (allowance: number, wagerAmount: number) => allowance >= toBigIntInWei(wagerAmount);
+  const wagerUSDValue = useTokenUSDValue(currentCurrencyType, watch('wager')); 
+  const isWagerApproved = (allowance: string, wagerAmount: number, withDecimals?: boolean ) => {
+    if(withDecimals) return toBigIntInWei(allowance, tokenDecimals) >= toBigIntInWei(String(wagerAmount), tokenDecimals);
+    return toBigIntInWei(allowance) >= toBigIntInWei(String(wagerAmount), tokenDecimals); // if decimals then the correct wei amount will be returned
+  };
+
   const allowanceQuery = useAllowanceQuery({ 
     spender: escrowConfig.address[network?.id as keyof typeof escrowConfig.address], 
     owner: playerAddress,
@@ -114,17 +117,21 @@ export const CreateDiceGameCard = ({
   }] = useCreateGameMutation();
   
   const handleCreateGameClick = async ({ wager }: { wager: number }) => {
+    
     try {
-      if(!isWagerApproved(allowanceQuery.data, wager)) {
-        await approveERC20({ spender: escrowConfig.address[network?.id as keyof typeof escrowConfig.address], wagerAsBigint: toBigIntInWei(wager), tokenAddress }).unwrap();
+      if(!isWagerApproved(allowanceQuery?.data, wager)) {
+        await approveERC20({ 
+          spender: escrowConfig.address[network?.id as keyof typeof escrowConfig.address], 
+          wagerAsBigint: toBigIntInWei(String(wager), tokenDecimals), 
+          tokenAddress
+        }).unwrap();
       }
       const receipt = await createWagerAndDeposit({ 
         tokenAddress, 
-        wagerAsBigint: toBigIntInWei(wager), 
+        wagerAsBigint: toBigIntInWei(String(wager), tokenDecimals), 
         gameType,
         randomness: [convertBytesToNumber(randomness.randomness)] 
       }).unwrap();
-
       const parsedTopicData = parseTopicDataFromEventLog(receipt.logs[2], ['event GameCreation(bytes32 indexed escrowHash, uint256 indexed nonce, address creator, string name)']);
       await createGame({ 
         gameType, 
@@ -136,7 +143,7 @@ export const CreateDiceGameCard = ({
           wagerType: currentWagerType.toUpperCase() as AllPossibleWagerTypes, 
           wagerHash: parsedTopicData?.escrowHash, 
           tokenAddress,
-          wagerAmount: parseEther(String(wager)).toString(), 
+          wagerAmount: toBigIntInWei(String(wager), tokenDecimals).toString(),
           wagerCurrency: currentCurrencyType,
           nonce: Number(parsedTopicData?.nonce),
         }
@@ -156,10 +163,7 @@ export const CreateDiceGameCard = ({
   
   const navigateToGameUi = useNavigateTo()
   useEffect(() => {
-    console.log(userWagerBalance)
-
-    if(playerAddress && tokenAddress){
-      allowanceQuery.refetch();
+    if(playerAddress && tokenAddress) {
       if(createGameStatus === 'fulfilled' && createGameResponse) {
         navigateToGameUi(`/play/${gameType.toLowerCase()}/${createGameResponse.uuid}`, 1500, { replace: true, 
           state: { gameId: createGameResponse.id, gameUuid: createGameResponse.uuid } 
@@ -172,6 +176,9 @@ export const CreateDiceGameCard = ({
     createGameStatus, 
     createGameResponse
   ]);
+  useEffect(() => {
+    allowanceQuery.refetch();
+  }, [ watch('wager'), playerAddress,  tokenAddress ]);
   return randomness ? (
     <form 
       tw="w-full flex flex-row justify-center" 

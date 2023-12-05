@@ -35,12 +35,20 @@ import { useCreateGameParams, useWegaStore, useNavigateTo, useTokenUSDValue, use
 import { useDepositAndJoinDiceMutation } from './blockchainApiSlice';
 import { useAllowanceQuery, useApproveERC20Mutation } from '../CreateGameCard/blockchainApiSlice';
 import toast from 'react-hot-toast';
-import { toastSettings, escrowConfig, toBigIntInWei, convertBytesToNumber, parseError } from '../../utils';
+import { 
+  toastSettings, 
+  escrowConfig, 
+  formatLowerDecimalTokenValue, 
+  convertBytesToNumber, 
+  parseError, 
+  exponentialToBigintInWei
+} from '../../utils';
 import Button from '../../common/Button';
 import { useFormReveal } from '../CreateGameCard/animations';
 import { useJoinGameMutation, useUpdateGameMutation } from './apiSlice';
 import { JoinGameCardProps } from './'
 import { ComponentLoader } from '../../common/loaders'
+
 
 export interface JoinDiceGameCardProps extends JoinGameCardProps, React.Attributes, React.AllHTMLAttributes<HTMLDivElement> {};
 
@@ -63,24 +71,27 @@ const JoinGameDiceCard: React.FC<JoinDiceGameCardProps> = ({
   const detailsBlock = useRef<HTMLDivElement>(null)
   const [currentWagerType] = useState<AllPossibleWagerTypes>(wagerType);
   const [currentCurrencyType] = useState<AllPossibleCurrencyTypes>(currencyType);
-  const {tokenAddress, playerAddress, playerUuid} = useCreateGameParams({ wallet, user, network, currencyType: currentCurrencyType }); // TODO change to generic name
+  const {tokenAddress, playerAddress, playerUuid, tokenDecimals } = useCreateGameParams({ wallet, user, network, currencyType: currentCurrencyType }); // TODO change to generic name
   const {revealed, triggerRevealAnimation} = useFormReveal(false, formRef, detailsBlock);
 
   
-  // should go into blockchain api slice 
-  const { register, formState: { errors }, handleSubmit, watch } = useForm({ 
+  // should go into blockchain api slice
+  const { formState: { errors }, handleSubmit, setValue, register } = useForm({ 
     mode: 'onChange',
-    resolver: joiResolver(createGameSchema('wager', wagerAmount)) , 
+    resolver: joiResolver(createGameSchema('wager', formatLowerDecimalTokenValue(wagerAmount, tokenDecimals))) , 
     reValidateMode: 'onChange',
     defaultValues: { 
-      wager: wagerAmount,
+      wager: tokenDecimals && formatLowerDecimalTokenValue(wagerAmount, tokenDecimals),
     }
   });
 
-  const wagerUSDValue = useTokenUSDValue(currentCurrencyType, watch('wager'));
+  const wagerUSDValue = useTokenUSDValue(currentCurrencyType, tokenDecimals && formatLowerDecimalTokenValue(wagerAmount, tokenDecimals));
 
   // approval for allowance
-  const isWagerApproved = (allowance: number, wagerAmount: number) => allowance >= wagerAmount;
+  const isWagerApproved = (allowance: string | number, wagerAmount: number) => {
+    return exponentialToBigintInWei(Number(allowance)) >= exponentialToBigintInWei(wagerAmount); // if decimals then the correct wei amount will be returned
+  };
+
   const allowanceQuery = useAllowanceQuery({ 
     spender: escrowConfig.address[network?.id as keyof typeof escrowConfig.address], 
     owner: playerAddress,
@@ -100,7 +111,11 @@ const JoinGameDiceCard: React.FC<JoinDiceGameCardProps> = ({
   const handleDepositWagerClick = async () => {
     try {
       if(!isWagerApproved(allowanceQuery.data, wagerAmount)) {
-        await approveERC20({ spender: escrowConfig.address[network?.id as keyof typeof escrowConfig.address], wagerAsBigint: toBigIntInWei(wagerAmount), tokenAddress }).unwrap();
+        await approveERC20({ 
+          spender: escrowConfig.address[network?.id as keyof typeof escrowConfig.address], 
+          wagerAsBigint: exponentialToBigintInWei(wagerAmount), 
+          tokenAddress 
+        }).unwrap();
       }
       await depositAndJoinDice({ 
         escrowHash: escrowId, 
@@ -120,9 +135,15 @@ const JoinGameDiceCard: React.FC<JoinDiceGameCardProps> = ({
   const navigateToGameUi = useNavigateTo()
   useEffect(() => {
     allowanceQuery.refetch();
-  }, [tokenAddress, wagerAmount]);
+    if(tokenDecimals) setValue('wager', formatLowerDecimalTokenValue(wagerAmount, tokenDecimals))
+  }, [
+    tokenAddress,
+    playerAddress,
+    wagerAmount,
+    tokenDecimals
+]);
   
-  return drand ?  (
+  return drand && tokenDecimals ?  (
     <form 
       tw="w-full flex flex-row justify-center" 
       onSubmit={handleSubmit(handleDepositWagerClick)} 
@@ -138,9 +159,7 @@ const JoinGameDiceCard: React.FC<JoinDiceGameCardProps> = ({
         <div >
           {/* wager */}
           <div tw="flex flex-col items-center gap-y-[16px]">
-            <InputBox tw="pointer-events-none" type="number" step="any" { ...register('wager', {
-              setValueAs: () => wagerAmount, 
-            }) }/>
+            <InputBox tw="pointer-events-none" type="number" step="none" defaultValue={formatLowerDecimalTokenValue(wagerAmount, tokenDecimals)} { ...register('wager' )} />
             <ErrorMessage
               errors={errors}
               name="wager"
@@ -181,7 +200,7 @@ const JoinGameDiceCard: React.FC<JoinDiceGameCardProps> = ({
           <div tw="flex justify-between p-[20px] items-center" className="details-1 invisible">
             <LargeText>Wager</LargeText>
             <div tw="dark:bg-[#4B4B4B] rounded-[10px] flex w-[fit-content] justify-center items-center gap-[10px] py-[5px] px-[10px]">
-              <span>{wagerAmount}</span>
+              <span>{formatLowerDecimalTokenValue(wagerAmount, tokenDecimals)}</span>
               <BadgeIcon><>{renderWagerBadge(currentWagerType, currentCurrencyType)}</></BadgeIcon>
               <span>{currencyType}</span>
             </div>
