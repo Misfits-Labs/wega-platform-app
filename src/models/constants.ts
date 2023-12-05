@@ -19,6 +19,7 @@ export const SupportedBlockExplorers = new Map([
  [polygonMumbai.id ?? 80001, 'https://mumbai.polygonscan.com/tx/']
 ])
 
+
 export const windowIsCurrentlyMobileQuery = '(max-width: 639px)';
 
 export const  defaultNetwork = polygon;
