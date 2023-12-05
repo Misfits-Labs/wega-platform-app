@@ -186,7 +186,7 @@ const JoinCoinFlipGameCard = ({
             />
             <NormalText tw="dark:text-shinishi">{wagerUSDValue.loading ? 'loading...' : wagerUSDValue.value} USD</NormalText>
             <SmallText> Balance: {
-              isWagerbalanceLoading ? "Retrieving balance..." : userWagerBalance?.formatted + ' ' + userWagerBalance?.symbol 
+              isWagerbalanceLoading ? "Retrieving balance..." : parseFloat(userWagerBalance?.formatted as string).toFixed(2)  
             } </SmallText> 
             {/* useBalance from wagmi can be used here */}
           </div>

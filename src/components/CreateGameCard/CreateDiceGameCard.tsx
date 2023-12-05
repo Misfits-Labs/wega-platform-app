@@ -156,6 +156,8 @@ export const CreateDiceGameCard = ({
   
   const navigateToGameUi = useNavigateTo()
   useEffect(() => {
+    console.log(userWagerBalance)
+
     if(playerAddress && tokenAddress){
       allowanceQuery.refetch();
       if(createGameStatus === 'fulfilled' && createGameResponse) {
@@ -194,7 +196,7 @@ export const CreateDiceGameCard = ({
             {/* should receive wager amount as input */}
             <NormalText tw="dark:text-shinishi">{wagerUSDValue.loading ? 'loading...' : wagerUSDValue.value} USD</NormalText> 
             <SmallText> Balance: {
-              isWagerbalanceLoading ? "Retrieving balance..." : userWagerBalance ? userWagerBalance?.formatted  : String(0) 
+              isWagerbalanceLoading ? "Retrieving balance..." : userWagerBalance ? parseFloat(userWagerBalance?.formatted as string).toFixed(2)  : String(0) 
             } </SmallText> 
             {/* useBalance from wagmi can be used here */}
           </div>

@@ -13,10 +13,10 @@
                     "address": "0x0000000000000000000000000000000000000000"
                 },
                 "WegaGameController": {
-                    "address": "0x4114E9Fcb0D2Ba2480A6041CDEaBe315dc5063b4",
+                    "address": "0x15aeA3c65Cec3F7525e611fd12D6476439aF789b",
                     "legacyAddresses": [],
                     "deploymentBlock": null,
-                    "implementation": "0x5911a010941F892FB150AA83A65A327bAa7c12C0"
+                    "implementation": "0x721059fe3dd1c18d1926Eb36Ed792008339e4Ba9"
                 },
                 "WegaRandomizerController": {
                     "address": "0x724611c7dEB9a9D753aDDFF2f305c902FCbA02C8",
