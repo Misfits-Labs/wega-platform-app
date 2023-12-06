@@ -155,8 +155,6 @@ export const CreateCoinFlipGameCard = ({
   
   const navigateToGameUi = useNavigateTo()
   useEffect(() => {
-    console.log(!isWagerApproved(toBigIntInWei(allowanceQuery.data.toString(), tokenDecimals), toBigIntInWei(String(watch('wager')), tokenDecimals)))
-    console.log(toBigIntInWei(String(watch('wager')), tokenDecimals).toString())
     if(playerAddress && tokenAddress && tokenDecimals) {
       allowanceQuery.refetch();
       if(createGameStatus === 'fulfilled' && createGameResponse) {

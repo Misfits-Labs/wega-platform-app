@@ -153,8 +153,6 @@ const JoinCoinFlipGameCard = ({
  
   const navigateToGameUi = useNavigateTo()
   useEffect(() => {
-    console.log(allowanceQuery?.data, toBigInt(wagerAmount))
-
     allowanceQuery.refetch();
     if(tokenDecimals) setValue('wager', Number(parseFloat(formatUnits(BigInt(wagerAmount), tokenDecimals)).toFixed(0)))
   }, [
