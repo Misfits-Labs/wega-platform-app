@@ -9,7 +9,6 @@ import { useParams } from 'react-router-dom';
 import MainContainer from '../../components/MainContainer';
 import { BADGE_TEXTS } from "../../common/JoinableGameBar";
 import { FloatingOrbs } from "../../common/FloatingOrbs"
-import { formatEther } from 'ethers';
 import 'twin.macro'; 
 
 const JoinGamePage = () => {
@@ -33,7 +32,7 @@ const JoinGamePage = () => {
             wagerType={game.wager.wagerType}  
             currencyType={game.wager.wagerCurrency}
             gameType={game.gameType.toUpperCase() as AllPossibleWegaTypes}
-            wagerAmount={Number(formatEther(game.wager.wagerAmount))}
+            wagerAmount={game.wager.wagerAmount}
             gameUuid={game.uuid}
             escrowId={game.wager.wagerHash as HexishString}
             gameId={game.id}

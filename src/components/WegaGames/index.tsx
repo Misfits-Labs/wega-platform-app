@@ -84,6 +84,7 @@ export const PlayableGames: React.FC<JoinableAndPlayableGamesProps> = ({ gamesCo
     setGameIds(sortedGameIds ?? []);
   }
  }, [data, gamesCount, isSuccess, defaultNetwork?.id]);
+ 
  return !isLoading ? (<Section hdr="Playable Matches" direction="col" className="gap-2" { ...rest }>
   <JoinableGamesHeaderBar>
    <span>Date created</span>
@@ -102,7 +103,7 @@ export interface ClaimableGamesProps extends React.Attributes, React.HTMLAttribu
   userWalletAddress: HexishString;
   gamesCount: number;
   networkId: number;
- }
+}
 export const ClaimableGames: React.FC<ClaimableGamesProps> = ({ gamesCount, userWalletAddress, networkId, ...rest }: ClaimableGamesProps) => {
   const { data, isLoading, isSuccess } = useGetGamesQuery({ state: WegaState.COMPLETED, winners: userWalletAddress, networkId: networkId ?? defaultNetwork?.id });
   const [sortedGames, setSortedGames] = useState<Wega[]>();

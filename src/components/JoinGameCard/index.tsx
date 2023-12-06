@@ -9,12 +9,13 @@ import {
 } from "../../models";
 import JoinDiceGameCard from './JoinDiceGamecard';
 import JoinCoinFlipGameCard from './JoinCoinFlipGameCard';
+import { BigNumberish } from "ethers";
 
 export interface JoinGameCardProps extends React.Attributes, React.AllHTMLAttributes<HTMLDivElement> {
   wagerType: AllPossibleWagerTypes;
   currencyType: AllPossibleCurrencyTypes;
   gameType: AllPossibleWegaTypes;
-  wagerAmount: number;
+  wagerAmount: BigNumberish;
   gameUuid: string;
   escrowId: HexishString;
   gameId: number;

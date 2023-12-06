@@ -64,6 +64,7 @@ const PlayGameSection: React.FC<PlayGameSectionProps> = ({
     escrowHash: escrowHash as HexishString,
   },);
   useEffect(() => {
+    console.log(players)
     gameResultsQuery.refetch();
     refetchGameWinners()
   }, [players.length]);

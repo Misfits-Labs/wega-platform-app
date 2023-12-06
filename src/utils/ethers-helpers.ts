@@ -15,8 +15,12 @@ export function parseIntFromBigNumber(val: BigNumberish | number) {
  }
  return val;
 }
-export function exponentialToBigintInWei(val: number): bigint {
- return toBigIntInWei(Number.parseFloat(String(val)).toFixed(18) as string);
+export function exponentialToBigintInWei(val: number, decimals?: number): bigint {
+  if(decimals && decimals !== 18) {
+    return toBigIntInWei(Number.parseFloat(String(val)).toFixed(18) as string);
+  } else {
+    return toBigIntInWei(Number.parseFloat(String(val)).toString());
+  }
 }
 
 export function formatLowerDecimalTokenValue(value: number, tokenDecimals: number) {
@@ -44,6 +48,16 @@ export function interfaceIdFromAbi(abi: string[]) {
 
 export function parseTopicDataFromEventLog(txLog: { data: string, topics: Array<string> }, eventAbi: string[]){
   return interfaceIdFromAbi(eventAbi).parseLog({ data: txLog.data, topics: txLog.topics })?.args.toObject();
+}
+
+export function parseTopicDataFromEventLogs(txLogs: ({ data: string, topics: Array<string> })[], eventAbi: string[]){
+  let parsedData: any | undefined = undefined;
+  let i = 0;
+  while(!parsedData?.escrowHash) {
+    parsedData = interfaceIdFromAbi(eventAbi).parseLog({ data: txLogs[i].data, topics: txLogs[i].topics })?.args.toObject();
+    i++;
+  }
+  return parsedData 
 }
 
 export function isGameCreator(

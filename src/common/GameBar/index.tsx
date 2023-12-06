@@ -23,7 +23,7 @@ import { dateFromTs } from '../../utils';
 import { BarDiceIcon, BarCoinIcon, USDCIcon, USDTIcon, ArrowTrSquareIcon } from '../../assets/icons';
 import { selectGameById } from '../../components/WegaGames/apiSlice';
 import { GameBarLoadingSkeleton } from '../GameBar/GameBarLoadingSkeleton';
-import { formatEther } from 'ethers';
+import { formatUnits } from 'ethers';
 import { ButtonForJoinableGame } from '../ButtonForJoinableGame';
 import { ButtonForWaitingGame } from '../ButtonForWaitingGame';
 import { useWegaStore } from '../../hooks'
@@ -32,6 +32,7 @@ import {
   NormalText, 
 } from "../../components/CreateGameCard/types";
 import { Link } from 'react-router-dom';
+import { SupportedWagerTokenAddresses } from '../../models/constants';
 import 'twin.macro';
 
 export const BADGE_TEXTS: any = {
@@ -51,6 +52,8 @@ function GameBar({
 }: { gameId: number } & React.Attributes & Partial<React.AllHTMLAttributes<HTMLDivElement>> & GameBarProps) {
   const game = useSelector(state => selectGameById(state, gameId));
   const { user, network } = useWegaStore();
+  const tokenDecimals: number = SupportedWagerTokenAddresses[game?.wager.wagerCurrency as AllPossibleCurrencyTypes][game?.networkId as number].decimals as number;
+
   return game && user?.uuid && network ? (
    <BarWrapper tw="w-full grid grid-cols-5 " {...rest}>
     {/* date */}
@@ -62,12 +65,12 @@ function GameBar({
     </GameTypeBadgeWrapper>
     
     <WagerTypeBadgeWrapper >
-     <BadgeText>{formatEther(game.wager.wagerAmount)}</BadgeText>
+     <BadgeText>{Number(parseFloat(formatUnits(BigInt(game.wager.wagerAmount), tokenDecimals)).toFixed(0))}</BadgeText>
      <BadgeIcon>{renderWagerBadge(game.wager.wagerType, game.wager.wagerCurrency)}</BadgeIcon>
      <BadgeText>{game.wager.wagerCurrency}</BadgeText>
     </WagerTypeBadgeWrapper>
-    {/* escrow link button */}
     
+    {/* escrow link button */}
     {/* render for a joinable game */}
 
     {/* tx hash */}

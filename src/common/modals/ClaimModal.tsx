@@ -1,4 +1,4 @@
-import { formatEther } from 'ethers';
+import { formatUnits } from 'ethers';
 import tw, { styled } from 'twin.macro';
 import { WinnerDeclarationContainer, GradientDiv } from './types';
 import { NormalText, SmallText } from '../../components/CreateGameCard/types';
@@ -10,6 +10,7 @@ import { useTokenUSDValue } from '../../hooks';
 import { useWithdrawMutation, useGetClaimAmountQuery } from './blockchainApiSlice'; 
 import { useUpdateGameMutation } from '../../components/PlayGameSection/apiSlice'; 
 import { miniWalletAddress, capitalize, toastSettings, parseError } from '../../utils';
+
 import Button from '../Button';
 import WalletAvatar from "../../common/WalletAvatar";
 import toast from 'react-hot-toast';
@@ -20,10 +21,11 @@ export interface ClaimModalProps {
   hide: any;
   game: Wega;
   wallet: any;
+  tokenDecimals: number;
 }
 
 
-export const ClaimModal = ({ hide, game, wallet
+export const ClaimModal = ({ hide, game, wallet, tokenDecimals
 }: ClaimModalProps) => {
   const [feeAmountIndex, sendAmountIndex] = [0, 1]
   const [claim, claimQuery] = useWithdrawMutation();
@@ -44,10 +46,9 @@ export const ClaimModal = ({ hide, game, wallet
       toast.error(message, { ...toastSettings('error', 'bottom-center') as any });      
     }
   };
-  const wagerUSDValue = useTokenUSDValue(game.wager.wagerCurrency, Number(formatEther(game.wager.wagerAmount)));
-  // console.log(feeTaker)
-  // console.log(game.wager)
-  return (
+  const wagerUSDValue = useTokenUSDValue(game.wager.wagerCurrency, Number(formatUnits(game.wager.wagerAmount, tokenDecimals)));
+  console.log(Number(formatUnits(game.wager.wagerAmount, tokenDecimals)))
+  return tokenDecimals && (
    <WinnerDeclarationContainer tw="items-start p-[24px] gap-y-[16px] min-w-[340px]">
     <div tw="flex justify-end w-full">
       <button tw="w-[fit-content]" onClick={hide}><SmallText tw="text-left">Close</SmallText></button>
@@ -69,8 +70,8 @@ export const ClaimModal = ({ hide, game, wallet
       <div tw="flex flex-row gap-x-[11px] items-center rounded-[5px] bg-[#3A3A3A] w-full p-[5px]">
        <BadgeIcon size="44px">{renderWagerBadge(game.wager.wagerType, game.wager.wagerCurrency)}</BadgeIcon>
        <div tw="flex flex-col gap-y-[11px]">
-        <NormalText tw="text-blanc">{formatEther(game.wager.wagerAmount)} USDC</NormalText>
-        <NormalText tw="text-shinishi">${formatEther(game.wager.wagerAmount)}</NormalText>
+        <NormalText tw="text-blanc">{formatUnits(game.wager.wagerAmount, tokenDecimals)} USDC</NormalText>
+        <NormalText tw="text-shinishi">${formatUnits(game.wager.wagerAmount, tokenDecimals)}</NormalText>
        </div>
       </div>
      </div>
@@ -110,7 +111,7 @@ export const ClaimModal = ({ hide, game, wallet
       <NormalText tw="dark:text-shinishi">Total claim before fees</NormalText>
       {
         !calculateFeesQuery.data ? 'calculating...' : <NormalText>{
-          Number(formatEther(calculateFeesQuery.data[feeAmountIndex])) + Number(formatEther(calculateFeesQuery.data[sendAmountIndex])) 
+          parseFloat(String((Number(formatUnits(calculateFeesQuery.data[feeAmountIndex], tokenDecimals)) + Number(formatUnits(calculateFeesQuery.data[sendAmountIndex], tokenDecimals))/2))).toFixed(0) 
         } {game.wager.wagerCurrency}</NormalText>
       }
      </div>
@@ -130,7 +131,7 @@ export const ClaimModal = ({ hide, game, wallet
           <NormalText tw="dark:text-shinishi">You pay</NormalText>
           {
             !calculateFeesQuery.data ? 'calculating...' : <NormalText>{
-              parseFloat(formatEther(calculateFeesQuery.data[feeAmountIndex])).toFixed(2)
+              parseFloat(formatUnits(calculateFeesQuery.data[feeAmountIndex], tokenDecimals) ).toFixed(2)
             } {game.wager.wagerCurrency}</NormalText>
           }
         </div>
@@ -140,7 +141,7 @@ export const ClaimModal = ({ hide, game, wallet
       <NormalText tw="dark:text-shinishi">Net winnings</NormalText>
       {
         !calculateFeesQuery.data ? 'calculating...' : <NormalText>{
-          formatEther(calculateFeesQuery.data[sendAmountIndex])
+          formatUnits(calculateFeesQuery.data[sendAmountIndex], tokenDecimals)
         } {game.wager.wagerCurrency}</NormalText>
       }
     </GradientDiv>

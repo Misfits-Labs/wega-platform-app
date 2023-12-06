@@ -6,7 +6,9 @@ import { BadgeIcon, renderWagerBadge } from "../GameBar";
 import Button from '../Button';
 import 'twin.macro';
 import { AllPossibleCurrencyTypes, AllPossibleWagerTypes, AllPossibleWegaTypes} from '../../models';
-import { BigNumberish, formatEther } from 'ethers';
+import { SupportedWagerTokenAddresses } from '../../models/constants';
+
+import { BigNumberish, formatUnits } from 'ethers';
 import { Link } from 'react-router-dom';
 import { CoinflipWinnerLogo, CoinflipLoserLogo } from './GameResolutionImages'
 
@@ -15,6 +17,7 @@ export interface CoinflipWinnerModalProps {
   wagerCurrency: AllPossibleCurrencyTypes;
   wagerType: AllPossibleWagerTypes;
   wagerAmount: BigNumberish;
+  networkId: number;
   winnerFlipChoice: number;
   loserFlipChoice: number;
   hide: any;
@@ -26,7 +29,10 @@ const CoinflipWinnerModal = ({
   wagerAmount, 
   gameType,
   winnerFlipChoice,
+  networkId,
   loserFlipChoice }: CoinflipWinnerModalProps) => {
+  const tokenDecimals: number = SupportedWagerTokenAddresses[wagerCurrency][networkId].decimals as number;
+
   return (
    <WinnerDeclarationContainer tw="items-center min-w-[546px]">
     <div tw="flex justify-end w-full">
@@ -48,7 +54,7 @@ const CoinflipWinnerModal = ({
       </div>
 
       <WagerTypeBadgeWrapper>
-        <BadgeText>{formatEther(wagerAmount)}</BadgeText>
+        <BadgeText>{Number(parseFloat(formatUnits(BigInt(wagerAmount), tokenDecimals)).toFixed(0))}</BadgeText>
         <BadgeIcon>{renderWagerBadge(wagerType, wagerCurrency)}</BadgeIcon>
         <BadgeText>{wagerCurrency}</BadgeText>
       </WagerTypeBadgeWrapper>

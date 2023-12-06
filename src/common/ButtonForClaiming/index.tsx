@@ -8,9 +8,10 @@ import 'twin.macro'
 
 interface ButtonForClaimingProps {
  game: Wega;
+ tokenDecimals: number;
 }
 
-export const ButtonForClaiming = ({ game  }: ButtonForClaimingProps) => {
+export const ButtonForClaiming = ({ game, tokenDecimals  }: ButtonForClaimingProps) => {
   const { wallet } = useWegaStore()
   const { openConnectModal } = useConnectModal();
 
@@ -20,11 +21,11 @@ export const ButtonForClaiming = ({ game  }: ButtonForClaimingProps) => {
     showModal(MODAL_TYPES.CLAIM_MODAL, {
       game,
       wallet,
+      tokenDecimals,
       hide: hideModal,
     }, true); 
   }
-
- return (!wallet && openConnectModal ?
+ return tokenDecimals && (!wallet && openConnectModal ?
    <Button 
        buttonType="primary"  
        className="flex items-center"
@@ -33,7 +34,7 @@ export const ButtonForClaiming = ({ game  }: ButtonForClaimingProps) => {
      Claim
      <DownloadIcon tw="h-[16px] w-[16px] ms-[5px]" />
    </Button> :  
-     <Button buttonType="primary" className="flex items-center w-[max-content]" onClick={() => handleClaim(wallet)}>
+     <Button buttonType="primary" className="flex items-center w-[max-content]" onClick={() => handleClaim(wallet)} >
        Claim
      <DownloadIcon tw="h-[16px] w-[16px] ms-[5px] dark:stroke-blanc" />
     </Button> 

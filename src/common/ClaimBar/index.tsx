@@ -1,4 +1,4 @@
-import { formatEther } from 'ethers';
+import { formatUnits } from 'ethers'
 import { 
  GameTypeBadgeWrapper, 
  DateColumn, 
@@ -26,6 +26,7 @@ import { selectGameById } from '../../components/WegaGames/apiSlice';
 import { useSelector } from 'react-redux' 
 import { ButtonForClaiming } from '../ButtonForClaiming';
 import { constructBlockExplorerHash } from '../GameBar/utils';
+import { SupportedWagerTokenAddresses } from '../../models/constants';
 import { Link } from 'react-router-dom'
 import { 
   NormalText, 
@@ -43,7 +44,7 @@ interface ClaimBarProps {
   networkId: number;
   game?: Wega;
 }
-
+// TODO move token decimals into game props (URGENT)
 function ClaimBar({ 
   gameId,
   networkId,
@@ -55,13 +56,14 @@ function ClaimBar({
 }: { gameId: number, count: number  } & React.Attributes & Partial<React.AllHTMLAttributes<HTMLDivElement>> & ClaimBarProps) {
   let claimableGame = useSelector(state => selectGameById(state, gameId));
   if(game) claimableGame = game;
+  const tokenDecimals: number = SupportedWagerTokenAddresses[claimableGame?.wager.wagerCurrency as AllPossibleCurrencyTypes][claimableGame?.networkId as number].decimals as number;
   return claimableGame && (
    <BarWrapper tw="grid grid-cols-10 w-full justify-between" {...rest}>
     <Count tw="w-[fit-content]">{parseBarCount(count)}</Count>
     {/* date */}
     <DateColumn>{dateFromTs(new Date(claimableGame.createdAt as string).getTime() * 1000)}</DateColumn>
     <WagerTypeBadgeWrapper tw="col-span-3 w-[fit-content]">
-      <BadgeText>{formatEther(claimableGame.wager.wagerAmount)}</BadgeText>
+      <BadgeText>{Number(parseFloat(formatUnits(BigInt(claimableGame.wager.wagerAmount), tokenDecimals)).toFixed(0))}</BadgeText>
       <BadgeIcon>{renderWagerBadge(claimableGame.wager.wagerType, claimableGame.wager.wagerCurrency)}</BadgeIcon>
       <BadgeText>{claimableGame.wager.wagerCurrency}</BadgeText>
     </WagerTypeBadgeWrapper>
@@ -79,7 +81,7 @@ function ClaimBar({
           <Link to={constructBlockExplorerHash(networkId, claimableGame.transactionHash as HexishString)} target="_blank" rel="noreferrer"><ArrowTrSquareIcon /></Link>
         </div>
         {/* render for a joinable game */}
-        <ButtonForClaiming  game={claimableGame} />
+        <ButtonForClaiming  game={claimableGame} tokenDecimals={tokenDecimals} />
       </div>
     </div>
    </BarWrapper>

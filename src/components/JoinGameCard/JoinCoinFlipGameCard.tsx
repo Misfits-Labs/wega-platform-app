@@ -40,14 +40,13 @@ import { useNavigateTo, useCreateGameParams, useWegaStore, useTokenUSDValue, use
 import { useDepositAndJoinCoinflipMutation } from './blockchainApiSlice';
 import { useAllowanceQuery, useApproveERC20Mutation } from '../CreateGameCard/blockchainApiSlice';
 import toast from 'react-hot-toast';
-import { toastSettings, escrowConfig, convertBytesToNumber, parseError, formatLowerDecimalTokenValue, exponentialToBigintInWei } from '../../utils';
+import { toastSettings, escrowConfig, convertBytesToNumber, parseError } from '../../utils';
 import Button from '../../common/Button';
 import { useFormReveal } from '../CreateGameCard/animations';
 import { useJoinGameMutation, useUpdateGameMutation } from './apiSlice';
 import { ToggleCoinFlipSides } from '../../common/ToggleCoinFlipSides';
-import { ComponentLoader } from '../../common/loaders'
-
-
+import { ComponentLoader } from '../../common/loaders';
+import { formatUnits, toBigInt, BigNumberish } from 'ethers';
 
 export interface JoinCoinFlipGameCardProps extends React.Attributes, React.AllHTMLAttributes<HTMLDivElement> {
  wagerType: AllPossibleWagerTypes;
@@ -56,11 +55,11 @@ export interface JoinCoinFlipGameCardProps extends React.Attributes, React.AllHT
  playerAddress: HexishString;
  gameType: AllPossibleWegaTypes;
  playerUuid: string;
- wagerAmount: number;
+ wagerAmount: BigNumberish;
  gameUuid: string;
  escrowId: HexishString;
  gameId: number;
- gameAttributes: WegaAttributes;
+ gameAttributes: WegaAttributes;                        
  network: Network;
 }
 
@@ -89,24 +88,22 @@ const JoinCoinFlipGameCard = ({
   const [currentCoinSide] = useState<AllPossibleCoinSides>(gameAttributes && Number(gameAttributes[0].value) === 1 ? 2 : 1);
   const {tokenAddress, playerAddress, playerUuid, tokenDecimals } = useCreateGameParams({ wallet, user, network, currencyType: currentCurrencyType }); // TODO change to generic name
 
-  const { register, formState: { errors }, handleSubmit } = useForm({ 
+  const { register, formState: { errors }, handleSubmit, setValue } = useForm({ 
     mode: 'onChange',
-    resolver: joiResolver(createGameSchema('wager', formatLowerDecimalTokenValue(wagerAmount, tokenDecimals))) , 
+    resolver: joiResolver(createGameSchema('wager', Number(parseFloat(formatUnits(BigInt(wagerAmount), tokenDecimals)).toFixed(0)))), 
     reValidateMode: 'onChange',
     defaultValues: {
-      wager: tokenDecimals && formatLowerDecimalTokenValue(wagerAmount, tokenDecimals),
+      wager: tokenDecimals && Number(parseFloat(formatUnits(BigInt(wagerAmount), tokenDecimals)).toFixed(0)),
     }
   });
   
   // approval for allowance
-  const wagerUSDValue = useTokenUSDValue(currentCurrencyType, tokenDecimals && formatLowerDecimalTokenValue(wagerAmount, tokenDecimals));
-  const isWagerApproved = (allowance: string | number, wagerAmount: number) => {
-    return exponentialToBigintInWei(Number(allowance)) >= exponentialToBigintInWei(wagerAmount); // if decimals then the correct wei amount will be returned
-  };
+  const wagerUSDValue = useTokenUSDValue(currentCurrencyType, Number(parseFloat(formatUnits(BigInt(wagerAmount), tokenDecimals)).toFixed(0)));
+  const isWagerApproved = (allowance: bigint, wagerAmount: bigint) => allowance >= wagerAmount;
   const allowanceQuery = useAllowanceQuery({ 
     spender: escrowConfig.address[network?.id as keyof typeof escrowConfig.address], 
     owner: playerAddress,
-    tokenAddress,  
+    tokenAddress,
   });
   
   // get token balance of userP
@@ -122,10 +119,10 @@ const JoinCoinFlipGameCard = ({
 
   const handleDepositWagerClick = async () => {
     try {
-      if(!isWagerApproved(allowanceQuery.data, wagerAmount)) {
+      if(!isWagerApproved(allowanceQuery.data, toBigInt(wagerAmount))) {
         await approveERC20({ 
           spender: escrowConfig.address[network?.id as keyof typeof escrowConfig.address], 
-          wagerAsBigint: exponentialToBigintInWei(wagerAmount), 
+          wagerAsBigint: toBigInt(wagerAmount), 
           tokenAddress
         }).unwrap();
       }
@@ -156,7 +153,10 @@ const JoinCoinFlipGameCard = ({
  
   const navigateToGameUi = useNavigateTo()
   useEffect(() => {
+    console.log(allowanceQuery?.data, toBigInt(wagerAmount))
+
     allowanceQuery.refetch();
+    if(tokenDecimals) setValue('wager', Number(parseFloat(formatUnits(BigInt(wagerAmount), tokenDecimals)).toFixed(0)))
   }, [
     tokenAddress,
     playerAddress,
@@ -184,7 +184,7 @@ const JoinCoinFlipGameCard = ({
         <div >
           {/* wager */}
           <div tw="flex flex-col items-center gap-y-[16px]">
-            <InputBox tw="pointer-events-none" type="number" step="any" defaultValue={formatLowerDecimalTokenValue(wagerAmount, tokenDecimals)} { ...register('wager') }/>
+            <InputBox tw="pointer-events-none" type="number" step="any" defaultValue={Number(parseFloat(formatUnits(BigInt(wagerAmount), tokenDecimals)).toFixed(0))} { ...register('wager') }/>
             <ErrorMessage
               errors={errors}
               name="wager"
@@ -192,7 +192,7 @@ const JoinCoinFlipGameCard = ({
             />
             <NormalText tw="dark:text-shinishi">{wagerUSDValue.loading ? 'loading...' : wagerUSDValue.value} USD</NormalText>
             <SmallText> Balance: {
-              isWagerbalanceLoading ? "Retrieving balance..." : parseFloat(userWagerBalance?.formatted as string).toFixed(2)  
+              isWagerbalanceLoading ? "Retrieving balance..." : parseFloat(userWagerBalance?.formatted as string ?? 0).toFixed(2)  
             } </SmallText> 
             {/* useBalance from wagmi can be used here */}
           </div>
@@ -225,7 +225,7 @@ const JoinCoinFlipGameCard = ({
           <div tw="flex justify-between p-[20px] items-center" className="details-1 invisible">
             <LargeText>Wager</LargeText>
             <div tw="dark:bg-[#4B4B4B] rounded-[10px] flex w-[fit-content] justify-center items-center gap-[10px] py-[5px] px-[10px]">
-              <span>{formatLowerDecimalTokenValue(wagerAmount, tokenDecimals)}</span>
+              <span>{Number(parseFloat(formatUnits(BigInt(wagerAmount), tokenDecimals)).toFixed(0))}</span>
               <BadgeIcon><>{renderWagerBadge(currentWagerType, currentCurrencyType)}</></BadgeIcon>
               <span>{currencyType}</span>
             </div>

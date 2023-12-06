@@ -75,7 +75,6 @@ const GlobalModal: React.FC<GlobalModalProps> = ({ children }) => {
     modalProps: any,
     persist?: boolean,
     ) => {
-      console.log(modalType)
     setStore({
       ...store,
       modalType,

@@ -5,9 +5,12 @@
             "contracts": {
                 "WegaERC20Escrow": {
                     "address": "0x1fFd5291E09264174d9956187cf8eFAE01E34875",
-                    "legacyAddresses": [],
+                    "legacyAddresses": [
+                        "0x2EE1d66d4c62a8c648f36fC8Faa7f8454F470520",
+                        "0x65BdAB5722E4f5F7c377d73d5c0073Bb0671597d"
+                    ],
                     "deploymentBlock": null,
-                    "implementation": "0x65BdAB5722E4f5F7c377d73d5c0073Bb0671597d"
+                    "implementation": "0xed4a0cb18aF2D6b022F8f99Cf09b91aa06A9513d"
                 },
                 "WegaERC20Dummy": {
                     "address": "0x0000000000000000000000000000000000000000"
@@ -37,10 +40,10 @@
                     "implementation": "0x720736cd88D57aF277A62495037Ce51788681B71"
                 },
                 "FeeManager": {
-                    "address": "0xE38d4530337a45C6D0C061f108e5AF040FCC175c",
+                    "address": "0x679e91BAb4fA83c5d0543c460A41CEc52E6A6fd1",
                     "legacyAddresses": [],
                     "deploymentBlock": null,
-                    "implementation": "0xc484aC8D7385dFbA73977832c9eb6413823de3A9"
+                    "implementation": "0xfB244ac04620695e40bc165e99C1C1381B797DA8"
                 },
                 "WegaRandomizer": {
                     "address": "0x0000000000000000000000000000000000000000"

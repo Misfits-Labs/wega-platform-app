@@ -44,7 +44,7 @@ import {
   toastSettings, 
   toBigIntInWei, 
   escrowConfig, 
-  parseTopicDataFromEventLog,
+  parseTopicDataFromEventLogs,
   convertBytesToNumber, 
   parseError
 } from '../../utils';
@@ -89,10 +89,7 @@ export const CreateDiceGameCard = ({
   
   // approval for allowance
   const wagerUSDValue = useTokenUSDValue(currentCurrencyType, watch('wager')); 
-  const isWagerApproved = (allowance: string, wagerAmount: number, withDecimals?: boolean ) => {
-    if(withDecimals) return toBigIntInWei(allowance, tokenDecimals) >= toBigIntInWei(String(wagerAmount), tokenDecimals);
-    return toBigIntInWei(allowance) >= toBigIntInWei(String(wagerAmount), tokenDecimals); // if decimals then the correct wei amount will be returned
-  };
+  const isWagerApproved = (allowance: bigint, wagerAmount: bigint) => allowance >= wagerAmount;
 
   const allowanceQuery = useAllowanceQuery({ 
     spender: escrowConfig.address[network?.id as keyof typeof escrowConfig.address], 
@@ -119,7 +116,7 @@ export const CreateDiceGameCard = ({
   const handleCreateGameClick = async ({ wager }: { wager: number }) => {
     
     try {
-      if(!isWagerApproved(allowanceQuery?.data, wager)) {
+      if(!isWagerApproved(allowanceQuery.data, toBigIntInWei(String(wager), tokenDecimals))) {
         await approveERC20({ 
           spender: escrowConfig.address[network?.id as keyof typeof escrowConfig.address], 
           wagerAsBigint: toBigIntInWei(String(wager), tokenDecimals), 
@@ -132,7 +129,7 @@ export const CreateDiceGameCard = ({
         gameType,
         randomness: [convertBytesToNumber(randomness.randomness)] 
       }).unwrap();
-      const parsedTopicData = parseTopicDataFromEventLog(receipt.logs[2], ['event GameCreation(bytes32 indexed escrowHash, uint256 indexed nonce, address creator, string name)']);
+      const parsedTopicData = parseTopicDataFromEventLogs(receipt.logs, ['event GameCreation(bytes32 indexed escrowHash, uint256 indexed nonce, address creator, string name)']);
       await createGame({ 
         gameType, 
         players: [ { uuid: playerUuid } ],
@@ -163,7 +160,7 @@ export const CreateDiceGameCard = ({
   
   const navigateToGameUi = useNavigateTo()
   useEffect(() => {
-    if(playerAddress && tokenAddress) {
+    if(playerAddress && tokenAddress && tokenDecimals) {
       if(createGameStatus === 'fulfilled' && createGameResponse) {
         navigateToGameUi(`/play/${gameType.toLowerCase()}/${createGameResponse.uuid}`, 1500, { replace: true, 
           state: { gameId: createGameResponse.id, gameUuid: createGameResponse.uuid } 
@@ -174,7 +171,8 @@ export const CreateDiceGameCard = ({
     watch('wager'),
     tokenAddress, 
     createGameStatus, 
-    createGameResponse
+    createGameResponse,
+    tokenDecimals
   ]);
   useEffect(() => {
     allowanceQuery.refetch();
@@ -203,7 +201,7 @@ export const CreateDiceGameCard = ({
             {/* should receive wager amount as input */}
             <NormalText tw="dark:text-shinishi">{wagerUSDValue.loading ? 'loading...' : wagerUSDValue.value} USD</NormalText> 
             <SmallText> Balance: {
-              isWagerbalanceLoading ? "Retrieving balance..." : userWagerBalance ? parseFloat(userWagerBalance?.formatted as string).toFixed(2)  : String(0) 
+              isWagerbalanceLoading ? "Retrieving balance..." : userWagerBalance ? parseFloat(userWagerBalance?.formatted as string ?? 0).toFixed(2)  : String(0) 
             } </SmallText> 
             {/* useBalance from wagmi can be used here */}
           </div>

@@ -111,7 +111,7 @@ const DicePlayerCard: React.FC<DicePlayerCardProps> = ({
     <div tw="flex flex-col gap-y-[16px] items-center">
       <NormalText>Wager: </NormalText>
       <WagerTypeBadgeWrapper>
-        <BadgeText>{format(wager.wagerAmount, tokenDecimals as number)}</BadgeText>
+        <BadgeText>{parseFloat(format(wager.wagerAmount, tokenDecimals as number)).toFixed(0)}</BadgeText>
         <BadgeIcon>{renderWagerBadge(wager.wagerType, wager.wagerCurrency)}</BadgeIcon>
         <BadgeText>{wager.wagerCurrency}</BadgeText>
       </WagerTypeBadgeWrapper>
@@ -179,7 +179,7 @@ const CoinFlipPlayerCard: React.FC<CoinflipPlayerCardProps> = ({
     <div tw="flex flex-col gap-y-[16px] items-center">
       <NormalText>Wager: </NormalText>
       <WagerTypeBadgeWrapper>
-        <BadgeText>{format(wager.wagerAmount, tokenDecimals as number)}</BadgeText>
+        <BadgeText>{parseFloat(format(wager.wagerAmount, tokenDecimals as number)).toFixed(0)}</BadgeText>
         <BadgeIcon>{renderWagerBadge(wager.wagerType, wager.wagerCurrency)}</BadgeIcon>
         <BadgeText>{wager.wagerCurrency}</BadgeText>
       </WagerTypeBadgeWrapper>

@@ -74,6 +74,7 @@ const PlayCoinFlipGameSection: React.FC<PlayGameSectionProps> = ({
         wagerType: game.wager.wagerType,
         wagerAmount: game.wager.wagerAmount,
         gameType: game.gameType,
+        networkId: game.networkId,
         playerFlipChoices,
         hide: hideModal
       })
@@ -84,6 +85,7 @@ const PlayCoinFlipGameSection: React.FC<PlayGameSectionProps> = ({
           wagerType: game.wager.wagerType,
           wagerAmount: game.wager.wagerAmount,
           gameType: game.gameType,
+          networkId: game.networkId,
           winnerFlipChoice: [playerFlipChoices.playerOne as AllPossibleCoinSides, playerFlipChoices.playerTwo as AllPossibleCoinSides][indexOfMaxValue],
           loserFlipChoice: [playerFlipChoices.playerOne as AllPossibleCoinSides, playerFlipChoices.playerTwo as AllPossibleCoinSides][indexOfMaxValue === 1 ? 0 : 1],
           hide: hideModal
@@ -91,6 +93,7 @@ const PlayCoinFlipGameSection: React.FC<PlayGameSectionProps> = ({
       } else {
         showModal(MODAL_TYPES.COINFLIP_LOSER_MODAL, {
             gameType: game.gameType,
+            networkId: game.networkId,
             winnerFlipChoice: [playerFlipChoices.playerOne as AllPossibleCoinSides, playerFlipChoices.playerTwo as AllPossibleCoinSides][indexOfMaxValue],
             loserFlipChoice: [playerFlipChoices.playerOne as AllPossibleCoinSides, playerFlipChoices.playerTwo as AllPossibleCoinSides][indexOfMaxValue === 1 ? 0 : 1],
             hide: hideModal

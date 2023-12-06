@@ -5,6 +5,7 @@ export {
  miniWalletAddress,
  toBigIntInWei,
  parseTopicDataFromEventLog,
+ parseTopicDataFromEventLogs,
  interfaceIdFromAbi,
  convertBytesToNumber,
  format,

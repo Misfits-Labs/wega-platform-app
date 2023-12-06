@@ -97,6 +97,7 @@ const PlayDiceGameSection: React.FC<PlayGameSectionProps>= ({
             wagerType: game.wager.wagerType, 
             wagerAmount: game.wager.wagerAmount,
             gameType: game.gameType,
+            networkId: game.networkId,
             results: getWinnerAndLoserResults(),
             hide: hideModal,
           });
@@ -107,6 +108,7 @@ const PlayDiceGameSection: React.FC<PlayGameSectionProps>= ({
               wagerType: game.wager.wagerType, 
               wagerAmount: game.wager.wagerAmount,
               gameType: game.gameType,
+              networkId: game.networkId,
               results: getWinnerAndLoserResults(),
               hide: hideModal,
             });
@@ -114,6 +116,7 @@ const PlayDiceGameSection: React.FC<PlayGameSectionProps>= ({
             showModal(MODAL_TYPES.DICE_LOSER_MODAL, { 
               gameType: game.gameType,
               results: getWinnerAndLoserResults(),
+              networkId: game.networkId,
               hide: hideModal,
             });
           }
