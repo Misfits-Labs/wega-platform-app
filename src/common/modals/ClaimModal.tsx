@@ -141,7 +141,7 @@ export const ClaimModal = ({ hide, game, wallet, tokenDecimals
       <NormalText tw="dark:text-shinishi">Net winnings</NormalText>
       {
         !calculateFeesQuery.data ? 'calculating...' : <NormalText>{
-          parseFloat(String(Number(formatUnits(calculateFeesQuery.data[sendAmountIndex], tokenDecimals)) - Number(formatUnits(game.wager.wagerAmount, tokenDecimals)))).toFixed(0)
+          parseFloat(String(Number(formatUnits(calculateFeesQuery.data[sendAmountIndex], tokenDecimals)) - Number(formatUnits(game.wager.wagerAmount, tokenDecimals)))).toFixed(2)
         } {game.wager.wagerCurrency}</NormalText>
       }
     </GradientDiv>
