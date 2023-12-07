@@ -114,10 +114,10 @@ export const ClaimableGames: React.FC<ClaimableGamesProps> = ({ gamesCount, user
       setSortedGames(sortedGameIds.map(id => data.entities[id] as Wega) ?? []);
     }
   }, [data, gamesCount, isSuccess, userWalletAddress, defaultNetwork?.id]); 
-  return !isLoading ? (<Section hdr="Tokens won" direction="col" tw="gap-2" { ...rest } >
+  return !isLoading ? (<Section hdr="Tokens won" direction="col" tw="gap-2 w-full" { ...rest } >
     {
      sortedGames && sortedGames.length > 0 ? sortedGames.map((game: Wega, i) => (
-     <ClaimBar networkId={networkId} count={i + 1} gameId={game.id} key={`claim-wins-bar-${i}`} className="dark:bg-[#1C1C1C] py-2 px-3 rounded-[5px]" />)) : <></>
+     <ClaimBar networkId={networkId} count={i + 1} gameId={game.id} key={`claim-wins-bar-${i}`} tw="dark:bg-[#1C1C1C] py-2 px-3 rounded-[5px] w-full" />)) : <></>
     }
     </Section> 
   ) : <ComponentLoader tw="w-full flex justify-center" />

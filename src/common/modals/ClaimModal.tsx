@@ -47,7 +47,7 @@ export const ClaimModal = ({ hide, game, wallet, tokenDecimals
     }
   };
   const wagerUSDValue = useTokenUSDValue(game.wager.wagerCurrency, Number(formatUnits(game.wager.wagerAmount, tokenDecimals)));
-  console.log(Number(formatUnits(game.wager.wagerAmount, tokenDecimals)))
+  
   return tokenDecimals && (
    <WinnerDeclarationContainer tw="items-start p-[24px] gap-y-[16px] min-w-[340px]">
     <div tw="flex justify-end w-full">
@@ -89,9 +89,8 @@ export const ClaimModal = ({ hide, game, wallet, tokenDecimals
           size={11} 
          />
        </ClaimModalAvatarWrapper>
-       <div tw="flex flex-col gap-y-[11px]">
+       <div tw="flex flex-row items-center justify-start gap-y-[11px]">
         <NormalText tw="text-blanc">{miniWalletAddress(wallet.address)}</NormalText>
-        <NormalText tw="text-shinishi">{"Change wallet"}</NormalText>
        </div>
       </div>
      </div>
@@ -138,7 +137,7 @@ export const ClaimModal = ({ hide, game, wallet, tokenDecimals
       </div>
     </div> 
     <GradientDiv tw="h-[max-content] flex justify-between gap-[10px] dark:bg-[#414141] py-[8px] px-[5px]">
-      <NormalText tw="dark:text-shinishi">Net winnings</NormalText>
+      <NormalText tw="dark:text-blanc">Net winnings</NormalText>
       {
         !calculateFeesQuery.data ? 'calculating...' : <NormalText>{
           parseFloat(String(Number(formatUnits(calculateFeesQuery.data[sendAmountIndex], tokenDecimals)) - Number(formatUnits(game.wager.wagerAmount, tokenDecimals)))).toFixed(2)

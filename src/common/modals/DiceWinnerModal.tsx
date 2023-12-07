@@ -59,6 +59,7 @@ const DiceWinnerModal = ({
         <BadgeText>{wagerCurrency}</BadgeText>
       </WagerTypeBadgeWrapper>
 
+
       <div tw="flex gap-x-[25px] items-center">
         <Link to="/wins" tw="min-w-[197px]">
           <Button buttonType="primary" tw="flex items-center justify-center w-full">
@@ -66,7 +67,7 @@ const DiceWinnerModal = ({
             <DownloadIcon color="#151515" tw="h-[16px] w-[16px] ms-[5px]"/>
           </Button>
         </Link>
-        <Link to={`/${gameType.toLocaleLowerCase()}/create`} tw="min-w-[197px]" state={{ gameType }}>
+        <Link to={`/create/${gameType.toLocaleLowerCase()}`} tw="min-w-[197px]" state={{ gameType }}>
           <Button buttonType="secondary" tw="flex items-center w-full justify-center">
             Start a new game
             <RestartIcon  tw="h-[16px] w-[16px] ms-[5px]"/>

@@ -24,7 +24,7 @@ const WinsPage = () => {
       <Helmet>
       <title>Claim</title>
       </Helmet>
-      <MainContainer tw="min-h-[100vh] w-[50vw]">
+      <MainContainer tw="min-h-[100vh] w-[100vw] md:w-[80vw] lg:w-[65vw] 2xl:w-[55vw]">
        <Section
         direction='col' 
         tw="w-full"
