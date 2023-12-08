@@ -22,7 +22,6 @@ export const JoinableAndPlayableGames: React.FC<JoinableAndPlayableGamesProps> =
  const { data, isLoading, isSuccess} = useGetGamesQuery({ networkId: networkId ?? defaultNetwork?.id });
  const [gameIds, setGameIds] = useState<number[]>([]);
  useEffect(() => {
-   console.log(data)
    if(isSuccess && data && data?.entities) {                                     
      const dataArray = data.ids.map((id: number) => data.entities[id]) as Wega[];
      const playableGames = filterPlayableGames(dataArray, userUuid);
@@ -31,7 +30,6 @@ export const JoinableAndPlayableGames: React.FC<JoinableAndPlayableGamesProps> =
      const sortedGameIds = sortPlayableGames([...playableGames, ...joinableGames, ...waitingGames]).map(game => game.id);
      setGameIds(sortedGameIds);
     }
-    console.log(gameIds)
  }, [data, gamesCount, isSuccess, defaultNetwork?.id]);
 
  return !isLoading ? (<Section hdr="Join matches instantly" direction="col" tw="gap-2 mt-[35px] " { ...rest }>
