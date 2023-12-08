@@ -36,9 +36,10 @@ import { ArrowDownIcon, StarLoaderIcon } from '../../assets/icons';
 import tw from 'twin.macro';
 import { useForm } from 'react-hook-form';
 import { useBalance } from 'wagmi';
-import { useNavigateTo, useCreateGameParams, useWegaStore, useTokenUSDValue, useDrand } from '../../hooks';
+import { useNavigateTo, useCreateGameParams, useWegaStore, useTokenUSDValue } from '../../hooks';
 import { useDepositAndJoinCoinflipMutation } from './blockchainApiSlice';
 import { useAllowanceQuery, useApproveERC20Mutation } from '../CreateGameCard/blockchainApiSlice';
+import { useGetRandomNumberQuery } from '../CreateGameCard/apiSlice';
 import toast from 'react-hot-toast';
 import { toastSettings, escrowConfig, convertBytesToNumber, parseError } from '../../utils';
 import Button from '../../common/Button';
@@ -78,8 +79,7 @@ const JoinCoinFlipGameCard = ({
 }: JoinCoinFlipGameCardProps) => {
   const { openConnectModal } = useConnectModal();
   const { wallet, user, network } = useWegaStore();
-  const drand = useDrand();
-
+  const drand = useGetRandomNumberQuery(undefined);
   const formRef = useRef<HTMLFormElement>(null);
   const detailsBlock = useRef<HTMLDivElement>(null)
   const [currentWagerType] = useState<AllPossibleWagerTypes>(wagerType);
@@ -127,7 +127,7 @@ const JoinCoinFlipGameCard = ({
         }).unwrap();
       }
       const playerChoices = [Number(gameAttributes[0].value), currentCoinSide];
-      await depositAndJoinCoinflip({escrowHash: escrowId, playerChoices, randomness: [convertBytesToNumber(drand.randomness)] }).unwrap();
+      await depositAndJoinCoinflip({escrowHash: escrowId, playerChoices, randomness: [convertBytesToNumber(drand?.data.randomness)] }).unwrap();
       await joinGame({ newPlayerUuid: playerUuid, gameUuid }).unwrap();
       await updateGame({ 
         uuid: gameUuid, 
@@ -162,7 +162,7 @@ const JoinCoinFlipGameCard = ({
     tokenDecimals
   ]);
   
-  return drand && tokenDecimals ? (
+  return drand?.data && tokenDecimals ? (
     <form 
       tw="w-full flex flex-col justify-center items-center" 
       onSubmit={handleSubmit(handleDepositWagerClick)} 

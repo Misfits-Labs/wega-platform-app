@@ -33,13 +33,13 @@ import { ErrorMessage } from '@hookform/error-message';
 import { ArrowDownIcon, StarLoaderIcon } from '../../assets/icons';
 import tw from 'twin.macro';
 import { useForm } from 'react-hook-form';
-import { useCreateGameParams, useNavigateTo, useWegaStore, useTokenUSDValue, useDrand } from '../../hooks';
+import { useCreateGameParams, useNavigateTo, useWegaStore, useTokenUSDValue } from '../../hooks';
 import { 
   useCreateWagerAndDepositMutation,
   useAllowanceQuery,
   useApproveERC20Mutation,
 } from './blockchainApiSlice';
-import { useCreateGameMutation } from './apiSlice';
+import { useCreateGameMutation, useGetRandomNumberQuery } from './apiSlice';
 import { toastSettings, toBigIntInWei, escrowConfig, parseTopicDataFromEventLogs, convertBytesToNumber, parseError } from '../../utils';
 import Button from '../../common/Button';
 import { ToggleWagerBadge } from '../../common/ToggleWagerBadge';
@@ -69,7 +69,7 @@ export const CreateCoinFlipGameCard = ({
   const { wallet, network, user} = useWegaStore();
   const formRef = useRef<HTMLFormElement>(null);
   const detailsBlock = useRef<HTMLDivElement>(null)
-  const drand = useDrand();
+  const drand = useGetRandomNumberQuery(undefined);
   const [currentWagerType] = useState<AllPossibleWagerTypes>(wagerType);
   const [currentCurrencyType, setCurrentCurrencyType] = useState<AllPossibleCurrencyTypes>(currencyType);
   const [currentCoinSide, setCurrentCoinSide] = useState<AllPossibleCoinSides>(CoinSideTypes[CoinSideTypesEnum.HEADS]);
@@ -114,7 +114,6 @@ export const CreateCoinFlipGameCard = ({
   const handleCreateGameClick = async ({ wager }: { wager: number }) => {
     try {
       if(!isWagerApproved(allowanceQuery.data, toBigIntInWei(String(wager), tokenDecimals))) {
-        console.log(toBigIntInWei(String(watch('wager')), tokenDecimals).toString())
         await approveERC20({ 
           spender: escrowConfig.address[network?.id as keyof typeof escrowConfig.address], 
           wagerAsBigint: toBigIntInWei(String(wager), tokenDecimals), 
@@ -122,7 +121,7 @@ export const CreateCoinFlipGameCard = ({
       }).unwrap();
       }
       const receipt = await createWagerAndDeposit({ 
-        tokenAddress, wagerAsBigint: toBigIntInWei(String(wager), tokenDecimals), gameType, randomness: [convertBytesToNumber(drand.randomness)] }).unwrap();
+        tokenAddress, wagerAsBigint: toBigIntInWei(String(wager), tokenDecimals), gameType, randomness: [convertBytesToNumber(drand.data.randomness)] }).unwrap();
       const parsedTopicData = parseTopicDataFromEventLogs(receipt.logs, ['event GameCreation(bytes32 indexed escrowHash, uint256 indexed nonce, address creator, string name)']);
       await createGame({ 
         gameType, 
@@ -170,7 +169,7 @@ export const CreateCoinFlipGameCard = ({
     tokenDecimals
   ]);
   
-  return drand && tokenDecimals ? (
+  return drand?.data && tokenDecimals ? (
     <form 
       tw="w-full flex flex-col justify-center items-center" 
       onSubmit={handleSubmit(handleCreateGameClick)} 

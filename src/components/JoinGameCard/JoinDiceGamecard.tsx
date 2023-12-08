@@ -31,9 +31,11 @@ import { ArrowDownIcon, StarLoaderIcon } from '../../assets/icons';
 import tw from 'twin.macro';
 import { useForm } from 'react-hook-form';
 import { useBalance } from 'wagmi';
-import { useCreateGameParams, useWegaStore, useNavigateTo, useTokenUSDValue, useDrand } from '../../hooks';
+import { useCreateGameParams, useWegaStore, useNavigateTo, useTokenUSDValue } from '../../hooks';
 import { useDepositAndJoinDiceMutation } from './blockchainApiSlice';
 import { useAllowanceQuery, useApproveERC20Mutation } from '../CreateGameCard/blockchainApiSlice';
+import { useGetRandomNumberQuery } from '../CreateGameCard/apiSlice';
+
 import toast from 'react-hot-toast';
 import { 
   toastSettings, 
@@ -66,7 +68,8 @@ const JoinGameDiceCard: React.FC<JoinDiceGameCardProps> = ({
 }: JoinDiceGameCardProps) => {
   const { openConnectModal } = useConnectModal();
   const { wallet, user, network } = useWegaStore();
-  const drand = useDrand();
+  const drand = useGetRandomNumberQuery(undefined);
+
   const formRef = useRef<HTMLFormElement>(null);
   const detailsBlock = useRef<HTMLDivElement>(null)
   const [currentWagerType] = useState<AllPossibleWagerTypes>(wagerType);
@@ -116,7 +119,7 @@ const JoinGameDiceCard: React.FC<JoinDiceGameCardProps> = ({
       }
       await depositAndJoinDice({ 
         escrowHash: escrowId, 
-        randomness: [convertBytesToNumber(drand.randomness)] 
+        randomness: [convertBytesToNumber(drand.data.randomness)] 
       }).unwrap();
       await joinGame({ newPlayerUuid: playerUuid, gameUuid }).unwrap();
       await updateGame({ uuid: gameUuid, state: WegaState.PLAYING }).unwrap();
@@ -140,7 +143,7 @@ const JoinGameDiceCard: React.FC<JoinDiceGameCardProps> = ({
     tokenDecimals
 ]);
   
-  return drand && tokenDecimals ?  (
+  return drand?.data && tokenDecimals ?  (
     <form 
       tw="w-full flex flex-row justify-center" 
       onSubmit={handleSubmit(handleDepositWagerClick)} 

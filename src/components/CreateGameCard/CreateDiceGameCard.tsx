@@ -32,8 +32,8 @@ import { ArrowDownIcon, StarLoaderIcon } from '../../assets/icons';
 import tw from 'twin.macro';
 import { useForm } from 'react-hook-form';
 import { useBalance } from 'wagmi';
-import { useNavigateTo, useWegaStore, useCreateGameParams, useTokenUSDValue, useDrand} from '../../hooks';
-import { useCreateGameMutation } from './apiSlice';
+import { useNavigateTo, useWegaStore, useCreateGameParams, useTokenUSDValue } from '../../hooks';
+import { useCreateGameMutation, useGetRandomNumberQuery } from './apiSlice';
 import { 
   useCreateWagerAndDepositMutation,
   useAllowanceQuery,
@@ -55,6 +55,7 @@ import { ComponentLoader } from '../../common/loaders'
 
 
 
+
 export interface CreateGameCardInterface {
   wagerType: AllPossibleWagerTypes;
   currencyType: AllPossibleCurrencyTypes;
@@ -71,7 +72,7 @@ export const CreateDiceGameCard = ({
 }: CreateGameCardInterface & React.Attributes & React.AllHTMLAttributes<HTMLDivElement> ) => {
   const { openConnectModal } = useConnectModal();
   const { wallet, user, network } = useWegaStore();
-  const randomness = useDrand();
+  const randomness = useGetRandomNumberQuery(undefined);
   const formRef = useRef<HTMLFormElement>(null);
   const detailsBlock = useRef<HTMLDivElement>(null)
   const [currentWagerType] = useState<AllPossibleWagerTypes>(wagerType);
@@ -114,7 +115,6 @@ export const CreateDiceGameCard = ({
   }] = useCreateGameMutation();
   
   const handleCreateGameClick = async ({ wager }: { wager: number }) => {
-    
     try {
       if(!isWagerApproved(allowanceQuery.data, toBigIntInWei(String(wager), tokenDecimals))) {
         await approveERC20({ 
@@ -127,7 +127,7 @@ export const CreateDiceGameCard = ({
         tokenAddress, 
         wagerAsBigint: toBigIntInWei(String(wager), tokenDecimals), 
         gameType,
-        randomness: [convertBytesToNumber(randomness.randomness)] 
+        randomness: [convertBytesToNumber(randomness.data.randomness)] 
       }).unwrap();
       const parsedTopicData = parseTopicDataFromEventLogs(receipt.logs, ['event GameCreation(bytes32 indexed escrowHash, uint256 indexed nonce, address creator, string name)']);
       await createGame({ 
@@ -177,7 +177,7 @@ export const CreateDiceGameCard = ({
   useEffect(() => {
     allowanceQuery.refetch();
   }, [ watch('wager'), playerAddress,  tokenAddress ]);
-  return randomness ? (
+  return randomness?.data ? (
     <form 
       tw="w-full flex flex-row justify-center" 
       onSubmit={handleSubmit(handleCreateGameClick)} 
