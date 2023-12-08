@@ -32,7 +32,7 @@ export const ClaimModal = ({ hide, game, wallet, tokenDecimals
 
   const calculateFeesQuery = useGetClaimAmountQuery({ 
     escrowHash: game.wager.wagerHash as HexishString,
-    account: '0x812E758C83e4a197355A72e12065e6A24f0367E3'
+    account: wallet.address
   });
   const handleClaimClick = async () => { 
     try {
@@ -46,7 +46,7 @@ export const ClaimModal = ({ hide, game, wallet, tokenDecimals
     }
   };
   const wagerUSDValue = useTokenUSDValue(game.wager.wagerCurrency, Number(formatUnits(game.wager.wagerAmount, tokenDecimals)));
-  console.log(calculateFeesQuery.data)
+  
   return tokenDecimals && (
    <WinnerDeclarationContainer tw="items-start p-[24px] gap-y-[16px] min-w-[340px]">
     <div tw="flex justify-end w-full">
