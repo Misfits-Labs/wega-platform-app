@@ -7,10 +7,9 @@ import { gamesApiSlice } from './components/WegaGames/apiSlice.ts'
 import './themes/index.css'
 import GlobalStyles  from "./themes/GlobalStyles.tsx";
 import WalletProvider from './containers/WalletProvider/index.tsx' 
-import { defaultNetwork } from "./models/constants.ts";
 // TODO
   // remove old api files
-store.dispatch(gamesApiSlice.endpoints.getGames.initiate({ networkId: defaultNetwork?.id }));
+store.dispatch(gamesApiSlice.endpoints.getGames.initiate(undefined));
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ReduxProvider store={store}>

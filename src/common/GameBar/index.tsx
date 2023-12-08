@@ -54,7 +54,7 @@ function GameBar({
   const { user, network } = useWegaStore();
   const tokenDecimals: number = SupportedWagerTokenAddresses[game?.wager.wagerCurrency as AllPossibleCurrencyTypes][game?.networkId as number].decimals as number;
 
-  return game && user?.uuid && network ? (
+  return game && user?.uuid && network && tokenDecimals ? (
    <BarWrapper tw="w-full grid grid-cols-5 " {...rest}>
     {/* date */}
     <DateColumn tw="max-w-[max-content]">{dateFromTs(new Date(game.createdAt as string).getTime() * 1000)}</DateColumn>

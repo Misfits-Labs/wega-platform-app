@@ -22,6 +22,7 @@ export const JoinableAndPlayableGames: React.FC<JoinableAndPlayableGamesProps> =
  const { data, isLoading, isSuccess} = useGetGamesQuery({ networkId: networkId ?? defaultNetwork?.id });
  const [gameIds, setGameIds] = useState<number[]>([]);
  useEffect(() => {
+   console.log(data)
    if(isSuccess && data && data?.entities) {                                     
      const dataArray = data.ids.map((id: number) => data.entities[id]) as Wega[];
      const playableGames = filterPlayableGames(dataArray, userUuid);
@@ -30,6 +31,7 @@ export const JoinableAndPlayableGames: React.FC<JoinableAndPlayableGamesProps> =
      const sortedGameIds = sortPlayableGames([...playableGames, ...joinableGames, ...waitingGames]).map(game => game.id);
      setGameIds(sortedGameIds);
     }
+    console.log(gameIds)
  }, [data, gamesCount, isSuccess, defaultNetwork?.id]);
 
  return !isLoading ? (<Section hdr="Join matches instantly" direction="col" tw="gap-2 mt-[35px] " { ...rest }>
@@ -41,7 +43,7 @@ export const JoinableAndPlayableGames: React.FC<JoinableAndPlayableGamesProps> =
    <span tw="invisible"></span>
   </JoinableGamesHeaderBar>
     {
-     gameIds && gameIds.map((gameId: number) => (<GameBar gameId={gameId} key={`joinable-and-playable-game-bar${gameId}`} tw="dark:bg-[#1C1C1C] py-2 px-3 rounded-[5px]" /> )) 
+     gameIds ? gameIds.map((gameId: number) => (<GameBar gameId={gameId} key={`joinable-and-playable-game-bar${gameId}`} tw="dark:bg-[#1C1C1C] py-2 px-3 rounded-[5px]" /> )) : <></>
     }
   </Section>
  ) : <ComponentLoader tw="mt-[2rem] w-full flex justify-center" />
