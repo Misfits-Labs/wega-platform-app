@@ -7,6 +7,7 @@ import DiceWinnerModal  from './DiceWinnerModal';
 import WebAppInBetaModal  from './WebAppInBetaModal';
 import { ClaimModal } from './ClaimModal';
 import BounceFromTop from './BounceFromTop';
+import 'twin.macro'
 
 export const MODAL_TYPES = {
   COINFLIP_WINNER_MODAL: 'COINFLIP_WINNER_MODAL',
@@ -136,7 +137,7 @@ const GlobalModal: React.FC<GlobalModalProps> = ({ children }) => {
       }}>
       {
         store.modalType && 
-        <ModalContainer 
+        <ModalContainer tw="dark:bg-pretu dark:bg-opacity-50"
           onClick={ 
             store.persist ? 
             () => null : 

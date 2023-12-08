@@ -16,7 +16,6 @@ import WalletAvatar from "../../common/WalletAvatar";
 import toast from 'react-hot-toast';
 
 // TODO add gas costs
-
 export interface ClaimModalProps { 
   hide: any;
   game: Wega;
@@ -33,7 +32,7 @@ export const ClaimModal = ({ hide, game, wallet, tokenDecimals
 
   const calculateFeesQuery = useGetClaimAmountQuery({ 
     escrowHash: game.wager.wagerHash as HexishString,
-    account: wallet.address
+    account: '0x812E758C83e4a197355A72e12065e6A24f0367E3'
   });
   const handleClaimClick = async () => { 
     try {
@@ -47,7 +46,7 @@ export const ClaimModal = ({ hide, game, wallet, tokenDecimals
     }
   };
   const wagerUSDValue = useTokenUSDValue(game.wager.wagerCurrency, Number(formatUnits(game.wager.wagerAmount, tokenDecimals)));
-  
+  console.log(calculateFeesQuery.data)
   return tokenDecimals && (
    <WinnerDeclarationContainer tw="items-start p-[24px] gap-y-[16px] min-w-[340px]">
     <div tw="flex justify-end w-full">
@@ -140,7 +139,7 @@ export const ClaimModal = ({ hide, game, wallet, tokenDecimals
       <NormalText tw="dark:text-blanc">Net winnings</NormalText>
       {
         !calculateFeesQuery.data ? 'calculating...' : <NormalText>{
-          parseFloat(String(Number(formatUnits(calculateFeesQuery.data[sendAmountIndex], tokenDecimals)) - Number(formatUnits(game.wager.wagerAmount, tokenDecimals)))).toFixed(2)
+          parseFloat(String(formatUnits(calculateFeesQuery.data[sendAmountIndex], tokenDecimals))).toFixed(2)
         } {game.wager.wagerCurrency}</NormalText>
       }
     </GradientDiv>

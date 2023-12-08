@@ -16,7 +16,7 @@ function ClaimOnOtherNetworkSection(props: React.AllHTMLAttributes<HTMLDivElemen
 
         <div tw="flex px-[10px] py-[5px] rounded-[5px] bg-[#2E2E2E] justify-center items-center gap-x-[10px]">
           <img src={optimismLogo} alt="optimism-logo"  tw="w-[24px] h-[24px]"/>
-          <NormalText>Optimisim - Coming soon</NormalText>
+          <NormalText>Optimism - Coming soon</NormalText>
         </div>
       </div>
     </Section> 
