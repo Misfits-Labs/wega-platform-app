@@ -34,6 +34,7 @@ export const ClaimModal = ({ hide, game, wallet, tokenDecimals
     escrowHash: game.wager.wagerHash as HexishString,
     account: wallet.address
   });
+  
   const handleClaimClick = async () => { 
     try {
       await claim({ escrowHash: game.wager.wagerHash as HexishString }).unwrap();
