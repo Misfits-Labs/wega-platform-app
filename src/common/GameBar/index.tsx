@@ -16,7 +16,8 @@ import {
  CurrencyTypesEnum,
  AllPossibleCurrencyTypes,
  AllPossibleWagerTypes,
- HexishString
+ HexishString,
+ Wega
 } from '../../models';
 import { useSelector } from 'react-redux'; 
 import { dateFromTs } from '../../utils';
@@ -42,18 +43,19 @@ export const BADGE_TEXTS: any = {
 
 interface GameBarProps {
   gameId: number;
+  loadedFromApi: Wega;
 }
 
 function GameBar({ 
   gameId,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   css, 
+  loadedFromApi,
   ...rest
 }: { gameId: number } & React.Attributes & Partial<React.AllHTMLAttributes<HTMLDivElement>> & GameBarProps) {
-  const game = useSelector(state => selectGameById(state, gameId));
+  const game = useSelector(state => selectGameById(state, gameId)) ?? loadedFromApi;
   const { user, network } = useWegaStore();
   const tokenDecimals: number = SupportedWagerTokenAddresses[game?.wager.wagerCurrency as AllPossibleCurrencyTypes][game?.networkId as number].decimals as number;
-
   return game && user?.uuid && network && tokenDecimals ? (
    <BarWrapper tw="w-full grid grid-cols-5 " {...rest}>
     {/* date */}

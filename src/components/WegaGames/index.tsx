@@ -20,15 +20,17 @@ const filterWaitingGames = (data: Wega[], userUuid: string) => data.filter(game 
 const sortPlayableGames = (data: Wega[]) => data.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 export const JoinableAndPlayableGames: React.FC<JoinableAndPlayableGamesProps> = ({ gamesCount, userUuid, networkId, ...rest }: JoinableAndPlayableGamesProps) => {
  const { data, isLoading, isSuccess} = useGetGamesQuery({ networkId: networkId ?? defaultNetwork?.id });
- const [gameIds, setGameIds] = useState<number[]>([]);
+ const [sortedGames, setSortedGames] = useState<Wega[]>();
+ 
  useEffect(() => {
+  console.log(sortedGames)
    if(isSuccess && data && data?.entities) {                                     
-     const dataArray = data.ids.map((id: number) => data.entities[id]) as Wega[];
+     const dataArray = data?.ids.map((id: number) => data.entities[id]) as Wega[];
      const playableGames = filterPlayableGames(dataArray, userUuid);
      const joinableGames = filterJoinableGames(dataArray, userUuid);
      const waitingGames  = filterWaitingGames(dataArray, userUuid);
      const sortedGameIds = sortPlayableGames([...playableGames, ...joinableGames, ...waitingGames]).map(game => game.id);
-     setGameIds(sortedGameIds);
+     setSortedGames(sortedGameIds.map(id => data.entities[id] as Wega) ?? []);
     }
  }, [data, gamesCount, isSuccess, defaultNetwork?.id]);
 
@@ -41,7 +43,7 @@ export const JoinableAndPlayableGames: React.FC<JoinableAndPlayableGamesProps> =
    <span tw="invisible"></span>
   </JoinableGamesHeaderBar>
     {
-     gameIds ? gameIds.map((gameId: number) => (<GameBar gameId={gameId} key={`joinable-and-playable-game-bar${gameId}`} tw="dark:bg-[#1C1C1C] py-2 px-3 rounded-[5px]" /> )) : <></>
+     sortedGames && sortedGames.map((game: Wega) => (<GameBar loadedFromApi={game} gameId={game.id} key={`joinable-and-playable-game-bar${game.id}`} tw="dark:bg-[#1C1C1C] py-2 px-3 rounded-[5px]" /> )) 
     }
   </Section>
  ) : <ComponentLoader tw="mt-[2rem] w-full flex justify-center" />
@@ -49,13 +51,13 @@ export const JoinableAndPlayableGames: React.FC<JoinableAndPlayableGamesProps> =
 
 export const JoinableGames: React.FC<JoinableAndPlayableGamesProps> = ({ gamesCount, userUuid, networkId, ...rest }: JoinableAndPlayableGamesProps) => {
  const { data, isLoading, isSuccess} = useGetGamesQuery({ state: WegaState.PENDING, networkId: networkId ?? defaultNetwork?.id });
- const [gameIds, setGameIds] = useState<number[]>();
+ const [sortedGames, setSortedGames] = useState<Wega[]>();
  useEffect(() => {
   if(isSuccess && data && data?.entities) {
     const dataArray = data.ids.map((id: number) => data.entities[id]) as Wega[];
     const joinableGames = filterJoinableGames(dataArray, userUuid);
     const sortedGameIds = sortPlayableGames(joinableGames).map(game => game.id);
-    setGameIds(sortedGameIds ?? []);
+    setSortedGames(sortedGameIds.map(id => data.entities[id] as Wega) ?? []);
   }
  }, [data, gamesCount, isSuccess, defaultNetwork?.id]);
 
@@ -67,7 +69,7 @@ export const JoinableGames: React.FC<JoinableAndPlayableGamesProps> = ({ gamesCo
    <span>Escrow</span>
   </JoinableGamesHeaderBar>
   {
-   gameIds && gameIds.map((gameId: number) => (<GameBar gameId={gameId} key={`joinable-game-bar${gameId}`} tw="dark:bg-[#1C1C1C] py-2 px-3 rounded-[5px]" />)) 
+   sortedGames && sortedGames.length > 0 && sortedGames.map((game: Wega) => (<GameBar gameId={game.id} loadedFromApi={game} key={`joinable-game-bar${game.id}`} tw="dark:bg-[#1C1C1C] py-2 px-3 rounded-[5px]" />)) 
   }
   </Section>
  ) : <ComponentLoader tw="w-full flex justify-center" />
@@ -75,13 +77,15 @@ export const JoinableGames: React.FC<JoinableAndPlayableGamesProps> = ({ gamesCo
 
 export const PlayableGames: React.FC<JoinableAndPlayableGamesProps> = ({ gamesCount, userUuid,  networkId, ...rest }: JoinableAndPlayableGamesProps) => {
  const { data, isLoading, isSuccess } = useGetGamesQuery({ state: WegaState.PLAYING, networkId: networkId ?? defaultNetwork?.id });
- const [gameIds, setGameIds] = useState<number[]>();
+ const [sortedGames, setSortedGames] = useState<Wega[]>();
+
  useEffect(() => {
   if(isSuccess && data && data?.entities) {
     const dataArray = data.ids.map((id: number) => data.entities[id]) as Wega[];
     const joinableGames = filterJoinableGames(dataArray, userUuid);
     const sortedGameIds = sortPlayableGames(joinableGames).map(game => game.id);
-    setGameIds(sortedGameIds ?? []);
+    setSortedGames(sortedGameIds.map(id => data.entities[id] as Wega) ?? []);
+
   }
  }, [data, gamesCount, isSuccess, defaultNetwork?.id]);
  
@@ -93,7 +97,7 @@ export const PlayableGames: React.FC<JoinableAndPlayableGamesProps> = ({ gamesCo
    <span>Escrow</span>
   </JoinableGamesHeaderBar>
   {
-   gameIds && gameIds.map((gameId: number) => (<GameBar gameId={gameId} key={`playable-game-bar${gameId}`} tw="dark:bg-[#1C1C1C] py-2 px-3 rounded-[5px]" />)) 
+   sortedGames && sortedGames.map((game: Wega) => (<GameBar loadedFromApi={game} gameId={game.id} key={`playable-game-bar${game.id}`} tw="dark:bg-[#1C1C1C] py-2 px-3 rounded-[5px]" />)) 
   }
   </Section>
  ) : <ComponentLoader tw="w-full flex justify-center" />
