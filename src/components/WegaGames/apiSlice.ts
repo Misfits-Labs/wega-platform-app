@@ -17,7 +17,8 @@ export const gamesApiSlice = appApiSlice.injectEndpoints({
      return gamesAdapter.setAll(gamesInitialState, response.items)
    }
  }),
- })
+ }),
+ overrideExisting: true,
 })
 gamesApiSlice.enhanceEndpoints({ addTagTypes: ['Games'] });
 

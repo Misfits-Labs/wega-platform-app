@@ -21,7 +21,7 @@ const PlayPage = () => {
             
         }
         { 
-          !windowIsCurrentlyMobile && user?.uuid && ( <JoinableAndPlayableGames tw="md:w-[978px]" gamesCount={gamesCount ?? 0} userUuid={user?.uuid} /> )   
+          !windowIsCurrentlyMobile && user?.uuid && ( <JoinableAndPlayableGames tw="md:w-[978px]" gamesCount={gamesCount ?? 0} userUuid={user.uuid} /> )   
         }
       </MainContainer>
     </>

@@ -25,7 +25,6 @@ const router = createBrowserRouter([
   element: <GlobalModal><Layout /></GlobalModal>,
   loader: async () => {
     store.dispatch(gamesApiSlice.endpoints.getGames.initiate(undefined)); // loads all games
-    store.dispatch(createGameApiSlice.endpoints.getRandomNumber.initiate(undefined)); // loads all games
     return null;
   },
   children: [
@@ -40,6 +39,7 @@ const router = createBrowserRouter([
    {
     path: 'join/:gameType/:id',
     element: <JoinGamePage />,
+    loader: async () => store.dispatch(createGameApiSlice.endpoints.getRandomNumber.initiate(undefined)), 
    },
    {
     path: 'play/:gameType/:id',
@@ -47,7 +47,7 @@ const router = createBrowserRouter([
    },
    {
     path: 'wins',
-    loader: async () =>  store.dispatch(gamesApiSlice.endpoints.getGames.initiate({ state: 'COMPLETED' })),
+    loader: async () =>  store.dispatch(gamesApiSlice.endpoints.getGames.initiate({ state:  'COMPLETED'})),
     element: <WinsPage />,
    },
    {
