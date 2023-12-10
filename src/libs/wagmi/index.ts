@@ -126,11 +126,9 @@ export class BlockchainAPIBase implements IBlockchainAPIBase {
     })
     return await this.handleWriteRequest(config);
   }
-
-  async waitForMined(hash: HexishString) {
-    return await this.handleRequest(async () => await waitForTransaction({ hash }));
-  } 
-
+  async waitForMined(hash: HexishString) {  
+    return await this.handleRequest(async () => await waitForTransaction({ hash, confirmations: 5 }));
+  }
   async handleRequest(func: any) {
     try {
       return { data: await func() , error: undefined, meta: undefined }
