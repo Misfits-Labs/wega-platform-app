@@ -49,8 +49,8 @@ export const appSlice = createSlice({
 });
 
 export const { setWallet, setNetwork, resetWallet, resetNetwork, setNetworkUnsupported } = appSlice.actions;
-export const selectNetwork = (state: RootState) => state.app.network;
-export const selectUser = (state: RootState) => state.app.user;    
-export const selectWallet = (state: RootState) => state.app.user.wallet;  
-export const selectAppLoading = (state: RootState) => state.app.loading;
+export const selectNetwork = (state: RootState) => state.connection.network;
+export const selectUser = (state: RootState) => state.connection.user;    
+export const selectWallet = (state: RootState) => state.connection.user.wallet;  
+export const selectAppLoading = (state: RootState) => state.connection.loading;
 export default appSlice.reducer;
