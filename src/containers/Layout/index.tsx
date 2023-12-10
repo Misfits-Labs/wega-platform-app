@@ -3,7 +3,8 @@ import {
   Outlet, 
   useNavigation, 
   type Location, 
-  type useMatches, 
+  type useMatches,
+  useLoaderData,
   ScrollRestoration 
 } from 'react-router-dom';
 import Navigation from '../Navigation'
@@ -12,12 +13,14 @@ import { Toaster } from 'react-hot-toast';
 import { useMediaQuery, useWarnAppInBeta } from '../../hooks';
 import NavigationMobile from '../NavigationMobile';
 import FooterMobile from '../FooterMobile';
+import { ComponentLoader } from '../../common/loaders';
 import 'twin.macro';
 
 const Layout = () => {
   useWarnAppInBeta();
   const navigation = useNavigation();
   const { windowIsCurrentlyMobile } = useMediaQuery();
+  useLoaderData();
   const getKey = useCallback(
     (location: Location, matches: ReturnType<typeof useMatches>) => {
       const match = matches.find((m) => (m.handle as any)?.scrollMode);
@@ -31,14 +34,12 @@ const Layout = () => {
 
  return (
     <>
-     <div
-       className="spinner"
+     <ComponentLoader
+       tw="w-[100vw] h-[100vh] flex justify-center"
        style={{
          display: navigation.state === "idle" ? "none" : "block",
        }}
-     >
-       Navigating...
-     </div>
+     />
      { windowIsCurrentlyMobile ? <NavigationMobile /> : <Navigation /> }
      <div tw="min-h-[100vh] flex flex-col sm:mt-0 justify-between relative z-[inherit]">
         <Outlet />

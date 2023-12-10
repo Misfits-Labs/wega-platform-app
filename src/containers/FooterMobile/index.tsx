@@ -53,7 +53,7 @@ const FooterMobile = () => {
               <Link to="https://wega-1.gitbook.io/wega-lite-paper/" target="_blank">
                 <NormalText>Documentation</NormalText>
               </Link>
-              <Link to="https://app.wega.fun/#/" target="_blank">
+              <Link to="https://app.wega.fun" target="_blank">
                 <NormalText tw="text-transparent dark:bg-gradient-to-r from-oranjo-blanc to-oranjo  bg-clip-text">Play Beta(Web only)</NormalText>
               </Link>
             </div>

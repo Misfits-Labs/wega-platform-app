@@ -1,5 +1,5 @@
 import {
- createHashRouter
+ createBrowserRouter,
 } from "react-router-dom";
 import Layout from "../Layout";
 import PlayPage  from '../PlayPage';
@@ -9,7 +9,9 @@ import PlayGamePage  from '../PlayGamePage';
 import ErrorPage from '../ErrorPage';
 import WinsPage from '../WinsPage';
 import { GlobalModal } from '../../common/modals';
-
+import { gamesApiSlice } from '../../components/WegaGames/apiSlice'
+import { createGameApiSlice } from '../../components/CreateGameCard/apiSlice'
+import { store } from "../../app/store";
 
 declare global  {
  interface Window{
@@ -17,10 +19,15 @@ declare global  {
  }
 }
 
-const router = createHashRouter([
+const router = createBrowserRouter([
  {
   path: '/',
   element: <GlobalModal><Layout /></GlobalModal>,
+  loader: async () => {
+    store.dispatch(gamesApiSlice.endpoints.getGames.initiate(undefined)); // loads all games
+    store.dispatch(createGameApiSlice.endpoints.getRandomNumber.initiate(undefined)); // loads all games
+    return null;
+  },
   children: [
    {
     index: true,
@@ -40,6 +47,7 @@ const router = createHashRouter([
    },
    {
     path: 'wins',
+    loader: async () =>  store.dispatch(gamesApiSlice.endpoints.getGames.initiate({ state: 'COMPLETED' })),
     element: <WinsPage />,
    },
    {
@@ -50,7 +58,7 @@ const router = createHashRouter([
  },
 ])
 
-export const mobileRouter = createHashRouter([
+export const mobileRouter = createBrowserRouter([
  {
   path: '/',
   element: <Layout />,

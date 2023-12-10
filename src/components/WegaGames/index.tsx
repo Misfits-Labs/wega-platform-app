@@ -23,7 +23,6 @@ export const JoinableAndPlayableGames: React.FC<JoinableAndPlayableGamesProps> =
  const [sortedGames, setSortedGames] = useState<Wega[]>();
  
  useEffect(() => {
-  console.log(sortedGames)
    if(isSuccess && data && data?.entities) {                                     
      const dataArray = data?.ids.map((id: number) => data.entities[id]) as Wega[];
      const playableGames = filterPlayableGames(dataArray, userUuid);

@@ -1,6 +1,6 @@
 import { formatUnits } from 'ethers';
 import tw, { styled } from 'twin.macro';
-import { WinnerDeclarationContainer, GradientDiv } from './types';
+import { WinnerDeclarationContainer } from './types';
 import { NormalText, SmallText } from '../../components/CreateGameCard/types';
 import { DownloadIcon } from '../../assets/icons';
 import arrowDown from '../../assets/icons/arrow-down-icon.png';
@@ -109,9 +109,9 @@ export const ClaimModal = ({ hide, game, wallet, tokenDecimals
      <div tw="flex flex-row items-end justify-between w-full">
       <NormalText tw="dark:text-shinishi">Total claim before fees</NormalText>
       {
-        !calculateFeesQuery.data ? 'calculating...' : <NormalText>{
-          parseFloat(String((Number(formatUnits(calculateFeesQuery.data[feeAmountIndex], tokenDecimals)) + Number(formatUnits(calculateFeesQuery.data[sendAmountIndex], tokenDecimals))/2))).toFixed(0) 
-        } {game.wager.wagerCurrency}</NormalText>
+        !calculateFeesQuery.data ? 'calculating...' : <NormalText> {
+          parseFloat(formatUnits(game.wager.wagerAmount, tokenDecimals)).toFixed(0).concat(` ${game.wager.wagerCurrency}`)
+        }</NormalText>
       }
      </div>
 
@@ -121,29 +121,31 @@ export const ClaimModal = ({ hide, game, wallet, tokenDecimals
     </div> */}
     </div>
     <div tw="w-full flex flex-col justify-center gap-y-[8px]">
-      <NormalText tw="dark:text-shinishi text-center">Fee details</NormalText>
+      {/* <NormalText tw="dark:text-shinishi text-center">Fee details</NormalText> */}
       <div tw="flex flex-col w-full rounded-[4px] p-[12px]">
-        
         <NormalText tw="dark:text-shinishi text-center">Platform fee (2%)</NormalText>
         <div tw="h-[1px] w-[90%] bg-[#3A3A3A] my-[8px]"></div>
         <div tw="w-full flex justify-between">
           <NormalText tw="dark:text-shinishi">You pay</NormalText>
           {
             !calculateFeesQuery.data ? 'calculating...' : <NormalText>{
-              parseFloat(formatUnits(calculateFeesQuery.data[feeAmountIndex], tokenDecimals) ).toFixed(2)
-            } {game.wager.wagerCurrency}</NormalText>
+              parseFloat(formatUnits(calculateFeesQuery.data[feeAmountIndex], tokenDecimals)).toFixed(2).concat(` ${game.wager.wagerCurrency}`)
+            }</NormalText>
           }
         </div>
       </div>
     </div> 
-    <GradientDiv tw="h-[max-content] flex justify-between gap-[10px] dark:bg-[#414141] py-[8px] px-[5px]">
-      <NormalText tw="dark:text-blanc">Net winnings</NormalText>
-      {
-        !calculateFeesQuery.data ? 'calculating...' : <NormalText>{
-          parseFloat(String(formatUnits(calculateFeesQuery.data[sendAmountIndex], tokenDecimals))).toFixed(2)
-        } {game.wager.wagerCurrency}</NormalText>
-      }
-    </GradientDiv>
+    <div tw="w-full rounded-[5px] p-[2px] dark:bg-gradient-to-r from-[#5DEDD3] to-[#00D62F]">
+      <div tw="w-full py-[8px] px-[5px] h-[max-content] flex items-center justify-between gap-[10px] dark:bg-[#414141] rounded-[5px]">
+        <NormalText tw="dark:text-blanc">Net winnings</NormalText>
+        {
+          !calculateFeesQuery.data ? 'calculating...' : <NormalText>{
+            parseFloat(String(formatUnits(calculateFeesQuery.data[sendAmountIndex], tokenDecimals))).toFixed(2).concat(` ${game.wager.wagerCurrency}`)
+          }</NormalText>
+        }
+
+      </div>
+    </div>
     <div tw="flex flex-col w-full items-center gap-y-[8px]">
       <SmallText tw="text-center font-[14px] font-[400] leading-[15px]">Why is withdrawal amount higher on block explorer?</SmallText>
       <SmallText tw="text-shinishi text-center font-[12px] font-[300] leading-[15px]" >When claiming a win you also claim back your initial wager deposit.</SmallText>
