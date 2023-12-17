@@ -121,7 +121,11 @@ export const CreateCoinFlipGameCard = ({
       }).unwrap();
       }
       const receipt = await createWagerAndDeposit({ 
-        tokenAddress, wagerAsBigint: toBigIntInWei(String(wager), tokenDecimals), gameType, randomness: [convertBytesToNumber(drand.data.randomness)] }).unwrap();
+        tokenAddress, 
+        wagerAsBigint: toBigIntInWei(String(wager), tokenDecimals), 
+        gameType, 
+        randomness: [convertBytesToNumber(drand.data.randomness)] }).unwrap();
+        
       const parsedTopicData = parseTopicDataFromEventLogs(receipt.logs, ['event GameCreation(bytes32 indexed escrowHash, uint256 indexed nonce, address creator, string name)']);
       await createGame({ 
         gameType, 
