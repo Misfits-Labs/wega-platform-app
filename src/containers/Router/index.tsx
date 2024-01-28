@@ -1,5 +1,5 @@
 import {
- createBrowserRouter,
+ createHashRouter
 } from "react-router-dom";
 import Layout from "../Layout";
 import PlayPage  from '../PlayPage';
@@ -19,7 +19,7 @@ declare global  {
  }
 }
 
-const router = createBrowserRouter([
+const router = createHashRouter([
  {
   path: '/',
   element: <GlobalModal><Layout /></GlobalModal>,
@@ -58,7 +58,7 @@ const router = createBrowserRouter([
  },
 ])
 
-export const mobileRouter = createBrowserRouter([
+export const mobileRouter = createHashRouter([
  {
   path: '/',
   element: <Layout />,
