@@ -21,7 +21,7 @@ export const ButtonForJoinableGame = ({ gameType, gameId, gameUuid }: ButtonForJ
         buttonType="secondary"  
         className="flex items-center"
         onClick={openConnectModal}
-      >
+      > 
       Join
       <StarLoaderIcon className="dark:fill-blanc h-[16px] w-[16px] ms-[5px]" />
     </Button> : !isGamePlayable ? <Link to={`/join/${gameType.toLowerCase()}/${gameUuid}`} state={{ gameUuid, gameId }}>

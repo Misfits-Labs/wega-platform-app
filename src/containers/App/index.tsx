@@ -4,6 +4,7 @@ import { localeSelector } from '../LanguageProvider/intlSlice';
 import { useAppSelector, useMediaQuery } from '../../hooks';
 import { RouterProvider } from 'react-router-dom';
 import router, { mobileRouter } from '../Router';
+import { ComponentLoader } from '../../common/loaders';
 import 'twin.macro';
 
 
@@ -14,7 +15,7 @@ function App() {
   return (
     <LanguageProvider locale={locale}>
       <HelmetProvider>
-        <RouterProvider router={!windowIsCurrentlyMobile ? router : mobileRouter} fallbackElement={<p>Loading...</p>} />
+        <RouterProvider router={!windowIsCurrentlyMobile ? router : mobileRouter} fallbackElement={<ComponentLoader tw="w-[100vw] h-[100vh] flex justify-center items-center"/>} />
       </HelmetProvider>
     </LanguageProvider>
   )
